@@ -18,7 +18,7 @@ When are finals?,faq.important_date
 What day do finals start?,faq.important_date
 When is the first day of finals week?,faq.important_date
 When is Thanksgiving break?,faq.important_date
-When is Fall break?,,faq.important_date
+When is Fall break?,faq.important_date
 When is the upcoming holiday?,faq.important_date
 When does registration open?,faq.important_date
 When can I register for classes?,faq.important_date
@@ -98,7 +98,7 @@ What do I do for a class substitution?,faq.professor
 Can I get a change of schedule form?,faq.student
 How do I apply to the graduate program?,faq.student
 What classes are offered next semester?,faq.department
-Where can I receive assistance for coding? faq.student
+Where can I receive assistance for coding?,faq.student
 Where can I get help for coding?,faq.student
 Where can I find my degree plan?,faq.student
 Where can I get my degree plan?,faq.student
@@ -107,7 +107,7 @@ Where do I get my degree plan?,faq.student
 How do I apply for my degree?,faq.student
 Is the candy free?,faq.department
 Can I have some candy?,faq.department
-Can I take some candy?,faq.department
+Can I take some candy?,faq.student
 Where is the candy?,faq.student
 Who do I go to talk to about the amount of money on my paycheck being decreased?,faq.employee
 When will I receive my paycheck?,faq.employee
