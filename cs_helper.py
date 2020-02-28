@@ -87,7 +87,7 @@ def process_text(input):
             return
 
         elif "who are you" in input or "define yourself" in input:
-            speak = '''Hello, I am CS Helper. Virtual Office Assistant.
+            speak = '''I am CS Helper. Virtual Office Assistant.
             I am here to answer your questions.'''
             assistant_speaks(speak)
             return
@@ -109,7 +109,7 @@ def process_text(input):
 
             assistant_speaks("I can search the web for you. Do you want to continue?")
             ans = get_audio()
-            if 'yes' in str(ans) or 'yeah' in str(ans):
+            if 'yes' in str(ans) or 'yeah'in str(ans):
                 search_web(input)
             else:
                 return
