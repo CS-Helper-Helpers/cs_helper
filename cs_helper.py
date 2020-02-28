@@ -100,11 +100,9 @@ def process_text(input):
             return
 
 
-        elif 'open' in input:
+        elif 'open intent classifier' in input:
 
-            # another function to open
-            # different application availaible
-            open_application(input.lower())
+            intent_classifier(input.lower())
             return
 
         else:
@@ -123,7 +121,7 @@ def process_text(input):
             
             assistant_speaks("An office assistant will be in at ...")
             
-def open_application(input):
+def intent_classifier(input):
     if "intent" in input or "classifier" in input:
         assistant_speaks("Opening the intent classifier.")
         model = load_model("model.h5")
