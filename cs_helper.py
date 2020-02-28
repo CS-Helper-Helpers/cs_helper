@@ -4,8 +4,10 @@ import playsound # to play saved mp3 file
 from gtts import gTTS # google text to speech 
 import os # to save/open files 
 from selenium import webdriver # to control browser operations 
-
-
+from tensorflow.keras.models import Sequential, load_model
+from intent_classifier import predictions
+from intent_classifier import get_final_output
+from intent_classifier import unique_intent
 
 num = 1
 """num: used to rename every audio file to remove ambiguity  
@@ -120,6 +122,20 @@ def process_text(input):
         if 'yes' in str(ans) or 'yeah' in str(ans):
             
             assistant_speaks("An office assistant will be in at ...")
+            
+def open_application(input):
+    if "intent" in input or "classifier" in input:
+        assistant_speaks("Opening the intent classifier.")
+        model = load_model("model.h5")
+        assistant_speaks("What question would you like me to classify?")
+        ans = get_audio()
+        question = str(ans)
+        pred = predictions(question)
+        get_final_output(pred, unique_intent)
+        
+    else:
+        assistant_speaks("Application not available.")
+        return
 
   
 # Driver Code 
