@@ -112,10 +112,10 @@ def create_model(vocab_size, max_length):
     model = Sequential()
     model.add(Embedding(vocab_size, 128, input_length = max_length, trainable = False))
     model.add(Bidirectional(LSTM(128)))
-#   model.add(LSTM(128))
+#      model.add(LSTM(128))
     model.add(Dense(32, activation = "relu"))
     model.add(Dropout(0.5))
-    model.add(Dense(10, activation = "softmax"))
+    model.add(Dense(len(unique_intent), activation = "softmax"))
   
     return model
 
@@ -158,8 +158,11 @@ def get_final_output(pred, classes):
     classes = classes[ids]
     predictions = -np.sort(-predictions)
  
+    
     for i in range(pred.shape[1]):
         print("%s has confidence = %s" % (classes[i], (predictions[i])))
+    return classes[0], predictions[0]    
+    
   
 text = "Can you help me?"
 pred = predictions(text)

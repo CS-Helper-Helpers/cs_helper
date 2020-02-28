@@ -87,7 +87,7 @@ def process_text(input):
             return
 
         elif "who are you" in input or "define yourself" in input:
-            speak = '''Hello, I am CS Helper. Virtual Office Assistant.
+            speak = '''I am CS Helper. Virtual Office Assistant.
             I am here to answer your questions.'''
             assistant_speaks(speak)
             return
@@ -100,18 +100,16 @@ def process_text(input):
             return
 
 
-        elif 'open' in input:
+        elif 'open intent classifier' in input:
 
-            # another function to open
-            # different application availaible
-            open_application(input.lower())
+            intent_classifier(input.lower())
             return
 
         else:
 
             assistant_speaks("I can search the web for you. Do you want to continue?")
             ans = get_audio()
-            if 'yes' in str(ans) or 'yeah' in str(ans):
+            if 'yes' in str(ans) or 'yeah'in str(ans):
                 search_web(input)
             else:
                 return
@@ -123,20 +121,16 @@ def process_text(input):
             
             assistant_speaks("An office assistant will be in at ...")
             
-def open_application(input):
-    if "intent" in input or "classifier" in input:
-        assistant_speaks("Opening the intent classifier.")
-        model = load_model("model.h5")
-        assistant_speaks("What question would you like me to classify?")
-        ans = get_audio()
-        question = str(ans)
-        pred = predictions(question)
-        get_final_output(pred, unique_intent)
-        
-    else:
-        assistant_speaks("Application not available.")
-        return
+def intent_classifier(input):
+    model = load_model("model.h5")
+    assistant_speaks("Opening the intent classifier.")
+    assistant_speaks("What question would you like me to classify?")
+    ans = get_audio()
+    pred = predictions(str(ans))
+    category, percent = get_final_output(pred, unique_intent)
 
+    response = "Your question falls in the " + category + " category with a " + percent + "% confidence."
+    assistant_speaks(response)        
   
 # Driver Code 
 if __name__ == "__main__": 
