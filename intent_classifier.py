@@ -161,7 +161,7 @@ def get_final_output(pred, classes):
     
     for i in range(pred.shape[1]):
         print("%s has confidence = %s" % (classes[i], (predictions[i])))
-    return classes[0], predictions[0]    
+    #return classes[0], predictions[0]    
     
   
 text = "Can you help me?"

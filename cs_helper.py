@@ -127,10 +127,11 @@ def intent_classifier(input):
     assistant_speaks("What question would you like me to classify?")
     ans = get_audio()
     pred = predictions(str(ans))
-    category, percent = get_final_output(pred, unique_intent)
-
-    response = "Your question falls in the " + category + " category with a " + percent + "% confidence."
-    assistant_speaks(response)        
+    
+#    category, percent = get_final_output(pred, unique_intent)
+    get_final_output(pred, unique_intent)
+    #response = "Your question falls in the " + category + " category with a " + percent + "% confidence."
+    #assistant_speaks(response)        
   
 # Driver Code 
 if __name__ == "__main__": 
