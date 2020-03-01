@@ -1,0 +1,119 @@
+When do classes start?,faq.important_date
+When does the semester start?,faq.important_date
+What day does the semester start?,faq.important_date
+Which day does the semester start?,faq.important_date
+What date does the semester start on?,faq.important_date
+When does school start?,faq.important_date
+What day does school start?,faq.important_date
+What is the first day of class?,faq.important_date
+What day do classes start?,faq.important_date
+What day do classes end?,faq.important_date
+When do classes end?,faq.important_date
+When does the semester end?,faq.important_date
+When is the last day of classes?,faq.important_date
+What day does the semester end on?,faq.important_date
+When is spring break?,faq.important_date
+When is finals week?,faq.important_date
+When are finals?,faq.important_date
+What day do finals start?,faq.important_date
+When is the first day of finals week?,faq.important_date
+When is Thanksgiving break?,faq.important_date
+When is Fall break?,faq.important_date
+When is the upcoming holiday?,faq.important_date
+When does registration open?,faq.important_date
+When can I register for classes?,faq.important_date
+When is the last day to register for a class?,faq.important_date
+When is the last day to add a class?,faq.important_date
+With/without permission,faq.important_date
+When is the last day to drop a class?,faq.important_date
+When is graduation?,faq.important_date
+What day is graduation?,faq.important_date
+How many holidays/days off are there?,faq.important_date
+Do we have any breaks this semester?,faq.important_date
+Which days off do we have?,faq.important_date
+Where is X?,class.location
+Follow-up questions to figure out what they’re really asking,class.location
+What room is class X in?,class.location
+Location and time,class.location
+Where is my classroom located?,class.location
+Where is X located?,class.location
+Where is my office located?,class.location
+How do I get to X building?,class.location
+Where is X building?,class.location
+Where is professor X’s office?,class.location
+Where is Dr. X’s office?,class.location
+Where is room X? ,class.location
+Where is room X located?,class.location
+How do I get to office X?,class.location
+How do I get to X floor?,class.location
+Where is the Psychology department?,class.location
+Where is the Sociology department?,class.location
+Where can I find the elevator?,class.location
+Where is the elevator?,class.location
+Where can I find the restroom?,class.location
+Men/Women,class.location
+Where is the restroom?,class.location
+Where is the X’s restroom?,class.location
+Where is the lost and found?,class.location
+Where is the YWIC office?,class.location
+Where is my professor teaching?,class.location
+Where is the tutoring center for X?,class.location
+Where is the tutoring center?,class.location
+Where is the X tutoring center?,class.location
+What are professor X’s office hours?,class.professor
+What is professor X’s email?,class.professor
+Does X have any TA’s?,class.professor
+Is X involved with any research?,class.professor
+What type of research does X do?,class.professor
+I want to drop a class but I don’t know how,faq.class
+How do I drop a class?,faq.class
+I want to audit a class but I don’t know how,faq.class
+How do I audit a class?,faq.class
+I want to change my class to be an SU/Audit,faq.class
+When does class X start?,class.time
+When does X start?,class.time
+What time does my professor’s class end?,class.time
+What time does the office close?,department.time
+When does the office close?,department.time
+What are the office hours?,department.time
+How late is the department open until?,department.time
+When does the department close?,department.time
+Do you have a lost and found?,faq.department
+Is there a lost and found?,faq.department
+Can I speak with an advisor?,faq.department
+Can I speak with X?,faq.department
+Can I speak to Dr. Tran?,faq.department
+Is Dr. Tran available?,faq.department
+Could I talk to the department head?,faq.department
+Can I speak with the department head?,faq.department
+Who is in charge?,faq.department
+When are Dr. Tran’s office hours?,faq.department
+Can you reserve a room for me?,faq.professor
+Can I reserve a room?,faq.professor
+Can I reserve room X?,faq.professor
+Can you reserve room X for me?,faq.professor
+Can I reserve X?,faq.professor
+What do I do for a substitution?,faq.professor
+What do I do for a class substitution?,faq.professor
+Can I get a change of schedule form?,faq.student
+How do I apply to the graduate program?,faq.student
+What classes are offered next semester?,faq.department
+Where can I receive assistance for coding?,faq.student
+Where can I get help for coding?,faq.student
+Where can I find my degree plan?,faq.student
+Where can I get my degree plan?,faq.student
+Where do I find my degree plan?,faq.student
+Where do I get my degree plan?,faq.student
+How do I apply for my degree?,faq.student
+Is the candy free?,faq.department
+Can I have some candy?,faq.department
+Can I take some candy?,faq.student
+Where is the candy?,faq.student
+Who do I go to talk to about the amount of money on my paycheck being decreased?,faq.employee
+When will I receive my paycheck?,faq.employee
+When will I get my paycheck?,faq.employee
+Where do I go to receive my paycheck?,faq.employee
+Where do I go to get my paycheck?,faq.employee
+Can you process an override for a change of major?,faq.student
+Can a department head override a request for a change of schedule?,faq.student
+What do I do if I can’t attend the meeting?,faq.professor
