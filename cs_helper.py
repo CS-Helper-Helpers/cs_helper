@@ -187,6 +187,7 @@ if __name__ == "__main__":
             text = get_audio().lower() 
     
             if text == 0: 
+                assistant_speaks("Let me know if you need anything else") 
                 continue
             
             if "exit" in str(text) or "bye" in str(text) or "sleep" in str(text): 
