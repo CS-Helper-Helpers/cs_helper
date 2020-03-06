@@ -44,7 +44,7 @@ def assistant_speaks(output):
     os.remove(file) 
   
 def wakeWord(text):
-    WAKE_WORDS = ['ai have a question', 'hey cs helper', 'okay computer', 'hey i have a question'] 
+    WAKE_WORDS = ['ai have a question', 'hey c s helper', 'okay computer', 'hey i have a question'] 
     text = text.lower()  # Convert the text to all lower case words
   # Check to see if the users command/text contains a wake word    
     for phrase in WAKE_WORDS:
@@ -176,8 +176,16 @@ def intent_classifier(input):
 
   
 # Driver Code 
-if __name__ == "__main__":  
+if __name__ == "__main__":
+    text = False
+    
     while(1): 
+        if (text):
+            textInput = input('How may I help you?')
+            process_text(textInput)
+            text = False
+            continue
+
         text = listening()
         print(wakeWord(text))
 
