@@ -8,10 +8,10 @@ Created on Thu Feb 27 18:20:24 2020
 # https://towardsdatascience.com/a-brief-introduction-to-intent-classification-96fda6b1f557
 # Classifies into 21 intents
 
-
-import pymysql
+#import cryptography
+#import pymysql
 from sqlalchemy import create_engine
-import sqlalchemy
+#import sqlalchemy
 import numpy as np
 import pandas as pd
 from nltk.corpus import stopwords
