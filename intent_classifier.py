@@ -9,6 +9,9 @@ Created on Thu Feb 27 18:20:24 2020
 # Classifies into 21 intents
 
 
+import pymysql
+from sqlalchemy import create_engine
+import sqlalchemy
 import numpy as np
 import pandas as pd
 from nltk.corpus import stopwords
@@ -26,7 +29,13 @@ from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropo
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 def load_dataset(filename):
-    df = pd.read_csv(filename, encoding = "latin1", names = ["Sentence", "Intent"])
+    #df = pd.read_csv(filename, encoding = "latin1", names = ["Sentence", "Intent"])
+    user = "cshelperbot"
+    pw = "/*Q+:esb}y~KQ/FLt%_wb(1/T0wI-K&%jeZh<efyC)J#LhMK.a"
+    uri = "mysql+pymysql://" + user + ":" + pw + "@localhost/csdepartmentbot"
+    engine = create_engine(uri)
+    query = "select train.question as Sentence, concat(cat.primarycategory, '.', cat.secondarycategory) as Intent from trainingquestions as train, categories as cat where train.category = cat.categoryid"
+    df = pd.read_sql_query(query, con = engine)
 
     print(df.head())
     intent = df["Intent"]
