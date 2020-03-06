@@ -1,3 +1,5 @@
+create database if not exists csdepartmentbot;
+use csdepartmentbot;
 drop table if exists VariableCategories;
 drop table if exists AllVariables;
 drop table if exists TrainingQuestions;

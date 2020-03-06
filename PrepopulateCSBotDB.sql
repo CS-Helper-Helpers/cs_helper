@@ -1,3 +1,4 @@
+use csdepartmentbot;
 insert into Categories (primarycategory, secondarycategory) values ("faq", "important_date"), ("class", "location"), ("class", "professor"), 
 ("faq", "class"), ("class", "time"), ("department", "time"), ("faq", "department"), ("faq", "professor"), ("faq", "student"), ("faq", "employee");
 set @fid = (select categoryid from Categories where primarycategory = "faq" and secondarycategory = "important_date");
