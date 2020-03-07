@@ -34,7 +34,7 @@ def load_dataset(filename):
     pw = "/*Q+:esb}y~KQ/FLt%_wb(1/T0wI-K&%jeZh<efyC)J#LhMK.a"
     uri = "mysql+pymysql://" + user + ":" + pw + "@localhost/csdepartmentbot"
     engine = create_engine(uri)
-    query = "select train.question as Sentence, concat(cat.primarycategory, '.', cat.secondarycategory) as Intent from trainingquestions as train, categories as cat where train.category = cat.categoryid"
+    query = "select question as Sentence, cat as Intent from trainingquestions"
     df = pd.read_sql_query(query, con = engine)
 
     print(df.head())
