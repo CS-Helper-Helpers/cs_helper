@@ -33,3 +33,12 @@ insert into TrainingQuestions (question, cat) values ("When do classes start?", 
 ("Can I take some candy?", "faq.student"), ("Where is the candy?", "faq.student"), ("Who do I go to talk to about the amount of money on my paycheck being decreased?", "faq.employee"), 
 ("When will I receive my paycheck?", "faq.employee"), ("When will I get my paycheck?", "faq.employee"), ("Where do I go to receive my paycheck?", "faq.employee"), ("Where do I go to get my paycheck?", "faq.employee"), 
 ("Can you process an override for a change of major?", "faq.student"), ("Can a department head override a request for a change of schedule?", "faq.student"), ("What do I do if I can’t attend the meeting?", "faq.professor");
+insert into AllVariables(variable) values ("Thursday January 16, 2020"), ("Faculty Report"), ("Faculty Report Due"), ("Wednesday January 22, 2020"), ("Instruction Begins"), ("Instruction Starts"), ("Classes Begin"), ("Classes Start");
+insert into InputVariables(var, incat) values ("Faculty Report", "faq.important_date"), ("Faculty Report Due", "faq.important_date"), ("Instruction Begins", "faq.important_date"), ("Instruction Starts", "faq.important_date"), ("Classes Begin", "faq.important_date"), ("Classes Start", "faq.important_date");
+set @fr = (select inputid from InputVariables where var = "Faculty Report");
+set @frd = (select inputid from InputVariables where var = "Faculty Report Due");
+set @ib = (select inputid from InputVariables where var = "Instruction Begins");
+set @is = (select inputid from InputVariables where var = "Instruction Starts");
+set @cb = (select inputid from InputVariables where var = "Classes Begin");
+set @cs = (select inputid from InputVariables where var = "Classes Start");
+insert into OutputVariables(outvar, inid) values ("Thursday January 16, 2020", @fr), ("Thursday January 16, 2020", @frd), ("Wednesday January 22, 2020", @ib), ("Wednesday January 22, 2020", @is), ("Wednesday January 22, 2020", @cb), ("Wednesday January 22, 2020", @cs);
