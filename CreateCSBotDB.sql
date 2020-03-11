@@ -1,5 +1,5 @@
-create database if not exists csdepartmentbot;
-use csdepartmentbot;
+create database if not exists cshelper;
+use cshelper;
 drop table if exists Users;
 drop table if exists UserRoles;
 drop table if exists OutputVariables;
@@ -9,8 +9,6 @@ drop table if exists TrainingQuestions;
 drop table if exists ExternalDBImports;
 drop table if exists ExternalDBConnections;
 drop table if exists Categories;
-create user if not exists 'cshelperbot'@'localhost' identified by '/*Q+:esb}y~KQ/FLt%_wb(1/T0wI-K&%jeZh<efyC)J#LhMK.a';
-grant select, insert, update, delete on csdepartmentbot.* to 'cshelperbot'@'localhost';
 create table Categories (
   category varchar(256),
   primary key (category)

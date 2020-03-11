@@ -1,13 +1,47 @@
-use csdepartmentbot;
-insert into Categories values ("important_date.class_actions"), ("important_date.semester_start"), ("important_date.semester_end"), 
-("important_date.break"), ("important_date.finals"), ("important_date.registration"), ("important_date.add_class"),
-("important_date.drop_class"), ("important_date.graduation"), ("location.room"), ("professor.office_hours"), ("location.lost_and_found"), ("professor.contact"),
-("professor.general_information"), ("class.assistant"), ("class.professor"), ("class.time"), ("class.actions"), ("cs_department.lost_and_found"),
-("cs_department.time"), ("cs_department.department_head"), ("cs_department.advisor"), ("cs_department.employee"), ("professor.actions"), ("student.actions"),
-("class.schedule"), ("student.tutor"), ("student.degree"), ("cs_department.candy"), ("calendar.meeting"), ("employee.pay");
-insert into UserRoles values ("administrator"), ("developer");
-insert into Users (username, userrole) values ("danm", "developer"), ("ksweebe", "developer"), ("amart16", "developer"), ("czbaker", "developer"), ("stran", "administrator");
-insert into TrainingQuestions (question, cat) values ("When do classes start?", "important_date.class_actions"), 
+use cshelper;
+insert into Categories values
+("important_date.class_actions"),
+("important_date.semester_start"),
+("important_date.semester_end"), 
+("important_date.break"),
+("important_date.finals"),
+("important_date.registration"),
+("important_date.add_class"),
+("important_date.drop_class"),
+("important_date.graduation"),
+("location.room"),
+("professor.office_hours"),
+("location.lost_and_found"),
+("professor.contact"),
+("professor.general_information"),
+("class.assistant"),
+("class.professor"),
+("class.time"),
+("class.actions"),
+("cs_department.lost_and_found"),
+("cs_department.time"),
+("cs_department.department_head"),
+("cs_department.advisor"),
+("cs_department.employee"),
+("professor.actions"),
+("student.actions"),
+("class.schedule"),
+("student.tutor"),
+("student.degree"),
+("cs_department.candy"),
+("calendar.meeting"),
+("employee.pay");
+insert into UserRoles values
+("administrator"),
+("developer");
+insert into Users (username, userrole) values
+("danm", "developer"),
+("ksweebe", "developer"),
+("amart16", "developer"),
+("czbaker", "developer"),
+("stran", "administrator");
+insert into TrainingQuestions (question, cat) values
+("When do classes start?", "important_date.class_actions"), 
 ("When does the semester start?", "important_date.semester_start"), 
 ("What day does the semester start?", "important_date.semester_start"), 
 ("I want to know when the semester starts.", "important_date.semester_start"), 
@@ -142,8 +176,27 @@ insert into TrainingQuestions (question, cat) values ("When do classes start?", 
 ("Can a department head override a request for a change of schedule?", "student.actions"), 
 ("What do I do if I can't attend the meeting?", "calendar.meeting");
 insert into AllVariables (variable) values ("(all)");
-insert into InputVariables values (0, "(all)", "important_date.class_actions"), (1, "(all)", "important_date.semester_start"), (2, "(all)", "important_date.semester_end"), 
-(3, "(all)", "important_date.break"), (4, "(all)", "important_date.finals"), (5, "(all)", "important_date.registration"), (6, "(all)", "important_date.add_class"),
-(7, "(all)", "important_date.drop_class"), (8, "(all)", "important_date.graduation");
-insert into AllVariables (variable) values ("Wednesday, January 22, 2020"), ("Friday, May 15, 2020"), ("Monday, March 23 to Friday, March 27, 2020"), ("Monday, May 11 to Friday, May 15, 2020"), ("Thursday, April 9, 2020"), ("Friday, May 15 and Saturday, May 16, 2020");
-insert into OutputVariables values ("Wednesday, January 22, 2020", 1), ("Friday, May 15, 2020", 2), ("Monday, March 23 to Friday, March 27, 2020", 3), ("Monday, May 11 to Friday, May 15, 2020", 4), ("Thursday, April 9, 2020", 5), ("Friday, May 15 and Saturday, May 16, 2020", 8);
+insert into InputVariables values
+(1, "(all)", "important_date.class_actions"),
+(2, "(all)", "important_date.semester_start"),
+(3, "(all)", "important_date.semester_end"),
+(4, "(all)", "important_date.break"),
+(5, "(all)", "important_date.finals"),
+(6, "(all)", "important_date.registration"),
+(7, "(all)", "important_date.add_class"),
+(8, "(all)", "important_date.drop_class"),
+(9, "(all)", "important_date.graduation");
+insert into AllVariables (variable) values
+("Wednesday, January 22, 2020"),
+("Friday, May 15, 2020"),
+("Monday, March 23 to Friday, March 27, 2020"),
+("Monday, May 11 to Friday, May 15, 2020"),
+("Thursday, April 9, 2020"),
+("Friday, May 15 and Saturday, May 16, 2020");
+insert into OutputVariables values
+("Wednesday, January 22, 2020", 2),
+("Friday, May 15, 2020", 3),
+("Monday, March 23 to Friday, March 27, 2020", 4),
+("Monday, May 11 to Friday, May 15, 2020", 5),
+("Thursday, April 9, 2020", 6),
+("Friday, May 15 and Saturday, May 16, 2020", 9);
