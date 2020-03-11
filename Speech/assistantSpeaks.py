@@ -23,7 +23,7 @@ def assistant_speaks(output):
     num += 1    # Increase counter for successive audio file creation
 
     # Debug
-    print("Person : ", output) 
+    print("CS Helper : ", output) 
   
     # Create gTTS instance 
     toSpeak = gTTS(text = output, lang ='en', slow = False)
