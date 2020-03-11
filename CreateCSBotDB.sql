@@ -40,9 +40,9 @@ create table TrainingQuestions (
 );
 create table AllVariables (
   variable varchar(128),
-  fromDB bigint unsigned,
+  fromDB bigint unsigned default null,
   primary key (variable),
-  foreign key (fromDB) references ExternalDBImports(externimportid) on update cascade on delete cascade
+  foreign key (fromDB) references ExternalDBImports(externimportid) on update set null on delete set null
 );
 create table InputVariables (
   inputid serial,

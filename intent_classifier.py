@@ -41,10 +41,14 @@ def load_dataset(filename):
     intent = df["Intent"]
     unique_intent = list(set(intent))
     sentences = list(df["Sentence"])
-  
-    return (intent, unique_intent, sentences)
 
-intent, unique_intent, sentences = load_dataset("questions_categories.csv")
+    query = "select count(*) from categories"
+    df = pd.read_sql_query(query, con = engine)
+    catlength = df.loc[0].at["count(*)"]
+  
+    return (intent, unique_intent, sentences, catlength)
+
+intent, unique_intent, sentences, catlength = load_dataset("questions_categories.csv")
 
 nltk.download("stopwords")
 nltk.download("punkt")
@@ -124,7 +128,7 @@ def create_model(vocab_size, max_length):
 #   model.add(LSTM(128))
     model.add(Dense(32, activation = "relu"))
     model.add(Dropout(0.5))
-    model.add(Dense(10, activation = "softmax"))
+    model.add(Dense(catlength, activation = "softmax"))
   
     return model
 
@@ -134,9 +138,9 @@ model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = [
 model.summary()
 
 filename = 'model.h5'
-checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=0, save_best_only=True, mode='min')
 
-hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint])
+hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
 
 model = load_model("model.h5")
 
@@ -166,10 +170,32 @@ def get_final_output(pred, classes):
     ids = np.argsort(-predictions)
     classes = classes[ids]
     predictions = -np.sort(-predictions)
- 
+
+    max = predictions[0]
+    count = 0
     for i in range(pred.shape[1]):
-        print("%s has confidence = %s" % (classes[i], (predictions[i])))
-  
-text = "Can you help me?"
+        if (predictions[i] > max * 0.9):
+            count += 1
+    if (count > 1):
+        print("Uncertain result:")
+        for i in range(pred.shape[1]):
+            if (predictions[i] > max * 0.9):
+                print("%s has confidence = %s" % (classes[i], (predictions[i])))
+    else:
+        user = "cshelperbot"
+        pw = "/*Q+:esb}y~KQ/FLt%_wb(1/T0wI-K&%jeZh<efyC)J#LhMK.a"
+        uri = "mysql+pymysql://" + user + ":" + pw + "@localhost/csdepartmentbot"
+        engine = create_engine(uri)
+        print("The result is:")
+        print("%s with confidence = %s" % (classes[0], (predictions[0])))
+        query = "select outvar from outputvariables where inid in (select inputid from inputvariables where incat = '" + classes[0] + "')"
+        df = pd.read_sql_query(query, con = engine)
+        if (df.size == 1):
+            print(df.loc[0].at["outvar"])
+
+    
+
+
+text = "When does the semester end?"
 pred = predictions(text)
 get_final_output(pred, unique_intent)                                  
