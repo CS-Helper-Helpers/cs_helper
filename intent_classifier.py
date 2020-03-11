@@ -46,7 +46,7 @@ def load_dataset(filename):
   
     return (intent, unique_intent, sentences, catlength)
 
-intent, unique_intent, sentences = load_dataset("intents_and_categories.csv")
+intent, unique_intent, sentences, catlength = load_dataset("intents_and_categories.csv")
 
 nltk.download("stopwords")
 nltk.download("punkt")
