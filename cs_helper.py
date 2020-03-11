@@ -3,56 +3,17 @@ import speech_recognition as sr
 import playsound # to play saved mp3 file 
 from gtts import gTTS # google text to speech 
 import os # to save/open files 
-from selenium import webdriver # to control browser operations 
 from tensorflow.keras.models import Sequential, load_model
 
 from intent_classifier import predictions
 from intent_classifier import get_final_output
 from intent_classifier import unique_intent
 
-num = 1
-"""num: used to rename every audio file to remove ambiguity  
-"""
+from Speech.assistantSpeaks import assistant_speaks
+from Speech.listening import listening
+from Speech.wakeWord import wake_word
+from Speech.getAudio import get_audio
 
-def assistant_speaks(output):
-    """Speaking function to output audio file
-
-    Args:
-        output (IDK TYPE): The first parameter.
-
-    Returns:
-        None
-        
-    .. _PEP 484:
-        https://www.python.org/dev/peps/pep-0484/
-
-    """    
-    global num 
-    num += 1    # Increase counter for successive audio file creation
-
-    # Debug
-    print("Person : ", output) 
-  
-    # Create gTTS instance 
-    toSpeak = gTTS(text = output, lang ='en', slow = False)
-
-    # Save the audio file given by Google Text to Speech
-    file = str(num)+".mp3"  
-    toSpeak.save(file) 
-      
-    # Playsound package is used to play the same file. 
-    playsound.playsound(file, True)  
-    os.remove(file) 
-  
-def wakeWord(text):
-    WAKE_WORDS = ['ai have a question', 'hey c s helper', 'okay computer', 'hey i have a question'] 
-    text = text.lower()  # Convert the text to all lower case words
-  # Check to see if the users command/text contains a wake word    
-    for phrase in WAKE_WORDS:
-        if phrase in text:
-            return True
-  # If the wake word was not found return false
-    return False
 
 def textInput(text):
     WAKE_WORDS = ['text input'] 
@@ -63,71 +24,7 @@ def textInput(text):
             return True
   # If the wake word was not found return false
     return False
-  
-def get_audio(): 
-    """get_audio gets the audio
 
-
-    Returns:
-
-    Raises:
-        AttributeError: The ``Raises`` section is a list of all exceptions
-            that are relevant to the interface.
-        ValueError: If `param2` is equal to `param1`.
-
-    """
-    # Declare speech recognition recognizer object  
-    rObject = sr.Recognizer() 
-    audio = '' 
-  
-    with sr.Microphone() as source: 
-        print("Speak...") 
-          
-        # recording the audio using speech recognition 
-        audio = rObject.listen(source, phrase_time_limit = 5)  
-    print("Stop.") # limit 5 secs 
-  
-    try: 
-  
-        text = rObject.recognize_google(audio, language ='en-US') 
-        print("You : ", text) 
-        return text 
-  
-    except: 
-  
-        assistant_speaks("Could not understand your audio, PLease try again !") 
-        return ''
-
-def listening(): 
-    """get_audio gets the audio
-
-
-    Returns:
-
-    Raises:
-        AttributeError: The ``Raises`` section is a list of all exceptions
-            that are relevant to the interface.
-        ValueError: If `param2` is equal to `param1`.
-
-    """
-    # Declare speech recognition recognizer object  
-    rObject = sr.Recognizer() 
-    audio = '' 
-  
-    with sr.Microphone() as source: 
-        print("Listening...") 
-          
-        # recording the audio using speech recognition 
-        audio = rObject.listen(source, phrase_time_limit = 5)  
-  
-    try: 
-  
-        text = rObject.recognize_google(audio, language ='en-US') 
-        print("You : ", text) 
-        return text 
-  
-    except: 
-        return ''
 
 def process_text(input):
     try:
@@ -185,9 +82,9 @@ if __name__ == "__main__":
 
         text = listening()
         textFlag = textInput()
-        print(wakeWord(text))
+        print(wake_word(text))
 
-        if (wakeWord(text) == True):
+        if (wake_word(text) == True):
   
             assistant_speaks("What can i do for you?") 
             text = get_audio().lower() 
