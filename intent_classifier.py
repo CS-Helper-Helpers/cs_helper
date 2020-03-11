@@ -12,6 +12,7 @@ Created on Thu Feb 27 18:20:24 2020
 #import pymysql
 from sqlalchemy import create_engine
 #import sqlalchemy
+import Database.engine as db
 import numpy as np
 import pandas as pd
 from nltk.corpus import stopwords
@@ -30,11 +31,8 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 def load_dataset(filename):
     #df = pd.read_csv(filename, encoding = "latin1", names = ["Sentence", "Intent"])
-    user = "cshelperbot"
-    pw = "/*Q+:esb}y~KQ/FLt%_wb(1/T0wI-K&%jeZh<efyC)J#LhMK.a"
-    uri = "mysql+pymysql://" + user + ":" + pw + "@localhost/csdepartmentbot"
-    engine = create_engine(uri)
-    query = "select question as Sentence, cat as Intent from trainingquestions"
+    engine = db.getBotDBEngine()
+    query = "select question as Sentence, cat as Intent from TrainingQuestions"
     df = pd.read_sql_query(query, con = engine)
 
     print(df.head())
@@ -42,7 +40,7 @@ def load_dataset(filename):
     unique_intent = list(set(intent))
     sentences = list(df["Sentence"])
 
-    query = "select count(*) from categories"
+    query = "select count(*) from Categories"
     df = pd.read_sql_query(query, con = engine)
     catlength = df.loc[0].at["count(*)"]
   
@@ -182,13 +180,10 @@ def get_final_output(pred, classes):
             if (predictions[i] > max * 0.9):
                 print("%s has confidence = %s" % (classes[i], (predictions[i])))
     else:
-        user = "cshelperbot"
-        pw = "/*Q+:esb}y~KQ/FLt%_wb(1/T0wI-K&%jeZh<efyC)J#LhMK.a"
-        uri = "mysql+pymysql://" + user + ":" + pw + "@localhost/csdepartmentbot"
-        engine = create_engine(uri)
+        engine = db.getBotDBEngine()
         print("The result is:")
         print("%s with confidence = %s" % (classes[0], (predictions[0])))
-        query = "select outvar from outputvariables where inid in (select inputid from inputvariables where incat = '" + classes[0] + "')"
+        query = "select outvar from OutputVariables where inid in (select inputid from InputVariables where incat = '" + classes[0] + "')"
         df = pd.read_sql_query(query, con = engine)
         if (df.size == 1):
             print(df.loc[0].at["outvar"])

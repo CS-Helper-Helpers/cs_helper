@@ -175,7 +175,8 @@ insert into TrainingQuestions (question, cat) values
 ("Can you process an override for a change of major?", "student.actions"), 
 ("Can a department head override a request for a change of schedule?", "student.actions"), 
 ("What do I do if I can't attend the meeting?", "calendar.meeting");
-insert into AllVariables (variable) values ("(all)");
+insert into AllVariables (variable) values
+("(all)");
 insert into InputVariables values
 (1, "(all)", "important_date.class_actions"),
 (2, "(all)", "important_date.semester_start"),
