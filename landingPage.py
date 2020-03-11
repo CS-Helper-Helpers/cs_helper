@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from cs_helper import *
+
 root= tk.Tk()
 
 canvas1 = tk.Canvas(root, width = 400, height = 300)
@@ -18,4 +20,29 @@ def getText ():
 button1 = tk.Button(text='Submit', command=getText)
 canvas1.create_window(200, 180, window=button1)
 
+text = False
+    
+while(1): 
+    if (text):
+        textInput = input('How may I help you?')
+        process_text(textInput)
+        text = False
+        continue
+    text = listening()
+    print(wakeWord(text))
+    if (wakeWord(text) == True):
+
+        assistant_speaks("What can i do for you?") 
+        text = get_audio().lower() 
+
+        if text == 0: 
+            assistant_speaks("Let me know if you need anything else") 
+            continue
+        
+        if "exit" in str(text) or "bye" in str(text) or "sleep" in str(text): 
+            assistant_speaks("Ok bye") 
+            break
+        
+        # calling process text to process the query 
+        process_text(text)
 root.mainloop()

@@ -5,6 +5,7 @@ from gtts import gTTS # google text to speech
 import os # to save/open files 
 from selenium import webdriver # to control browser operations 
 from tensorflow.keras.models import Sequential, load_model
+
 from intent_classifier import predictions
 from intent_classifier import get_final_output
 from intent_classifier import unique_intent
@@ -45,6 +46,16 @@ def assistant_speaks(output):
   
 def wakeWord(text):
     WAKE_WORDS = ['ai have a question', 'hey c s helper', 'okay computer', 'hey i have a question'] 
+    text = text.lower()  # Convert the text to all lower case words
+  # Check to see if the users command/text contains a wake word    
+    for phrase in WAKE_WORDS:
+        if phrase in text:
+            return True
+  # If the wake word was not found return false
+    return False
+
+def textInput(text):
+    WAKE_WORDS = ['text input'] 
     text = text.lower()  # Convert the text to all lower case words
   # Check to see if the users command/text contains a wake word    
     for phrase in WAKE_WORDS:
@@ -120,12 +131,7 @@ def listening():
 
 def process_text(input):
     try:
-        if 'search' in input or 'play' in input:
-            # a basic web crawler using selenium
-            search_web(input)
-            return
-
-        elif "who are you" in input or "define yourself" in input:
+        if "who are you" in input or "define yourself" in input:
             speak = '''I am CS Helper. Virtual Office Assistant.
             I am here to answer your questions.'''
             assistant_speaks(speak)
@@ -136,22 +142,13 @@ def process_text(input):
             assistant_speaks(speak)
             return
 
-            return
-
-
         elif 'open intent classifier' in input:
 
             intent_classifier(input.lower())
             return
 
         else:
-
-            assistant_speaks("I can search the web for you. Do you want to continue?")
-            ans = get_audio()
-            if 'yes' in str(ans) or 'yeah'in str(ans):
-                search_web(input)
-            else:
-                return
+            return
     except :
 
         assistant_speaks("I don't understand, Would you like to talk to a person?")
@@ -177,16 +174,17 @@ def intent_classifier(input):
   
 # Driver Code 
 if __name__ == "__main__":
-    text = False
+    textFlag = False
     
     while(1): 
-        if (text):
+        if (textFlag):
             textInput = input('How may I help you?')
             process_text(textInput)
-            text = False
+            textFlag = False
             continue
 
         text = listening()
+        textFlag = textInput()
         print(wakeWord(text))
 
         if (wakeWord(text) == True):
