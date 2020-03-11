@@ -31,8 +31,14 @@ What day is graduation?,faq.important_date
 How many holidays/days off are there?,faq.important_date
 Do we have any breaks this semester?,faq.important_date
 Which days off do we have?,faq.important_date
-Where is X?,class.location
-Follow-up questions to figure out what they’re really asking,class.location
+Where is the CS Lab?,lab.location
+How do I get to the CS Lab?,lab.location
+Where is the lab?,lab.location
+How do I get to the lab?,lab.location
+Where is 118?,lab.location
+Where is room 118?,lab.location
+Where is 112?,class.location
+Where is room 112?,class.location
 What room is class X in?,class.location
 Location and time,class.location
 Where is my classroom located?,class.location
