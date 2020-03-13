@@ -136,6 +136,6 @@ dmypy.json
 
 .mp3
 .h5
-Database/info.py
+src/Database/info.py
 *.h5
 *.tf
