@@ -7,5 +7,3 @@ def wake_word(text):
             return True
   # If the wake word was not found return false
     return False
-
-print(wake_word('okay computer'))

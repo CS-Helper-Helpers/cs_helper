@@ -34,4 +34,4 @@ def assistant_speaks(output):
       
     # Playsound package is used to play the same file. 
     playsound.playsound(file, True)  
-    os.remove(file) 
+    os.remove(file)

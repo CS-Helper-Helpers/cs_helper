@@ -31,5 +31,3 @@ def listening():
   
     except: 
         return ''
-
-listening()

@@ -1,5 +1,5 @@
-import assistant_speaks
-import get_audio
+from .assistantSpeaks import assistant_speaks
+from .getAudio import get_audio
 
 def process_text(input):
     try:
@@ -28,5 +28,3 @@ def process_text(input):
 
         if 'yes' in str(ans) or 'yeah' in str(ans):
             assistant_speaks("An office assistant will be in at ...")
-
-process_text("who made you?")
