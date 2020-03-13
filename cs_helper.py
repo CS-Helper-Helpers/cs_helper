@@ -43,7 +43,15 @@ def assistant_speaks(output):
     playsound.playsound(file, True)  
     os.remove(file) 
   
-  
+def wakeWord(text):
+    WAKE_WORDS = ['ai have a question', 'hey cs helper', 'okay computer', 'hey i have a question'] 
+    text = text.lower()  # Convert the text to all lower case words
+  # Check to see if the users command/text contains a wake word    
+    for phrase in WAKE_WORDS:
+        if phrase in text:
+            return True
+  # If the wake word was not found return false
+    return False
   
 def get_audio(): 
     """get_audio gets the audio
@@ -77,7 +85,38 @@ def get_audio():
     except: 
   
         assistant_speaks("Could not understand your audio, PLease try again !") 
-        return 0
+        return ''
+
+def listening(): 
+    """get_audio gets the audio
+
+
+    Returns:
+
+    Raises:
+        AttributeError: The ``Raises`` section is a list of all exceptions
+            that are relevant to the interface.
+        ValueError: If `param2` is equal to `param1`.
+
+    """
+    # Declare speech recognition recognizer object  
+    rObject = sr.Recognizer() 
+    audio = '' 
+  
+    with sr.Microphone() as source: 
+        print("Listening...") 
+          
+        # recording the audio using speech recognition 
+        audio = rObject.listen(source, phrase_time_limit = 5)  
+  
+    try: 
+  
+        text = rObject.recognize_google(audio, language ='en-US') 
+        print("You : ", text) 
+        return text 
+  
+    except: 
+        return ''
 
 def process_text(input):
     try:
@@ -122,35 +161,38 @@ def process_text(input):
             assistant_speaks("An office assistant will be in at ...")
             
 def intent_classifier(input):
-    model = load_model("model.h5")
-    assistant_speaks("Opening the intent classifier.")
-    assistant_speaks("What question would you like me to classify?")
-    ans = get_audio()
-    pred = predictions(str(ans))
-    
-#    category, percent = get_final_output(pred, unique_intent)
-    get_final_output(pred, unique_intent)
-    #response = "Your question falls in the " + category + " category with a " + percent + "% confidence."
-    #assistant_speaks(response)        
+    if "intent" in input or "classifier" in input:
+        assistant_speaks("Opening the intent classifier.")
+        model = load_model("model.h5")
+        assistant_speaks("What question would you like me to classify?")
+        ans = get_audio()
+        question = str(ans)
+        pred = predictions(question)
+        get_final_output(pred, unique_intent)
+        
+    else:
+        assistant_speaks("Application not available.")
+        return
+
   
 # Driver Code 
-if __name__ == "__main__": 
-    assistant_speaks("What's your name, Human?") 
-    name ='Human'
-    name = get_audio() 
-    assistant_speaks("Hello, " + name + '.') 
-      
+if __name__ == "__main__":  
     while(1): 
+        text = listening()
+        print(wakeWord(text))
+
+        if (wakeWord(text) == True):
   
-        assistant_speaks("What can i do for you?") 
-        text = get_audio().lower() 
-  
-        if text == 0: 
-            continue
-  
-        if "exit" in str(text) or "bye" in str(text) or "sleep" in str(text): 
-            assistant_speaks("Ok bye, "+ name+'.') 
-            break
-  
-        # calling process text to process the query 
-        process_text(text) 
+            assistant_speaks("What can i do for you?") 
+            text = get_audio().lower() 
+    
+            if text == 0: 
+                assistant_speaks("Let me know if you need anything else") 
+                continue
+            
+            if "exit" in str(text) or "bye" in str(text) or "sleep" in str(text): 
+                assistant_speaks("Ok bye") 
+                break
+            
+            # calling process text to process the query 
+            process_text(text) 
