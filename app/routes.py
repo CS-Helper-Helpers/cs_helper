@@ -26,12 +26,30 @@ def voice():
     resp = VoiceResponse()
     
     resp.say("You have reached the Computer Science Department Office.")
+    resp.say("At the tone, ask a question. Then press pound.")
     
-    resp.play('https://demo.twilio.com/docs/classic.mp3')
+    resp.record(finish_on_key='#')
+    #resp.play('https://demo.twilio.com/docs/classic.mp3')
     
     resp.hangup() 
 
     return str(resp)
+
+@app.route("/record", methods=['GET', 'POST'])
+def record():
+    """Returns TwiML which prompts the caller to record a message"""
+    # Start our TwiML response
+    response = VoiceResponse()
+
+    # Use <Say> to give the caller some instructions
+    response.say('Hello. Please leave a message after the beep.')
+
+    # Use <Record> to record the caller's message
+    response.record(timeout=10, transcribe=True)
+
+    print(response)
+
+    return str(response)
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8080))
