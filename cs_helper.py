@@ -7,7 +7,7 @@ from selenium import webdriver # to control browser operations
 from tensorflow.keras.models import Sequential, load_model
 from intent_classifier import predictions
 from intent_classifier import get_final_output
-from intent_classifier import unique_intent
+from intent_classifier import load_dataset
 
 num = 1
 """num: used to rename every audio file to remove ambiguity  
@@ -136,8 +136,6 @@ def process_text(input):
             assistant_speaks(speak)
             return
 
-            return
-
 
         elif 'open intent classifier' in input:
 
@@ -167,8 +165,9 @@ def intent_classifier(input):
         assistant_speaks("What question would you like me to classify?")
         ans = get_audio()
         question = str(ans)
-        pred = predictions(question)
-        get_final_output(pred, unique_intent)
+        pred = predictions(question, model)
+        answer = get_final_output(pred, load_dataset("uniqueintents"))
+        assistant_speaks(answer)
         
     else:
         assistant_speaks("Application not available.")

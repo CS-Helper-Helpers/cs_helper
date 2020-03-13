@@ -209,18 +209,26 @@ def get_final_output(pred, classes):
             print("The result is:")
             print("%s with confidence = %s" % (classes[0], (predictions[0])))
             print(df.loc[0].at["outvar"])
+            return df.loc[0].at["outvar"]
         elif (df.size > 1):
             print("Unable to get unique result.")
             print("%s with confidence = %s" % (classes[0], (predictions[0])))
         else:
             print("Unable to find an answer for this question.")
             print("%s with confidence = %s" % (classes[0], (predictions[0])))
+            
+    return ""
 
 def answer(text):
     model = load_model("model.h5")
     pred = predictions(text, model)
     unique_intent = load_dataset("uniqueintents")
     get_final_output(pred, unique_intent)
+    
 
-train_model()
-answer("When is the end of the semester?")
+#train_model()
+#answer("When is the end of the semester?")
+answer("When is the start of the semester?")
+#answer("When do classes start?")
+#answer("When do classes end?")
+#answer("When are finals?")
