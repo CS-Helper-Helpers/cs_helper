@@ -15,14 +15,13 @@ def process_text(input):
             return
 
         elif 'open intent classifier' in input:
-
             intent_classifier(input.lower())
             return
 
         else:
             return
+            
     except :
-
         assistant_speaks("I don't understand, Would you like to talk to a person?")
         ans = get_audio()
 
