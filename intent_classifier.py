@@ -224,11 +224,3 @@ def answer(text):
     pred = predictions(text, model)
     unique_intent = load_dataset("uniqueintents")
     get_final_output(pred, unique_intent)
-    
-
-#train_model()
-#answer("When is the end of the semester?")
-answer("When is the start of the semester?")
-#answer("When do classes start?")
-#answer("When do classes end?")
-#answer("When are finals?")
