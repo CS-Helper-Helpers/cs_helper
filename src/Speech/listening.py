@@ -21,7 +21,7 @@ def listening():
         print("Listening...") 
           
         # recording the audio using speech recognition 
-        audio = rObject.listen(source, phrase_time_limit = 5)  
+        audio = rObject.listen(source, phrase_time_limit = 2)  
   
     try: 
   
