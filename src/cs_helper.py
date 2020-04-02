@@ -59,4 +59,4 @@ if __name__ == "__main__":
                 break
             
             # calling process text to process the query 
-            process_text(text) 
+            process_text(text)
