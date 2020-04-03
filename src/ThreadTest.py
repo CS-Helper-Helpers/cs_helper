@@ -1,14 +1,13 @@
 import threading
 from Speech.getAudio import get_audio
 from Speech.assistantSpeaks import assistant_speaks
-from Speech.listening import listening
 from Speech.wakeWord import wake_word
 from Speech.getAudio import get_audio
 from ProcessInput.processInput import process_text
 
 def speechfunc():
     while(1): 
-        text = listening()
+        text = get_audio().lower()
         # print(wake_word(text))
         if (wake_word(text) == True):
             assistant_speaks("What can i do for you?") 
