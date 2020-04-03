@@ -1,0 +1,28 @@
+Setup for Twilio:
+
+1. Set up ngrok (might use something else later)
+  Make sure ngrok.exe is in the Phone folder.
+  Run the following command: ngrok authtoken 1YGyhiurStHds1fX7Ccnne7Mjog_6c26eJqUCmyChaootCqNy
+  It should output Authtoken saved to configuration file: C:\pathname
+
+2. Set up Twilio
+  Go into the app folder.
+  Open up a terminal in this folder.
+  Run the following commands:
+    node -v
+    npm install twilio-cli -g
+    twilio login
+
+  This will prompt you to input the Account SID and Auth token for the Twilio
+  account. It may ask you to provide a friendly name, I used CS Helper. These
+  can be found in the dashboard of our Twilio account, the login information
+  can be found in Slack.
+
+3. Running a subdomain on ngrok
+  The server must be running before testing. In order to do this, navigate out
+  of the app folder back into the Phone folder.
+
+  Run the following command:
+    ngrok http -hostname=cshelper.ngrok.io 8080
+
+  This will start the subdomain that I have reserved on port 8080.
