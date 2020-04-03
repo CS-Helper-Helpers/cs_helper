@@ -18,10 +18,12 @@ def get_audio():
     audio = '' 
   
     with sr.Microphone() as source: 
+        rObject.adjust_for_ambient_noise(source) 
         print("Speak...") 
           
         # recording the audio using speech recognition 
-        audio = rObject.listen(source, phrase_time_limit = 5)  
+        # audio = rObject.listen(source, phrase_time_limit = 5)  
+        audio = rObject.listen(source)  
     print("Stop.") # limit 5 secs 
   
     try: 

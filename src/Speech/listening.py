@@ -18,10 +18,13 @@ def listening():
     audio = '' 
   
     with sr.Microphone() as source: 
+        rObject.adjust_for_ambient_noise(source) 
         print("Listening...") 
           
         # recording the audio using speech recognition 
-        audio = rObject.listen(source, phrase_time_limit = 2)  
+        # audio = rObject.listen(source, phrase_time_limit = 2)
+        audio = rObject.listen(source)  
+          
   
     try: 
   

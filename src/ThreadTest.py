@@ -9,7 +9,7 @@ from ProcessInput.processInput import process_text
 def speechfunc():
     while(1): 
         text = listening()
-        print(wake_word(text))
+        # print(wake_word(text))
         if (wake_word(text) == True):
             assistant_speaks("What can i do for you?") 
             text = get_audio().lower()
