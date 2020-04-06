@@ -1,1 +1,1 @@
-python -m unittest intent_classifier_test
+python -m unittest -v intent_classifier_test
