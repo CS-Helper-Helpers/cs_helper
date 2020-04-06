@@ -51,14 +51,9 @@ def hangup():
 
 
 @app.route("/getrecording", methods=['POST'])
-def getrecording():
-    account_sid = 'Account SID'
-    auth_token = 'Auth Token'
-    client = Client(account_sid, auth_token)
-    
+def getrecording():    
     recSID = request.form.get('RecordingSid')
     recURL = request.form.get('RecordingUrl') + '.wav'
-    callSID = request.form.get('CallSid')
     
     resp = VoiceResponse()
     resp.say("Your recording is: ")
