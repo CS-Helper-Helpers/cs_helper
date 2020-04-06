@@ -52,8 +52,8 @@ def hangup():
 
 @app.route("/getrecording", methods=['POST'])
 def getrecording():
-    account_sid = 'ACcf23b4910768d9648e64842dcdc66ebe'
-    auth_token = '376539c7a2fb04c7a8c2ab7d083205cf'
+    account_sid = 'Account SID'
+    auth_token = 'Auth Token'
     client = Client(account_sid, auth_token)
     
     recSID = request.form.get('RecordingSid')
