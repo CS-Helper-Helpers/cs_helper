@@ -4,15 +4,6 @@ import playsound # to play saved mp3 file
 from gtts import gTTS # google text to speech 
 import os # to save/open files 
 from tensorflow.keras.models import Sequential, load_model
-
-
-
-#from Speech.assistantSpeaks import assistant_speaks
-#from Speech.listening import listening
-#from Speech.wakeWord import wake_word
-#from Speech.getAudio import get_audio
-#from Speech.processInput import process_text
-
 from input.speech_to_text import STT
 from input.text_to_speech import TTS
 from input.text_to_text import TTT
@@ -20,7 +11,11 @@ from input.wakeword import wake_word
 
 import threading
 
+text = ''
+
 def speechfunc():
+
+    global text
     stt = STT()
     tts = TTS()
 
@@ -34,6 +29,8 @@ def speechfunc():
             print(text, inputType)
 
 def textfunc():
+    
+    global text
     ttt = TTT()
 
     while(1):
@@ -42,7 +39,12 @@ def textfunc():
         print(text, inputType)
 
 if __name__ == "__main__":
-    speech = threading.Thread(target = speechfunc)
-    text = threading.Thread(target = textfunc)
-    text.start()
-    speech.start()
+
+    # Add a lock so this runs first
+    speech_thread = threading.Thread(target = speechfunc)
+    text_thread = threading.Thread(target = textfunc)
+    text_thread.start()
+    speech_thread.start()
+
+    # Then this
+    print("Text: ", text)
