@@ -1,1 +1,0 @@
-from .getText import get_text
