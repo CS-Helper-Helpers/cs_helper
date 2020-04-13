@@ -9,6 +9,8 @@ import speech_recognition as sr
 
 app = Flask(__name__)
 
+file = ''
+
 @app.route('/')
 def index():
     return '''
@@ -56,9 +58,7 @@ def getrecording():
     recURL = request.form.get('RecordingUrl') + '.wav'
     
     resp = VoiceResponse()
-    resp.say("Your recording is: ")
-    resp.play(recURL)
-    resp.say("Thank you for your call.")
+    resp.say("Just a moment")
 
     wav_link = requests.get(recURL, stream = True)
     file = recSID + ".wav"
@@ -77,13 +77,12 @@ def getrecording():
 
     try:
         text = r.recognize_google(audio, language = 'en-US')
-        print("Recording: ", text)
+        resp.say("Your recording was")
+        resp.say(text)
     except:
-        print("Couldn't recognize the audio")
+        resp.say("Couldn't recognize the audio")
 
-    
     resp.hangup()
-    os.remove(file)
     return str(resp)
     
 
