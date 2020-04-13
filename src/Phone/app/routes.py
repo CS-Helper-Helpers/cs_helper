@@ -10,6 +10,7 @@ import speech_recognition as sr
 app = Flask(__name__)
 
 file = ''
+text = ''
 
 @app.route('/')
 def index():
@@ -53,7 +54,8 @@ def hangup():
 
 
 @app.route("/getrecording", methods=['POST'])
-def getrecording():    
+def getrecording(): 
+    global text
     recSID = request.form.get('RecordingSid')
     recURL = request.form.get('RecordingUrl') + '.wav'
     
@@ -75,13 +77,24 @@ def getrecording():
     with sr.WavFile(full_path) as source:              # use "test.wav" as the audio source
         audio = r.record(source)                        # extract audio data from the file
 
+    text = r.recognize_google(audio, language = 'en-US')
+
+    resp.redirect("https://cshelper.ngrok.io/passString")
+
+    resp.hangup()
+    return str(resp)
+
+@app.route("/passString", methods=['POST'])
+def passString():
+    global text
+    resp = VoiceResponse()
+    
     try:
-        text = r.recognize_google(audio, language = 'en-US')
-        resp.say("Your recording was")
+        resp.say("Your recording was:")
         resp.say(text)
     except:
-        resp.say("Couldn't recognize the audio")
-
+        resp.say("Couldn't transcribe audio")        
+    
     resp.hangup()
     return str(resp)
     
