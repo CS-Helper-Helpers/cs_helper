@@ -3,5 +3,8 @@ from input import TTS
 
 
 class TestTTS(unittest.TestCase):
-    def test_tests(self):
-        self.assertEqual(2, 2, "Should be 2")
+    def test_set_output(self):
+        tts = TTS()
+        assert tts.output == None
+        tts._set_output("TEST")
+        assert tts.output == "TEST"
