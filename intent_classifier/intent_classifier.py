@@ -8,10 +8,7 @@ Created on Thu Feb 27 18:20:24 2020
 # https://towardsdatascience.com/a-brief-introduction-to-intent-classification-96fda6b1f557
 # Classifies into 21 intents
 
-#import cryptography
-#import pymysql
 from sqlalchemy import create_engine
-#import sqlalchemy
 import database.engine as db
 import numpy as np
 import pandas as pd
@@ -29,9 +26,12 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-class IntentClassifier():
-    def load_dataset(piece = False):
-        #df = pd.read_csv(filename, encoding = "latin1", names = ["Sentence", "Intent"])
+class IntentClassifier:
+
+    def __init__(self):
+        pass
+
+    def load_dataset(self, piece = False):
         
         if (not piece):
             engine = db.getBotDBEngine()
@@ -62,7 +62,7 @@ class IntentClassifier():
                 df = pd.read_sql_query(query, con = engine)
                 return list(df["Intent"])
 
-    def cleaning(sentences):
+    def cleaning(self, sentences):
         words = []
         for s in sentences:
             clean = re.sub(r'[^ a-z A-Z 0-9]', " ", s)
@@ -71,7 +71,7 @@ class IntentClassifier():
             words.append([i.lower() for i in w])
         return words
 
-    def create_tokenizer( words, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'):
+    def create_tokenizer(self, words, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'):
         """Create tokenizer
         """
         token = Tokenizer(filters=filters)
@@ -89,11 +89,11 @@ class IntentClassifier():
     def padding_doc(encoded_doc, max_length):
         return(pad_sequences(encoded_doc, maxlen=max_length, padding="post"))
 
-    def one_hot(encode):
+    def one_hot(self, encode):
         o = OneHotEncoder(sparse=False)
         return(o.fit_transform(encode))
 
-    def create_model(vocab_size, max_length, catlength):
+    def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
         model.add(Embedding(vocab_size, 128, input_length = max_length, trainable = False))
         model.add(Bidirectional(LSTM(128)))
@@ -104,7 +104,7 @@ class IntentClassifier():
     
         return model
 
-    def train_model():
+    def train_model(self):
 
         intent, unique_intent, sentences, catlength = load_dataset()
 
@@ -159,7 +159,7 @@ class IntentClassifier():
         model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
     #    hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
 
-    def predictions(text, model):
+    def predictions(self, text, model):
         clean = re.sub(r'[^ a-z A-Z 0-9]', " ", text)
         test_word = word_tokenize(clean)
         test_word = [w.lower() for w in test_word]
@@ -184,7 +184,7 @@ class IntentClassifier():
     
         return pred
 
-    def get_final_output(pred, classes):
+    def get_final_output(self, pred, classes):
         predictions = pred[0]
     
         classes = np.array(classes)
@@ -220,7 +220,7 @@ class IntentClassifier():
                 
         return ""
 
-    def answer(text):
+    def answer(self, text):
         model = load_model("model.h5")
         pred = predictions(text, model)
         unique_intent = load_dataset("uniqueintents")

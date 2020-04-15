@@ -4,15 +4,12 @@ from intent_classifier import IntentClassifier
 
 class TestIntentClassifier(unittest.TestCase):
 
-    def __init__(self):
-        self.ic_model = IntentClassifier()
+    ic_model = IntentClassifier()
+    def test_load_dataset(self):
+        pass
 
     def test_cleaning(self):
-        sentences = []
-        cleaned_sentences = self.ic_model.cleaning(sentences)
-        self.assertEqual(
-                cleaned_sentences, sentences
-        )
+        pass
 
     def test_create_tokenizer(self):
         pass
