@@ -1,4 +1,4 @@
 all = [
-        "Intent_Classifier",
+        "intent_classifier",
     ]
 
