@@ -28,46 +28,36 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 class IntentClassifier:
 
-    def __init__(self):
-        self.hello = "hello"
-
-    # def __init__(self, *args, **kwargs):
-    #     super(IntentClassifier, self).__init__(*args, **kwargs)
-
-
-    def my_test_return(self):
-        return 5
-
-    def load_dataset(self, piece = False):
+    # def load_dataset(self, piece = False):
         
-        if (not piece):
-            engine = db.getBotDBEngine()
-            query = "select question as Sentence, cat as Intent from TrainingQuestions"
-            df = pd.read_sql_query(query, con = engine)
+    #     if (not piece):
+    #         engine = db.getBotDBEngine()
+    #         query = "select question as Sentence, cat as Intent from TrainingQuestions"
+    #         df = pd.read_sql_query(query, con = engine)
 
-            print(df.head())
-            intent = df["Intent"]
-            unique_intent = list(set(intent))
-            sentences = list(df["Sentence"])
+    #         print(df.head())
+    #         intent = df["Intent"]
+    #         unique_intent = list(set(intent))
+    #         sentences = list(df["Sentence"])
 
-            query = "select count(*) from Categories"
-            df = pd.read_sql_query(query, con = engine)
-            catlength = df.loc[0].at["count(*)"]
+    #         query = "select count(*) from Categories"
+    #         df = pd.read_sql_query(query, con = engine)
+    #         catlength = df.loc[0].at["count(*)"]
 
-            return (intent, unique_intent, sentences, catlength)
+    #         return (intent, unique_intent, sentences, catlength)
 
-        else:
-            if (piece == "sentences"):
-                engine = db.getBotDBEngine()
-                query = "select question as Sentence from TrainingQuestions"
-                df = pd.read_sql_query(query, con = engine)
-                return list(df["Sentence"])
+    #     else:
+    #         if (piece == "sentences"):
+    #             engine = db.getBotDBEngine()
+    #             query = "select question as Sentence from TrainingQuestions"
+    #             df = pd.read_sql_query(query, con = engine)
+    #             return list(df["Sentence"])
 
-            if (piece == "uniqueintents"):
-                engine = db.getBotDBEngine()
-                query = "select distinct cat as Intent from TrainingQuestions"
-                df = pd.read_sql_query(query, con = engine)
-                return list(df["Intent"])
+    #         if (piece == "uniqueintents"):
+    #             engine = db.getBotDBEngine()
+    #             query = "select distinct cat as Intent from TrainingQuestions"
+    #             df = pd.read_sql_query(query, con = engine)
+    #             return list(df["Intent"])
 
     
     def cleaning(self, sentences):
@@ -86,15 +76,15 @@ class IntentClassifier:
         token.fit_on_texts(words)
         return token
 
-    def get_max_length(words):
+    def get_max_length(self, words):
         """Gets max length of a word
         """
         return(len(max(words, key=len)))
 
-    def encoding_doc(token, words):
+    def encoding_doc(self, token, words):
         return(token.texts_to_sequences(words))
 
-    def padding_doc(encoded_doc, max_length):
+    def padding_doc(self, encoded_doc, max_length):
         return(pad_sequences(encoded_doc, maxlen=max_length, padding="post"))
 
     def one_hot(self, encode):

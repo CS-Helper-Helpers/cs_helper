@@ -1,2 +1,2 @@
-pip3 install .
+pip install .
 bash run_tests.sh
