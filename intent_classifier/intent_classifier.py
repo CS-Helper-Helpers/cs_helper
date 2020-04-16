@@ -29,7 +29,14 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 class IntentClassifier:
 
     def __init__(self):
-        pass
+        self.hello = "hello"
+
+    # def __init__(self, *args, **kwargs):
+    #     super(IntentClassifier, self).__init__(*args, **kwargs)
+
+
+    def my_test_return(self):
+        return 5
 
     def load_dataset(self, piece = False):
         
@@ -62,6 +69,7 @@ class IntentClassifier:
                 df = pd.read_sql_query(query, con = engine)
                 return list(df["Intent"])
 
+    
     def cleaning(self, sentences):
         words = []
         for s in sentences:
