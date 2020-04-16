@@ -37,11 +37,9 @@ class TestIntentClassifier(unittest.TestCase):
         expected_sentences = []
         self.assertEqual(cleaned_sentences, expected_sentences)
 
-    # def test_cleaning_nonstring_entry(self):
-    #     sentences = ["The next entry", 2, "is a number"]
-    #     self.assertRaises(
-    #             TypeError, IntentClassifier().cleaning(sentences)
-    #     )
+    def test_cleaning_nonstring_entry(self):
+        sentences = ["The next entry", 2, "is a number"]
+        self.assertRaises(TypeError, IntentClassifier().cleaning(sentences))
 
     # def test_create_tokenizer(self):
     #     pass
