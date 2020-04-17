@@ -35,9 +35,6 @@ class IntentClassifier:
     #     super(IntentClassifier, self).__init__(*args, **kwargs)
 
 
-    def my_test_return(self):
-        return 5
-
     def load_dataset(self, piece = False):
         
         if (not piece):
@@ -114,7 +111,7 @@ class IntentClassifier:
 
     def train_model(self):
 
-        intent, unique_intent, sentences, catlength = load_dataset()
+        intent, unique_intent, sentences, catlength = self.load_dataset()
 
         nltk.download("stopwords")
         nltk.download("punkt")
@@ -122,33 +119,33 @@ class IntentClassifier:
     #    stemmer = LancasterStemmer()
         LancasterStemmer()
 
-        cleaned_words = cleaning(sentences)
+        cleaned_words = self.cleaning(sentences)
         print(len(cleaned_words))
         print(cleaned_words[:3])
         
-        word_tokenizer = create_tokenizer(cleaned_words)
+        word_tokenizer = self.create_tokenizer(cleaned_words)
         vocab_size = len(word_tokenizer.word_index) + 1
-        max_length = get_max_length(cleaned_words)
+        max_length = self.get_max_length(cleaned_words)
 
         print("Vocab size = ", vocab_size, " and Maximum length = ", max_length)
 
-        encoded_doc = encoding_doc(word_tokenizer, cleaned_words)
+        encoded_doc = self.encoding_doc(word_tokenizer, cleaned_words)
 
-        padded_doc = padding_doc(encoded_doc, max_length)
+        padded_doc = self.padding_doc(encoded_doc, max_length)
         padded_doc[:5]
 
         print("Shape of padded docs = ", padded_doc.shape)
 
         # tokenizer with filter changed
-        output_tokenizer = create_tokenizer(unique_intent, filters='!"#$%&()*+,-/:;<=>?@[\\]^`{|}~')
+        output_tokenizer = self.create_tokenizer(unique_intent, filters='!"#$%&()*+,-/:;<=>?@[\\]^`{|}~')
                                         
         output_tokenizer.word_index
 
-        encoded_output = encoding_doc(output_tokenizer, intent)
+        encoded_output = self.encoding_doc(output_tokenizer, intent)
         encoded_output = np.array(encoded_output).reshape(len(encoded_output), 1)
         encoded_output.shape  
 
-        output_one_hot = one_hot(encoded_output)
+        output_one_hot = self.one_hot(encoded_output)
         output_one_hot.shape
 
         from sklearn.model_selection import train_test_split
@@ -156,7 +153,7 @@ class IntentClassifier:
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
 
-        model = create_model(vocab_size, max_length, catlength)
+        model = self.create_model(vocab_size, max_length, catlength)
 
         model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"])
         model.summary()

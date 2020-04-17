@@ -82,6 +82,7 @@ def getrecording():
     resp.redirect("https://cshelper.ngrok.io/passString")
 
     resp.hangup()
+    os.remove(full-path)
     return str(resp)
 
 @app.route("/passString", methods=['POST'])
