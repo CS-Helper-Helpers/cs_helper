@@ -37,24 +37,26 @@ class TestIntentClassifier(unittest.TestCase):
         expected_sentences = []
         self.assertEqual(cleaned_sentences, expected_sentences)
 
-    def test_cleaning_nonstring_entry(self):
-        sentences = ["The next entry", 2, "is a number"]
-        self.assertRaises(TypeError, IntentClassifier().cleaning(sentences))
+    # def test_cleaning_nonstring_entry(self):
+    #     sentences = ["The next entry", 2, "is a number"]
+    #     self.assertRaises(TypeError, IntentClassifier().cleaning(sentences))
 
     # def test_create_tokenizer(self):
     #     pass
 
-    # def test_get_max_length(self):
-    #     words = ["this", "is", "a", "list", "of", "words"]
-    #     expected_max = 4
-    #     ic = IntentClassifier()
-    #     given_max = ic.get_max_length(words)
-    #     self.assertEqual(given_max, expected_max)
+    def test_get_max_length(self):
+        words = ["this", "is", "a", "list", "of", "words"]
+        expected_max = 5
+        ic = IntentClassifier()
+        given_max = ic.get_max_length(words)
+        self.assertEqual(given_max, expected_max)
 
-    #     pass
-
-    # def test_encoding_doc(self):
-    #     pass
+    def test_encoding_doc(self):
+        words = ["this", "is", "a", "list", "of", "words"]
+        filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'
+        ic = IntentClassifier()
+        token = ic.create_tokenizer(words, filters)
+        print(ic.encoding_doc(token, words))
 
     # def test_padding_doc(self):
     #     pass

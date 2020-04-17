@@ -26,24 +26,23 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-class IntentClassifier:
 
+class IntentClassifier:
     def __init__(self):
-        self.hello = "hello"
+        pass
 
     # def __init__(self, *args, **kwargs):
     #     super(IntentClassifier, self).__init__(*args, **kwargs)
 
-
     def my_test_return(self):
-        return 5
+        return "hello"
 
-    def load_dataset(self, piece = False):
-        
-        if (not piece):
+    def load_dataset(self, piece=False):
+
+        if not piece:
             engine = db.getBotDBEngine()
             query = "select question as Sentence, cat as Intent from TrainingQuestions"
-            df = pd.read_sql_query(query, con = engine)
+            df = pd.read_sql_query(query, con=engine)
 
             print(df.head())
             intent = df["Intent"]
@@ -51,29 +50,28 @@ class IntentClassifier:
             sentences = list(df["Sentence"])
 
             query = "select count(*) from Categories"
-            df = pd.read_sql_query(query, con = engine)
+            df = pd.read_sql_query(query, con=engine)
             catlength = df.loc[0].at["count(*)"]
 
             return (intent, unique_intent, sentences, catlength)
 
         else:
-            if (piece == "sentences"):
+            if piece == "sentences":
                 engine = db.getBotDBEngine()
                 query = "select question as Sentence from TrainingQuestions"
-                df = pd.read_sql_query(query, con = engine)
+                df = pd.read_sql_query(query, con=engine)
                 return list(df["Sentence"])
 
-            if (piece == "uniqueintents"):
+            if piece == "uniqueintents":
                 engine = db.getBotDBEngine()
                 query = "select distinct cat as Intent from TrainingQuestions"
-                df = pd.read_sql_query(query, con = engine)
+                df = pd.read_sql_query(query, con=engine)
                 return list(df["Intent"])
 
-    
     def cleaning(self, sentences):
         words = []
         for s in sentences:
-            clean = re.sub(r'[^ a-z A-Z 0-9]', " ", s)
+            clean = re.sub(r"[^ a-z A-Z 0-9]", " ", s)
             w = word_tokenize(clean)
             # lemmatizing
             words.append([i.lower() for i in w])
@@ -86,30 +84,30 @@ class IntentClassifier:
         token.fit_on_texts(words)
         return token
 
-    def get_max_length(words):
+    def get_max_length(self, words):
         """Gets max length of a word
         """
-        return(len(max(words, key=len)))
+        return len(max(words, key=len))
 
-    def encoding_doc(token, words):
-        return(token.texts_to_sequences(words))
+    def encoding_doc(self, token, words):
+        return token.texts_to_sequences(words)
 
-    def padding_doc(encoded_doc, max_length):
-        return(pad_sequences(encoded_doc, maxlen=max_length, padding="post"))
+    def padding_doc(self, encoded_doc, max_length):
+        return pad_sequences(encoded_doc, maxlen=max_length, padding="post")
 
     def one_hot(self, encode):
         o = OneHotEncoder(sparse=False)
-        return(o.fit_transform(encode))
+        return o.fit_transform(encode)
 
     def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
-        model.add(Embedding(vocab_size, 128, input_length = max_length, trainable = False))
+        model.add(Embedding(vocab_size, 128, input_length=max_length, trainable=False))
         model.add(Bidirectional(LSTM(128)))
-    #   model.add(LSTM(128))
-        model.add(Dense(32, activation = "relu"))
+        #   model.add(LSTM(128))
+        model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
-        model.add(Dense(catlength, activation = "softmax"))
-    
+        model.add(Dense(catlength, activation="softmax"))
+
         return model
 
     def train_model(self):
@@ -119,13 +117,13 @@ class IntentClassifier:
         nltk.download("stopwords")
         nltk.download("punkt")
 
-    #    stemmer = LancasterStemmer()
+        #    stemmer = LancasterStemmer()
         LancasterStemmer()
 
         cleaned_words = cleaning(sentences)
         print(len(cleaned_words))
         print(cleaned_words[:3])
-        
+
         word_tokenizer = create_tokenizer(cleaned_words)
         vocab_size = len(word_tokenizer.word_index) + 1
         max_length = get_max_length(cleaned_words)
@@ -140,39 +138,57 @@ class IntentClassifier:
         print("Shape of padded docs = ", padded_doc.shape)
 
         # tokenizer with filter changed
-        output_tokenizer = create_tokenizer(unique_intent, filters='!"#$%&()*+,-/:;<=>?@[\\]^`{|}~')
-                                        
+        output_tokenizer = create_tokenizer(
+            unique_intent, filters='!"#$%&()*+,-/:;<=>?@[\\]^`{|}~'
+        )
+
         output_tokenizer.word_index
 
         encoded_output = encoding_doc(output_tokenizer, intent)
         encoded_output = np.array(encoded_output).reshape(len(encoded_output), 1)
-        encoded_output.shape  
+        encoded_output.shape
 
         output_one_hot = one_hot(encoded_output)
         output_one_hot.shape
 
         from sklearn.model_selection import train_test_split
-        train_X, val_X, train_Y, val_Y = train_test_split(padded_doc, output_one_hot, shuffle = True, test_size = 0.2)
+
+        train_X, val_X, train_Y, val_Y = train_test_split(
+            padded_doc, output_one_hot, shuffle=True, test_size=0.2
+        )
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
 
         model = create_model(vocab_size, max_length, catlength)
 
-        model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"])
+        model.compile(
+            loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
+        )
         model.summary()
 
-        filename = 'model.h5'
-        checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=0, save_best_only=True, mode='min')
+        filename = "model.h5"
+        checkpoint = ModelCheckpoint(
+            filename, monitor="val_loss", verbose=0, save_best_only=True, mode="min"
+        )
 
-        model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
+        model.fit(
+            train_X,
+            train_Y,
+            epochs=100,
+            batch_size=32,
+            validation_data=(val_X, val_Y),
+            callbacks=[checkpoint],
+            verbose=0,
+        )
+
     #    hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
 
     def predictions(self, text, model):
-        clean = re.sub(r'[^ a-z A-Z 0-9]', " ", text)
+        clean = re.sub(r"[^ a-z A-Z 0-9]", " ", text)
         test_word = word_tokenize(clean)
         test_word = [w.lower() for w in test_word]
 
-        #Remove this block if possible
+        # Remove this block if possible
         sentences = load_dataset("sentences")
         cleaned_words = cleaning(sentences)
         max_length = get_max_length(cleaned_words)
@@ -180,21 +196,21 @@ class IntentClassifier:
 
         test_ls = word_tokenizer.texts_to_sequences(test_word)
         print(test_word)
-        #Check for unknown words
+        # Check for unknown words
         if [] in test_ls:
             test_ls = list(filter(None, test_ls))
-        
+
         test_ls = np.array(test_ls).reshape(1, len(test_ls))
-    
+
         x = padding_doc(test_ls, max_length)
-    
+
         pred = model.predict_proba(x)
-    
+
         return pred
 
     def get_final_output(self, pred, classes):
         predictions = pred[0]
-    
+
         classes = np.array(classes)
         ids = np.argsort(-predictions)
         classes = classes[ids]
@@ -203,29 +219,33 @@ class IntentClassifier:
         max = predictions[0]
         count = 0
         for i in range(pred.shape[1]):
-            if (predictions[i] > max * 0.9):
+            if predictions[i] > max * 0.9:
                 count += 1
-        if (count > 1):
+        if count > 1:
             print("Uncertain result:")
             for i in range(pred.shape[1]):
-                if (predictions[i] > max * 0.9):
+                if predictions[i] > max * 0.9:
                     print("%s has confidence = %s" % (classes[i], (predictions[i])))
         else:
             engine = db.getBotDBEngine()
-            query = "select outvar from OutputVariables where inid in (select inputid from InputVariables where incat = '" + classes[0] + "')"
-            df = pd.read_sql_query(query, con = engine)
-            if (df.size == 1):
+            query = (
+                "select outvar from OutputVariables where inid in (select inputid from InputVariables where incat = '"
+                + classes[0]
+                + "')"
+            )
+            df = pd.read_sql_query(query, con=engine)
+            if df.size == 1:
                 print("The result is:")
                 print("%s with confidence = %s" % (classes[0], (predictions[0])))
                 print(df.loc[0].at["outvar"])
                 return df.loc[0].at["outvar"]
-            elif (df.size > 1):
+            elif df.size > 1:
                 print("Unable to get unique result.")
                 print("%s with confidence = %s" % (classes[0], (predictions[0])))
             else:
                 print("Unable to find an answer for this question.")
                 print("%s with confidence = %s" % (classes[0], (predictions[0])))
-                
+
         return ""
 
     def answer(self, text):

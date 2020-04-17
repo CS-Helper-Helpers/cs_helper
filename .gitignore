@@ -138,4 +138,5 @@ dmypy.json
 .h5
 database/info.py
 *.h5
+.vscode/
 *.tf
