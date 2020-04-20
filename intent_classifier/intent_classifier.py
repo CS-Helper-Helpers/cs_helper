@@ -83,15 +83,15 @@ class IntentClassifier:
         token.fit_on_texts(words)
         return token
 
-    def get_max_length(words):
+    def get_max_length(self, words):
         """Gets max length of a word
         """
         return(len(max(words, key=len)))
 
-    def encoding_doc(token, words):
+    def encoding_doc(self, token, words):
         return(token.texts_to_sequences(words))
 
-    def padding_doc(encoded_doc, max_length):
+    def padding_doc(self, encoded_doc, max_length):
         return(pad_sequences(encoded_doc, maxlen=max_length, padding="post"))
 
     def one_hot(self, encode):
@@ -161,7 +161,7 @@ class IntentClassifier:
         filename = 'model.h5'
         checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=0, save_best_only=True, mode='min')
 
-        model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
+        model.fit(train_X, train_Y, epochs = 250, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
     #    hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
 
     def predictions(self, text, model):
@@ -170,10 +170,10 @@ class IntentClassifier:
         test_word = [w.lower() for w in test_word]
 
         #Remove this block if possible
-        sentences = load_dataset("sentences")
-        cleaned_words = cleaning(sentences)
-        max_length = get_max_length(cleaned_words)
-        word_tokenizer = create_tokenizer(cleaned_words)
+        sentences = self.load_dataset("sentences")
+        cleaned_words = self.cleaning(sentences)
+        max_length = self.get_max_length(cleaned_words)
+        word_tokenizer = self.create_tokenizer(cleaned_words)
 
         test_ls = word_tokenizer.texts_to_sequences(test_word)
         print(test_word)
@@ -183,7 +183,7 @@ class IntentClassifier:
         
         test_ls = np.array(test_ls).reshape(1, len(test_ls))
     
-        x = padding_doc(test_ls, max_length)
+        x = self.padding_doc(test_ls, max_length)
     
         pred = model.predict_proba(x)
     
@@ -227,6 +227,6 @@ class IntentClassifier:
 
     def answer(self, text):
         model = load_model("model.h5")
-        pred = predictions(text, model)
-        unique_intent = load_dataset("uniqueintents")
-        get_final_output(pred, unique_intent)
+        pred = self.predictions(text, model)
+        unique_intent = self.load_dataset("uniqueintents")
+        self.get_final_output(pred, unique_intent)
