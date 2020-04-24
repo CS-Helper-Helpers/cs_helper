@@ -1,15 +1,12 @@
 from flask import Flask, request
-from twilio.twiml.voice_response import VoiceResponse, Record
-from twilio.rest import Client
+from twilio.twiml.voice_response import VoiceResponse, Record, Gather
 import os
 import requests
-import playsound
 import speech_recognition as sr
-
 
 app = Flask(__name__)
 
-file = ''
+full_path = ''
 text = ''
 
 @app.route('/')
@@ -33,11 +30,7 @@ def index():
 
 @app.route("/voice", methods=['POST'])
 def voice():
-    """Respond to incoming phone calls and mention the caller's city"""
-    # Start our TwiML response
-
     resp = VoiceResponse()
-    #print(resp)
     
     resp.say("You have reached the Computer Science Department Office.")
     resp.say("This is CS Helper. Your call is being temporarily recorded. How may I help you?")
@@ -46,16 +39,10 @@ def voice():
     return str(resp)
 
 
-@app.route("/hangup", methods=['POST'])
-def hangup():
-    resp = VoiceResponse()
-    resp.hangup()
-    return str(resp)
-
-
 @app.route("/getrecording", methods=['POST'])
 def getrecording(): 
     global text
+    global full_path
     recSID = request.form.get('RecordingSid')
     recURL = request.form.get('RecordingUrl') + '.wav'
     
@@ -82,23 +69,42 @@ def getrecording():
     resp.redirect("https://cshelper.ngrok.io/passString")
 
     resp.hangup()
-    os.remove(full-path)
     return str(resp)
 
 @app.route("/passString", methods=['POST'])
 def passString():
-    global text
     resp = VoiceResponse()
+    gather = Gather(num_digits=1, action = '/validation')
     
     try:
-        resp.say("Your recording was:")
-        resp.say(text)
+        ic = IntentClassifier()
+        answer = ic.answer(text)
+        resp.say(answer)
     except:
         resp.say("Couldn't transcribe audio")        
     
-    resp.hangup()
+    gather.say("Is this correct? Press 1 for yes, 2 for no.")
+    resp.append(gather)
+    resp.redirect('/voice')
     return str(resp)
+
+@app.route("/validation", methods=['GET','POST'])
+def validation():
+    resp = VoiceResponse()
     
+    if 'Digits' in request.values:
+        choice = request.values['Digits']
+        
+        if choice == '1':
+            resp.say("Thank you for your response.")
+        elif choice == '2':
+            resp.say("We will log this response. Thank you for your call.")
+        
+        resp.say("Have a good day.")
+    
+    resp.hangup()
+    os.remove(full_path)
+    return str(resp)
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8080))
