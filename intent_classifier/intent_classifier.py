@@ -8,10 +8,7 @@ Created on Thu Feb 27 18:20:24 2020
 # https://towardsdatascience.com/a-brief-introduction-to-intent-classification-96fda6b1f557
 # Classifies into 21 intents
 
-#import cryptography
-#import pymysql
 from sqlalchemy import create_engine
-#import sqlalchemy
 import database.engine as db
 import numpy as np
 import pandas as pd
@@ -29,9 +26,16 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-class IntentClassifier():
-    def load_dataset(piece = False):
-        #df = pd.read_csv(filename, encoding = "latin1", names = ["Sentence", "Intent"])
+class IntentClassifier:
+
+    def __init__(self):
+        self.hello = "hello"
+
+    # def __init__(self, *args, **kwargs):
+    #     super(IntentClassifier, self).__init__(*args, **kwargs)
+
+
+    def load_dataset(self, piece = False):
         
         if (not piece):
             engine = db.getBotDBEngine()
@@ -62,7 +66,8 @@ class IntentClassifier():
                 df = pd.read_sql_query(query, con = engine)
                 return list(df["Intent"])
 
-    def cleaning(sentences):
+    
+    def cleaning(self, sentences):
         words = []
         for s in sentences:
             clean = re.sub(r'[^ a-z A-Z 0-9]', " ", s)
@@ -71,29 +76,29 @@ class IntentClassifier():
             words.append([i.lower() for i in w])
         return words
 
-    def create_tokenizer( words, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'):
+    def create_tokenizer(self, words, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'):
         """Create tokenizer
         """
         token = Tokenizer(filters=filters)
         token.fit_on_texts(words)
         return token
 
-    def get_max_length(words):
+    def get_max_length(self, words):
         """Gets max length of a word
         """
         return(len(max(words, key=len)))
 
-    def encoding_doc(token, words):
+    def encoding_doc(self, token, words):
         return(token.texts_to_sequences(words))
 
-    def padding_doc(encoded_doc, max_length):
+    def padding_doc(self, encoded_doc, max_length):
         return(pad_sequences(encoded_doc, maxlen=max_length, padding="post"))
 
-    def one_hot(encode):
+    def one_hot(self, encode):
         o = OneHotEncoder(sparse=False)
         return(o.fit_transform(encode))
 
-    def create_model(vocab_size, max_length, catlength):
+    def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
         model.add(Embedding(vocab_size, 128, input_length = max_length, trainable = False))
         model.add(Bidirectional(LSTM(128)))
@@ -104,9 +109,9 @@ class IntentClassifier():
     
         return model
 
-    def train_model():
+    def train_model(self):
 
-        intent, unique_intent, sentences, catlength = load_dataset()
+        intent, unique_intent, sentences, catlength = self.load_dataset()
 
         nltk.download("stopwords")
         nltk.download("punkt")
@@ -114,33 +119,33 @@ class IntentClassifier():
     #    stemmer = LancasterStemmer()
         LancasterStemmer()
 
-        cleaned_words = cleaning(sentences)
+        cleaned_words = self.cleaning(sentences)
         print(len(cleaned_words))
         print(cleaned_words[:3])
         
-        word_tokenizer = create_tokenizer(cleaned_words)
+        word_tokenizer = self.create_tokenizer(cleaned_words)
         vocab_size = len(word_tokenizer.word_index) + 1
-        max_length = get_max_length(cleaned_words)
+        max_length = self.get_max_length(cleaned_words)
 
         print("Vocab size = ", vocab_size, " and Maximum length = ", max_length)
 
-        encoded_doc = encoding_doc(word_tokenizer, cleaned_words)
+        encoded_doc = self.encoding_doc(word_tokenizer, cleaned_words)
 
-        padded_doc = padding_doc(encoded_doc, max_length)
+        padded_doc = self.padding_doc(encoded_doc, max_length)
         padded_doc[:5]
 
         print("Shape of padded docs = ", padded_doc.shape)
 
         # tokenizer with filter changed
-        output_tokenizer = create_tokenizer(unique_intent, filters='!"#$%&()*+,-/:;<=>?@[\\]^`{|}~')
+        output_tokenizer = self.create_tokenizer(unique_intent, filters='!"#$%&()*+,-/:;<=>?@[\\]^`{|}~')
                                         
         output_tokenizer.word_index
 
-        encoded_output = encoding_doc(output_tokenizer, intent)
+        encoded_output = self.encoding_doc(output_tokenizer, intent)
         encoded_output = np.array(encoded_output).reshape(len(encoded_output), 1)
         encoded_output.shape  
 
-        output_one_hot = one_hot(encoded_output)
+        output_one_hot = self.one_hot(encoded_output)
         output_one_hot.shape
 
         from sklearn.model_selection import train_test_split
@@ -148,7 +153,7 @@ class IntentClassifier():
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
 
-        model = create_model(vocab_size, max_length, catlength)
+        model = self.create_model(vocab_size, max_length, catlength)
 
         model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"])
         model.summary()
@@ -156,19 +161,19 @@ class IntentClassifier():
         filename = 'model.h5'
         checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=0, save_best_only=True, mode='min')
 
-        model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
+        model.fit(train_X, train_Y, epochs = 250, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
     #    hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
 
-    def predictions(text, model):
+    def predictions(self, text, model):
         clean = re.sub(r'[^ a-z A-Z 0-9]', " ", text)
         test_word = word_tokenize(clean)
         test_word = [w.lower() for w in test_word]
 
         #Remove this block if possible
-        sentences = load_dataset("sentences")
-        cleaned_words = cleaning(sentences)
-        max_length = get_max_length(cleaned_words)
-        word_tokenizer = create_tokenizer(cleaned_words)
+        sentences = self.load_dataset("sentences")
+        cleaned_words = self.cleaning(sentences)
+        max_length = self.get_max_length(cleaned_words)
+        word_tokenizer = self.create_tokenizer(cleaned_words)
 
         test_ls = word_tokenizer.texts_to_sequences(test_word)
         print(test_word)
@@ -178,13 +183,13 @@ class IntentClassifier():
         
         test_ls = np.array(test_ls).reshape(1, len(test_ls))
     
-        x = padding_doc(test_ls, max_length)
+        x = self.padding_doc(test_ls, max_length)
     
         pred = model.predict_proba(x)
     
         return pred
 
-    def get_final_output(pred, classes):
+    def get_final_output(self, pred, classes):
         predictions = pred[0]
     
         classes = np.array(classes)
@@ -220,8 +225,8 @@ class IntentClassifier():
                 
         return ""
 
-    def answer(text):
+    def answer(self, text):
         model = load_model("model.h5")
-        pred = predictions(text, model)
-        unique_intent = load_dataset("uniqueintents")
-        get_final_output(pred, unique_intent)
+        pred = self.predictions(text, model)
+        unique_intent = self.load_dataset("uniqueintents")
+        self.get_final_output(pred, unique_intent)

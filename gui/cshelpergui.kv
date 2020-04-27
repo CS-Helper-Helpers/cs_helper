@@ -1,0 +1,202 @@
+#:kivy 1.11.1
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+ScreenManager:
+    id: screen_manager
+    MainGUI:
+        id: question_screen
+        name: 'QuestionScreen'
+        manager: 'screen_manager'
+    ResponseScreen:
+        id: response_screen
+        name: 'ResponseScreen'
+        manager: 'screen_manager'
+    AdministratorLogin:
+        id: login_screen
+        name: 'LoginScreen'
+        manager: 'screen_manager'
+    FeedbackForm:
+        id: feedback_screen
+        name: 'FeedbackScreen'
+        manager: 'screen_manager'
+    ModificationForm:
+        id: modification_screen
+        name: 'ModificationScreen'
+        manager: 'screen_manager'
+
+<MainGUI>:
+    Label:
+        font_size: 24
+        size_hint_y: None
+        text_size: root.width * .9, None
+        size_hint_x: .9
+        pos_hint: {'center_x': .5, 'y': .75}
+        height: self.texture_size[1]
+        text: "Welcome to the Computer Science Department Office. If you have a question, please wake me by saying Okay Computer or input your question below."
+    BoxLayout:
+        size_hint_x: .9
+        pos_hint: {'center_x': .5, 'y': .6}
+        height: 45
+        TextInput:
+            height: 45
+            font_size: 25
+            size_hint_x: .98
+            size_hint_y: .05
+            hint_text: "Question"
+        Button:
+            height: 45
+            font_size: 25
+            size_hint_x: .12
+            size_hint_y: .05
+            text: "Ask Question"
+            on_release:
+                app.root.transition = NoTransition()
+                app.root.current = "ResponseScreen"
+    Button:
+        font_size: 24
+        size_hint_y: None
+        pos_hint: {'right': .98, 'top': .98}
+        size_hint_x: .15
+        size_hint_y: .05
+        padding: (10, 10)
+        text: "Administrator Login"
+        on_release:
+            app.root.transition = NoTransition()
+            app.root.current = "LoginScreen"
+
+<ResponseScreen>:
+    Label:
+        font_size: 24
+        size_hint_y: None
+        text_size: root.width * .9, None
+        size_hint_x: .9
+        pos_hint: {'center_x': .5, 'y': .6}
+        height: self.texture_size[1]
+        text: "This is a test response. If you would like to contribute to this project, press the feedback button. Otherwise, press the home button."
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint_x: .25
+        pos_hint: {'center_x': .5, 'y': .5}
+        spacing: 20
+        Button:
+            font_size: 24
+            size_hint_y: .05
+            text: "Provide Feedback"
+            padding: (10, 10)
+            on_release:
+                app.root.transition = NoTransition()
+                app.root.current = "FeedbackScreen"
+        Button:
+            font_size: 24
+            size_hint_y: .05
+            text: "Home"
+            padding: (10, 10)
+            on_release:
+                app.root.transition = NoTransition()
+                app.root.current = "QuestionScreen"
+
+
+<AdministratorLogin>:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint_y: .2
+        size_hint_x: .5
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        spacing: 25
+        TextInput:
+            height: 50
+            font_size: 24
+            padding: (10, 10)
+            hint_text: "Username"
+        TextInput:
+            height: 50
+            font_size: 24
+            padding: (10, 10)
+            hint_text: "Password"
+        Button:
+            font_size: 24
+            padding: (10, 10)
+            text: "Login"
+            on_release:
+                app.root.transition = NoTransition()
+                app.root.current = "ModificationScreen"
+
+<FeedbackForm>:
+    Label:
+        font_size: 24
+        size_hint_y: None
+        text_size: root.width * .9, None
+        size_hint_x: .9
+        pos_hint: {'center_x': .5, 'y': .9}
+        height: self.texture_size[1]
+        text: "Please provide the feedback below."
+    GridLayout:
+        size_hint_x: .9
+        size_hint_y: .6
+        pos_hint: {'center_x': .5, 'y': .25}
+        spacing: 15
+        cols: 2
+        Label:
+            text: "Question 1"
+        Label:
+            text: "Question 2"
+        Label:
+            text: "Question 3"
+        Label:
+            text: "Question 4"
+        Label:
+            text: "Question 5"
+        Label:
+            text: "Question 6"
+        Label:
+            text: "Question 7"
+    Button:
+        size_hint_y: .05
+        size_hint_x: .15
+        pos_hint: {'center_x': .5, 'top': .1}
+        font_size: 24
+        padding: (10, 10)
+        text: "Submit"
+        on_release:
+            app.root.transition = NoTransition()
+            app.root.current = "QuestionScreen"
+
+<ModificationForm>:
+    Label:
+        font_size: 24
+        size_hint_y: None
+        text_size: root.width * .9, None
+        size_hint_x: .9
+        pos_hint: {'center_x': .5, 'y': .9}
+        height: self.texture_size[1]
+        text: "Use the forms below to modify the questions and answers CSHelper uses."
+    GridLayout:
+        size_hint_x: .9
+        size_hint_y: .6
+        pos_hint: {'center_x': .5, 'y': .25}
+        spacing: 15
+        cols: 2
+        Label:
+            text: "Form 1"
+        Label:
+            text: "Form 2"
+        Label:
+            text: "Form 3"
+        Label:
+            text: "Form 4"
+        Label:
+            text: "Form 5"
+        Label:
+            text: "Form 6"
+        Label:
+            text: "Form 7"
+    Button:
+        size_hint_y: .05
+        size_hint_x: .15
+        pos_hint: {'center_x': .5, 'top': .1}
+        font_size: 24
+        padding: (10, 10)
+        text: "Submit and Retrain"
+        on_release:
+            app.root.transition = NoTransition()
+            app.root.current = "QuestionScreen"
