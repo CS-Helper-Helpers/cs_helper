@@ -1,2 +1,2 @@
 from .engine import getBotDBEngine
-from .info import *
+from .info_sample import *

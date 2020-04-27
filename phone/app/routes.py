@@ -3,6 +3,7 @@ from twilio.twiml.voice_response import VoiceResponse, Record, Gather
 import os
 import requests
 import speech_recognition as sr
+from intent_classifier import IntentClassifier
 
 app = Flask(__name__)
 
@@ -64,7 +65,7 @@ def getrecording():
     with sr.WavFile(full_path) as source:              # use "test.wav" as the audio source
         audio = r.record(source)                        # extract audio data from the file
 
-    text = r.recognize_google(audio, language = 'en-US')
+    text = r.recognize_google(audio, language = 'en-US', show_all=True)
 
     resp.redirect("https://cshelper.ngrok.io/passString")
 
@@ -74,7 +75,12 @@ def getrecording():
 @app.route("/passString", methods=['POST'])
 def passString():
     resp = VoiceResponse()
-    gather = Gather(num_digits=1, action = '/validation')
+    gather = Gather(num_digits=1, action = '/newQuestion')
+    
+    # testIC = IntentClassifier()
+    # testIC.train_model()
+    # ans = testIC.train_model()
+    # print(ans)
     
     try:
         ic = IntentClassifier()
@@ -83,8 +89,7 @@ def passString():
     except:
         resp.say("Couldn't transcribe audio")        
     
-    gather.say("Is this correct? Press 1 for yes, 2 for no.")
-    resp.append(gather)
+    resp.sap("Do you have another question? If not, please hang up")
     resp.redirect('/voice')
     return str(resp)
 
@@ -105,6 +110,7 @@ def validation():
     resp.hangup()
     os.remove(full_path)
     return str(resp)
+
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8080))
