@@ -26,7 +26,7 @@ def speechfunc():
     global text
     stt = STT()
     tts = TTS()
-    
+
     while 1:
         text = stt.get_audio()
 
@@ -58,13 +58,12 @@ def corefunc():
     global text
 
     ic = IntentClassifier()
-    return ic.answer(text) 
-
+    return ic.answer(text)
 
 
 if __name__ == "__main__":
 
-    loaded = load_model("../model.h5")
+    loaded = load_model("model.h5")
 
     # Add a lock so this runs first
     speech_thread = threading.Thread(target=speechfunc)
@@ -76,6 +75,5 @@ if __name__ == "__main__":
     print("Text: ", text)
 
     # Activate core
-    
-    # Then we need to speak and write this
 
+    # Then we need to speak and write this
