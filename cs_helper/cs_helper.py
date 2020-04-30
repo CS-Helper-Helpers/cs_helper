@@ -14,13 +14,6 @@ from intent_classifier.intent_classifier import IntentClassifier
 
 text = ""
 
-# def load_model():
-#     #loaded = tf.saved_model.load("../model.h5")
-#     #print(list(loaded.signatures.keys())) # Keep for now
-#     loaded = load_model("../model.h5")
-#     return loaded
-
-
 def speechfunc():
 
     global text
