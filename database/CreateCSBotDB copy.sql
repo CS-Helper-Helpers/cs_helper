@@ -32,8 +32,6 @@ create table TrainingQuestions (
   questionid serial,
   question varchar(512) not null,
   cat varchar(128) not null,
-  slot varchar(128) not null,
-  label varchar(128) not null,
   unique key (question, cat),
   primary key (questionid),
   foreign key (cat) references Categories(category) on update cascade on delete cascade
