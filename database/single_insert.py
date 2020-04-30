@@ -19,7 +19,8 @@ def insert_training_questions(file_name='important_dates.csv'):
                 cursor.execute(sql, row)
             except sqlcon.Error as e:
                 return e.msg
-                db.commit()
+                
+        db.commit()
                 
         end = time.time()
         print(end - start, 'seconds for single insert training questions')
