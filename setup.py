@@ -32,6 +32,8 @@ setup(
         "SQLAlchemy",
         "PyAudio",
         "pymysql",
+        "plac",
+        "spacy"
     ],
     zip_safe=False,
     test_suite="nose.collector",
