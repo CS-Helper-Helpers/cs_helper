@@ -153,7 +153,7 @@ class IntentClassifier:
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
 
-        model = self.create_model(vocab_size, max_length, catlength)
+        model = self.create_model(vocab_size, max_length, len(unique_intent))
 
         model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"])
         model.summary()
@@ -164,10 +164,10 @@ class IntentClassifier:
         model.fit(train_X, train_Y, epochs = 250, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
     #    hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
 
-    def predictions(self, text, model):
-        clean = re.sub(r'[^ a-z A-Z 0-9]', " ", text)
-        test_word = word_tokenize(clean)
-        test_word = [w.lower() for w in test_word]
+    def predictions(self, utterance, model):
+        clean_utter = re.sub(r'[^ a-z A-Z 0-9]', " ", utterance)
+        clean_utter = word_tokenize(clean_utter)
+        clean_utter = [w.lower() for w in clean_utter]
 
         #Remove this block if possible
         sentences = self.load_dataset("sentences")
@@ -175,8 +175,8 @@ class IntentClassifier:
         max_length = self.get_max_length(cleaned_words)
         word_tokenizer = self.create_tokenizer(cleaned_words)
 
-        test_ls = word_tokenizer.texts_to_sequences(test_word)
-        print(test_word)
+        test_ls = word_tokenizer.texts_to_sequences(clean_utter)
+        print(clean_utter)
         #Check for unknown words
         if [] in test_ls:
             test_ls = list(filter(None, test_ls))
@@ -189,44 +189,55 @@ class IntentClassifier:
     
         return pred
 
-    def get_final_output(self, pred, classes):
+    def get_final_output(self, text, pred, classes):
+        print("In get final output")
         predictions = pred[0]
     
         classes = np.array(classes)
         ids = np.argsort(-predictions)
         classes = classes[ids]
         predictions = -np.sort(-predictions)
-
-        max = predictions[0]
-        count = 0
+    
         for i in range(pred.shape[1]):
-            if (predictions[i] > max * 0.9):
-                count += 1
-        if (count > 1):
-            print("Uncertain result:")
-            for i in range(pred.shape[1]):
-                if (predictions[i] > max * 0.9):
-                    print("%s has confidence = %s" % (classes[i], (predictions[i])))
-        else:
-            engine = db.getBotDBEngine()
-            query = "select outvar from OutputVariables where inid in (select inputid from InputVariables where incat = '" + classes[0] + "')"
-            df = pd.read_sql_query(query, con = engine)
-            if (df.size == 1):
-                print("The result is:")
-                print("%s with confidence = %s" % (classes[0], (predictions[0])))
-                print(df.loc[0].at["outvar"])
-                return df.loc[0].at["outvar"]
-            elif (df.size > 1):
-                print("Unable to get unique result.")
-                print("%s with confidence = %s" % (classes[0], (predictions[0])))
-            else:
-                print("Unable to find an answer for this question.")
-                print("%s with confidence = %s" % (classes[0], (predictions[0])))
-                
+            print("%s has confidence = %s" % (classes[i], (predictions[i])))
+
+            chunks = self.chunk_utterance(classes[i], text)
+            # now we query database for an answer
+            # if an answer is found, we break out of this loop
+            # else we go to the next intent category ?? maybe break early given low confidence
+
+ 
         return ""
 
+    def chunk_utterance(self, intent, utterance):
+        """ chunk_utterance finds variable slots """
+        print("In chunk utterance")
+        chunks = []
+        if intent == "important_date":
+            pass
+        if intent == "course":
+            pass
+        if intent == "professor":
+            pass
+        if intent == "location":
+            pass
+        return chunks
+
     def answer(self, text):
-        model = load_model("model.h5")
+        print("In answer")
+
+        # Load model
+        model = load_model("cs_helper/model.h5") # GGRRRRRR
+
+        # Get predicted intent category classification of uterrance
         pred = self.predictions(text, model)
+
+        for p in pred:
+            print(p)
+
+        # Get unique intent categories
         unique_intent = self.load_dataset("uniqueintents")
-        self.get_final_output(pred, unique_intent)
+        print(pred, unique_intent)
+
+        # Get final output
+        self.get_final_output(text, pred, unique_intent)

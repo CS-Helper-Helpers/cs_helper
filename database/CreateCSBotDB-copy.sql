@@ -9,7 +9,6 @@ drop table if exists TrainingQuestions;
 drop table if exists ExternalDBImports;
 drop table if exists ExternalDBConnections;
 drop table if exists Categories;
-drop table if exists ImportantDates;
 create table Categories (
   category varchar(256),
   primary key (category)
@@ -33,8 +32,6 @@ create table TrainingQuestions (
   questionid serial,
   question varchar(512) not null,
   cat varchar(128) not null,
-  slot varchar(128) not null,
-  label varchar(128) not null,
   unique key (question, cat),
   primary key (questionid),
   foreign key (cat) references Categories(category) on update cascade on delete cascade
@@ -71,9 +68,4 @@ create table Users (
   userrole varchar(128) not null,
   primary key (userid),
   foreign key (userrole) references UserRoles(rolename) on update cascade on delete cascade
-);
-create table ImportantDates (
-  important_event varchar(128) not null unique,
-  event_date varchar(128) not null,
-  primary key (important_event)
 );
