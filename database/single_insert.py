@@ -1,4 +1,4 @@
- def insert_training_questions(file_name='important_date.csv'):
+ def insert_training_questions(file_name='important_dates.csv'):
     vals=[]
     with open(file_name) as input_file:
         reader = csv.reader(input_file, delimiter=',')
