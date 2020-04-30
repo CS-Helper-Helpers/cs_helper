@@ -65,15 +65,9 @@ if __name__ == "__main__":
 
     loaded = load_model("model.h5")
 
-    # Add a lock so this runs first
     speech_thread = threading.Thread(target=speechfunc)
     text_thread = threading.Thread(target=textfunc)
     text_thread.start()
     speech_thread.start()
 
-    # Then this
     print("Text: ", text)
-
-    # Activate core
-
-    # Then we need to speak and write this
