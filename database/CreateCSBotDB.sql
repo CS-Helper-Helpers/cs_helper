@@ -9,6 +9,7 @@ drop table if exists TrainingQuestions;
 drop table if exists ExternalDBImports;
 drop table if exists ExternalDBConnections;
 drop table if exists Categories;
+drop table if exists ImportantDates;
 create table Categories (
   category varchar(256),
   primary key (category)
