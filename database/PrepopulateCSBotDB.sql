@@ -63,7 +63,7 @@ insert into TrainingQuestions (question, cat) values
 ("Is the university closed for Labor Day?","important_date","Labor Day","HOLIDAY"),
 ("When is Columbus Day?","important_date","Columbus Day","HOLIDAY"),
 ("Are you open for Columbus Day?","important_date","Columbus Day","HOLIDAY"),
-("Is the university closed for Columbus Day?","important_date","Columbus Day","HOLIDAY",)
+("Is the university closed for Columbus Day?","important_date","Columbus Day","HOLIDAY"),
 ("When is Veterans Day?","important_date","Veterans Day","HOLIDAY"),
 ("Are you open for Veterans Day?","important_date","Veterans Day","HOLIDAY"),
 ("Is the university closed for Veterans Day?","important_date","Veterans Day","HOLIDAY"),
