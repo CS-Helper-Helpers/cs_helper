@@ -14,19 +14,12 @@ from intent_classifier.intent_classifier import IntentClassifier
 
 text = ""
 
-# def load_model():
-#     #loaded = tf.saved_model.load("../model.h5")
-#     #print(list(loaded.signatures.keys())) # Keep for now
-#     loaded = load_model("../model.h5")
-#     return loaded
-
-
 def speechfunc():
 
     global text
     stt = STT()
     tts = TTS()
-    
+
     while 1:
         text = stt.get_audio()
 
@@ -58,24 +51,16 @@ def corefunc():
     global text
 
     ic = IntentClassifier()
-    return ic.answer(text) 
-
+    return ic.answer(text)
 
 
 if __name__ == "__main__":
 
-    loaded = load_model("../model.h5")
+    loaded = load_model("model.h5")
 
-    # Add a lock so this runs first
     speech_thread = threading.Thread(target=speechfunc)
     text_thread = threading.Thread(target=textfunc)
     text_thread.start()
     speech_thread.start()
 
-    # Then this
     print("Text: ", text)
-
-    # Activate core
-    
-    # Then we need to speak and write this
-
