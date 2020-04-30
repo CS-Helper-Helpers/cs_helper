@@ -14,13 +14,21 @@ insert into Users (username, userrole) values
 ("amart16", "developer"),
 ("czbaker", "developer"),
 ("stran", "administrator");
+insert into ImportantDates (important_event, event_date) VALUES
+("FACULTY_REPORT","Monday, August 17"),
+("OPEN_RESIDENCE_HALLS","Friday, August 14 - Sunday, August 16"),
+("ADD_DATE", "Without instructor permission: Thursday, August 20. With instructor permission: Friday, August 28th."),
+("WITHDRAW_DATE", "Without refund: Friday, October 16. From university: Friday, December 4th."),
+("SEMESTER_START", "Wednesday, August 19"),
+("SEMESTER_END", "Friday, December 11"),
+("BREAK","Monday through Friday, November 23 through 27."),
+("FINALS", "Monday through Friday, December 7 through December 11."),
+("REGISTRATION","Come back to this!!"),
+("GRADUATION","Friday, December 11 and Saturday, December 12.");
 insert into TrainingQuestions (question, cat, slot, label) values
 ("When is faculty report?","important_date","faculty report","FACULTY_REPORT"),
 ("When do I need to turn in the faculty report?","important_date","faculty report","FACULTY_REPORT"),
 ("When is the faculty report due?","important_date","faculty report","FACULTY_REPORT"),
-("When is curriculum study?","important_date","curriculum study","CURRICULUM_STUDY"),
-("When do I need to go to the curriculum study","important_date","curriculum study","CURRICULUM_STUDY"),
-("Is there a curriculum study?","important_date","curriculum study","CURRICULUM_STUDY"),
 ("When do residence halls open up?","important_date","residence halls","OPEN_RESIDENCE_HALLS"),
 ("When can I move in?","important_date","move in","OPEN_RESIDENCE_HALLS"),
 ("When do the dorms open up?","important_date","dorms open","OPEN_RESIDENCE_HALLS"),
