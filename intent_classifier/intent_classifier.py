@@ -153,7 +153,7 @@ class IntentClassifier:
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
 
-        model = self.create_model(vocab_size, max_length, catlength)
+        model = self.create_model(vocab_size, max_length, len(unique_intent))
 
         model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"])
         model.summary()
@@ -226,7 +226,7 @@ class IntentClassifier:
         return ""
 
     def answer(self, text):
-        model = load_model("model.h5")
+        model = load_model("cs_helper/model.h5") # GGRRRRRR
         pred = self.predictions(text, model)
         unique_intent = self.load_dataset("uniqueintents")
         self.get_final_output(pred, unique_intent)

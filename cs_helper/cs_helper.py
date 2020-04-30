@@ -64,7 +64,7 @@ def corefunc():
 
 if __name__ == "__main__":
 
-    loaded = load_model("../model.h5")
+    loaded = load_model("cs_helper/model.h5")
 
     # Add a lock so this runs first
     speech_thread = threading.Thread(target=speechfunc)
