@@ -4,7 +4,7 @@ insert into Categories values
 ("location"),
 ("professor"),
 ("course"),
-("cs_department"),
+("cs_department");
 insert into UserRoles values
 ("administrator"),
 ("developer");
