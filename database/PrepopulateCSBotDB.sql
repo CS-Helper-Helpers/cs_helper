@@ -86,7 +86,6 @@ insert into TrainingQuestions (question, cat, slot, label) values
 ("I was wondering when the beginning of the semester is.","important_date","beginning of the semester","SEMESTER_START"),
 ("Which day does the semester start?","important_date","semester start","SEMESTER_START"),
 ("What date does the semester start on?","important_date","semester start","SEMESTER_START"),
-("When does school start?","important_date","school start","SEMESTER_START"),
 ("What day does school start?","important_date","school start","SEMESTER_START"),
 ("What is the first day of class?","important_date","first day of class","SEMESTER_START"),
 ("What day do classes start?","important_date","classes start","SEMESTER_START"),
