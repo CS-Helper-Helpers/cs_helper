@@ -147,5 +147,5 @@ insert into TrainingQuestions (question, cat, slot, label) values
 ("When is graduation?","important_date","graduation?","GRADUATION"),
 ("What day is graduation?","important_date","graduation","GRADUATION"),
 ("When does graduation start?","important_date","graduation","GRADUATION"),
-("What time is graduation?","important_date","graduation","GRADUATION")
-("Where is the bathroom?","location","bathroom","BATHROOM"),
+("What time is graduation?","important_date","graduation","GRADUATION"),
+("Where is the bathroom?","location","bathroom","BATHROOM")
