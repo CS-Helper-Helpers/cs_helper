@@ -34,7 +34,7 @@ insert into TrainingQuestions (question, cat) values
 ("When is New Years?","important_date","New Years","HOLIDAY"),
 ("Are you open for New Years Day?","important_date","New Years Day","HOLIDAY"),
 ("Are you open for New Years?","important_date","New Years","HOLIDAY"),
-("Is the university closed for New Year's Day?","important_date","New Year's Day","HOLIDAY"),
+("Is the university closed for New Years Day?","important_date","New Year's Day","HOLIDAY"),
 ("Is the university closed for New Years?","important_date","New Years","HOLIDAY"),
 ("When is Martin Luther King day?","important_date","Martin Luther King","HOLIDAY"),
 ("When is MLK day?","important_date","MLK","HOLIDAY"),
