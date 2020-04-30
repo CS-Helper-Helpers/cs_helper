@@ -71,3 +71,8 @@ create table Users (
   primary key (userid),
   foreign key (userrole) references UserRoles(rolename) on update cascade on delete cascade
 );
+create table ImportantDates (
+  important_event varchar(128) not null unique,
+  event_date varchar(128) not null,
+  primary key (important_event)
+);
