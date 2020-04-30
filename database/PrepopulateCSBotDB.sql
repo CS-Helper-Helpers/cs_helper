@@ -39,7 +39,7 @@ insert into TrainingQuestions (question, cat) values
 ("When is Martin Luther King day?","important_date","Martin Luther King","HOLIDAY"),
 ("When is MLK day?","important_date","MLK","HOLIDAY"),
 ("When is Martin Luther King Junior day?","important_date","Martin Luther King Junior","HOLIDAY"),
-("Are you open for Martin Luther King's day?","important_date","Martin Luther King","HOLIDAY",)
+("Are you open for Martin Luther King's day?","important_date","Martin Luther King","HOLIDAY"),
 ("Are you open for MLK?","important_date","MLK","HOLIDAY"),
 ("Is the university closed for MLK day?","important_date","MLK","HOLIDAY"),
 ("Is the university closed for MLK junior day?","important_date","MLK","HOLIDAY"),
