@@ -24,6 +24,7 @@ setup(name='CS Helper',
           'gtts',
           'tensorflow',
           'nltk',
+          'mysql'
       ],
       zip_safe=False,
 
