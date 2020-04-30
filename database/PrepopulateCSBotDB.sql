@@ -14,7 +14,7 @@ insert into Users (username, userrole) values
 ("amart16", "developer"),
 ("czbaker", "developer"),
 ("stran", "administrator");
-insert into TrainingQuestions (question, cat) values
+insert into TrainingQuestions (question, cat, slot, label) values
 ("When is faculty report?","important_date","faculty report","FACULTY_REPORT"),
 ("When do I need to turn in the faculty report?","important_date","faculty report","FACULTY_REPORT"),
 ("When is the faculty report due?","important_date","faculty report","FACULTY_REPORT"),
