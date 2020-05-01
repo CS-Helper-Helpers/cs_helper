@@ -5,16 +5,15 @@ import speech_recognition as sr
 from flask import Flask, request
 from twilio.twiml.voice_response import VoiceResponse, Record, Gather
 from twilio.rest import Client
-from openpyxl.styles import Font
 from intent_classifier import IntentClassifier
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
 
 full_path = ''
 text = ''
 ic = IntentClassifier()
-ic.train_model()
+loaded = load_model("model.h5")
 
 @app.route('/')
 def index():
@@ -76,7 +75,6 @@ def getrecording():
         audio = r.record(source)                        # extract audio data from the file
 
     text = r.recognize_google(audio, language="en-US")
-    resp.pause(length=10)
     resp.redirect('/passString')
     client.recordings(recSID).delete()
     return str(resp)
@@ -90,9 +88,12 @@ def passString():
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action = '/validation')
     
+    resp.pause(length=30)
+    
     try:
         answer = ic.answer(text)
         resp.say(str(answer))
+        print(answer)
     except:
         resp.say("An error occured while processing your question")        
     gather.say("Is this response satisfactory? Press 1 for yes, 2 for no.")
