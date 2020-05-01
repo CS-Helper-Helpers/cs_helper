@@ -25,6 +25,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
+from slots.find_chunks import chunk_important_date
 
 class IntentClassifier:
 
@@ -209,18 +210,51 @@ class IntentClassifier:
  
         return ""
 
+    def query_database(self, doc):
+        entity_list = []
+        for ent in doc.ents:
+            entity_list.append((ent.label_, ent.text))
+
+    
+        engine = db.getBotDBEngine()
+        
+        query = "select event_date, important_event from ImportantDates where important_event = '{}'".format(ent.label_)
+        df = pd.read_sql_query(query, con = engine)
+        #print(df)
+
+        if df.empty:
+            # then we did not get a result
+            return None
+        else:
+            # then return the result found
+            return df
+
+    
+
     def chunk_utterance(self, intent, utterance):
         """ chunk_utterance finds variable slots """
         print("In chunk utterance")
+        print("Utterance: ", utterance, "\tIntent: ", intent)
         chunks = []
         if intent == "important_date":
+            print("in important date chunk")
+            doc = chunk_important_date(utterance)
+            print("Entities in '%s'" % utterance)
+            for ent in doc.ents:
+                print(ent.label_, ent.text)
+
+            result = self.query_database(doc)
+            print("Found a result of: ", result)
+            return result
+
+        elif intent == "course":
             pass
-        if intent == "course":
+        elif intent == "professor":
             pass
-        if intent == "professor":
+        elif intent == "location":
             pass
-        if intent == "location":
-            pass
+        else:
+            print("intent didn't match")
         return chunks
 
     def answer(self, text):
@@ -239,5 +273,18 @@ class IntentClassifier:
         unique_intent = self.load_dataset("uniqueintents")
         print(pred, unique_intent)
 
-        # Get final output
-        self.get_final_output(text, pred, unique_intent)
+        # Sort predictions
+        predictions = pred[0]
+        classes = np.array(unique_intent)
+        ids = np.argsort(-predictions)
+        classes = classes[ids]
+        predictions = -np.sort(-predictions)
+    
+        for i in range(pred.shape[1]):
+            print("%s has confidence = %s" % (classes[i], (predictions[i])))
+            result = self.chunk_utterance(classes[i], text)
+            if result is not None:
+                break
+            # now we query database for an answer
+            # if an answer is found, we break out of this loop
+            # else we go to the next intent category ?? maybe break early given low confidence

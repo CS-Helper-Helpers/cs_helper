@@ -28,7 +28,7 @@ import random
 from pathlib import Path
 import spacy
 from spacy.util import minibatch, compounding
-from important_date_data import get_data
+from .important_date_data import get_data
 
 
 
