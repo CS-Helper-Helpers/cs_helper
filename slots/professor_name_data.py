@@ -20,8 +20,12 @@ def get_data():
         "Roopa Vishwanathan",
         "Tao Wang",
         "Shah Muhammad Hamdi",
-        "Shaun Cooper",
         "Esther Steiner",
+        "Shaun H. Cooper",
+        "Roger Hartley",
+        "Hing Leung",
+        "Hue McCoy",
+        "Joseph Pfeiffer",
     ]
     PROFESSOR_NAME_LABEL = "PROFESSOR_NAME"
     PROFESSOR_NAME_TRAIN_DATA = []

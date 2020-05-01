@@ -33,7 +33,8 @@ setup(
         "PyAudio",
         "pymysql",
         "plac",
-        "spacy"
+        "spacy",
+        "kivy",
     ],
     zip_safe=False,
     test_suite="nose.collector",
