@@ -5,226 +5,282 @@ def get_substring_label_truple(intent, label_indicator, label):
 
 
 def get_data():
-
-    OFFICE_HOURS_LABEL = "OFFICE_HOURS"
-    OFFICE_HOURS_TRAIN_DATA = [
-        (
-            "When are <X> office hours?",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "When are <X> office hours?", "office hours", OFFICE_HOURS_LABEL
-                    )
-                ]
-            },
-        ),
-        (
-            "Does <X> have any available office hours this week?",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "Does <X> have any available office hours this week?",
-                        "office hours",
-                        OFFICE_HOURS_LABEL,
-                    )
-                ]
-            },
-        ),
-        (
-            "What are <X> office hours",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "What are <X> office hours", "office hours", OFFICE_HOURS_LABEL
-                    )
-                ]
-            },
-        ),
-        (
-            "Is <X> available to meet",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "Is <X> available to meet", "available", OFFICE_HOURS_LABEL
-                    )
-                ]
-            },
-        ),
-        (
-            "Does <X> have any available office hours this week?",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "Does <X> have any available office hours this week?",
-                        "office hours",
-                        OFFICE_HOURS_LABEL,
-                    )
-                ]
-            },
-        ),
-        (
-            "What time is <X> office hours",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "What time is <X> office hours",
-                        "office hours",
-                        OFFICE_HOURS_LABEL,
-                    )
-                ]
-            },
-        ),
-        (
-            "can <x> meet with me today",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "can <x> meet with me today", "meet", OFFICE_HOURS_LABEL
-                    )
-                ]
-            },
-        ),
+    PROFESSOR_NAMES = [
+        "Son Tran",
+        "Enrico Pontelli",
+        "Huiping Cao",
+        "Jonathan Cook",
+        "Bill Hamilton",
+        "Tuan Le",
+        "Satyajayant Misra",
+        "Parth Nagarkar",
+        "Inna Pivkina",
+        "Joe Song",
+        "Z O. Toups",
+        "Roopa Vishwanathan",
+        "Tao Wang",
+        "Shah Muhammad Hamdi",
+        "Shaun Cooper",
+        "Esther Steiner",
     ]
 
-    OFFICE_LOCATION_LABEL = "OFFICE_LOCATION"
-    OFFICE_LOCATION_TRAIN_DATA = [
-        (
-            "What room is <X> in?",
+    for prof in PROFESSOR_NAMES:
+        OFFICE_HOURS_LABEL = "OFFICE_HOURS"
+        OFFICE_HOURS_TRAIN_DATA = []
+
+        my_tuple = (
+            "When are " + prof + " office hours?",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "What room is <X> in?", "what room", OFFICE_LOCATION_LABEL
+                        "When are " + prof + " office hours?",
+                        "office hours",
+                        OFFICE_HOURS_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "Where is <X> office?",
+        )
+        OFFICE_HOURS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Does " + prof + " have any available office hours this week?",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "Where is <X> office?", "office", OFFICE_LOCATION_LABEL,
+                        "Does " + prof + " have any available office hours this week?",
+                        "office hours",
+                        OFFICE_HOURS_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "Does <X> have an office in this building",
+        )
+        OFFICE_HOURS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "What are " + prof + " office hours",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "Does <X> have an office in this building",
+                        "What are " + prof + " office hours",
+                        "office hours",
+                        OFFICE_HOURS_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_HOURS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Is " + prof + " available to meet",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "Is " + prof + " available to meet",
+                        "available",
+                        OFFICE_HOURS_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_HOURS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Does " + prof + " have any available office hours this week?",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "Does " + prof + " have any available office hours this week?",
+                        "office hours",
+                        OFFICE_HOURS_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_HOURS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "What time is " + prof + " office hours",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "What time is " + prof + " office hours",
+                        "office hours",
+                        OFFICE_HOURS_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_HOURS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "can " + prof + " meet with me today",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "can " + prof + " meet with me today",
+                        "meet",
+                        OFFICE_HOURS_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_HOURS_TRAIN_DATA.append(my_tuple)
+
+        OFFICE_LOCATION_LABEL = "OFFICE_LOCATION"
+        OFFICE_LOCATION_TRAIN_DATA = []
+        my_tuple = (
+            "What room is " + prof + " in?",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "What room is " + prof + " in?",
+                        "what room",
+                        OFFICE_LOCATION_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_LOCATION_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Where is " + prof + " office?",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "Where is " + prof + " office?",
                         "office",
                         OFFICE_LOCATION_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "Where can I find <X>?",
+        )
+        OFFICE_LOCATION_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Does " + prof + " have an office in this building",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "Where can I find <X>?", "Where", OFFICE_LOCATION_LABEL
-                    )
-                ]
-            },
-        ),
-        (
-            "Do you know where <X> office is?",
-            {
-                "entities": [
-                    get_substring_label_truple(
-                        "Do you know where <X> office is?",
+                        "Does " + prof + " have an office in this building",
                         "office",
                         OFFICE_LOCATION_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "What's <X> room number",
+        )
+        OFFICE_LOCATION_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Where can I find " + prof + "?",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "What's <X> room number", "room number", OFFICE_LOCATION_LABEL
+                        "Where can I find " + prof + "?",
+                        "Where",
+                        OFFICE_LOCATION_LABEL,
                     )
                 ]
             },
-        ),
-    ]
+        )
+        OFFICE_LOCATION_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Do you know where " + prof + " office is?",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "Do you know where " + prof + " office is?",
+                        "office",
+                        OFFICE_LOCATION_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_LOCATION_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "What's " + prof + " room number",
+            {
+                "entities": [
+                    get_substring_label_truple(
+                        "What's " + prof + " room number",
+                        "room number",
+                        OFFICE_LOCATION_LABEL,
+                    )
+                ]
+            },
+        )
+        OFFICE_LOCATION_TRAIN_DATA.append(my_tuple)
 
-    CONTACT_INFO_LABEL = "CONTACT_INFO"
-    CONTACT_INFO_TRAIN_DATA = [
-        (
-            "How can I reach <x>",
+        CONTACT_INFO_LABEL = "CONTACT_INFO"
+        CONTACT_INFO_TRAIN_DATA = []
+        my_tuple = (
+            "How can I reach " + prof + "",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "How can I reach <x>", "reach", CONTACT_INFO_LABEL
+                        "How can I reach " + prof + "", "reach", CONTACT_INFO_LABEL
                     )
                 ]
             },
-        ),
-        (
-            "Can I get the email address for <X>?",
+        )
+        CONTACT_INFO_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Can I get the email address for " + prof + "?",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "Can I get the email address for <X>?",
+                        "Can I get the email address for " + prof + "?",
                         "email",
                         CONTACT_INFO_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "What is <X> phone number",
+        )
+        CONTACT_INFO_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "What is " + prof + " phone number",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "What is <X> phone number", "phone number", CONTACT_INFO_LABEL
+                        "What is " + prof + " phone number",
+                        "phone number",
+                        CONTACT_INFO_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "How can a get a hold of <X>?",
+        )
+        CONTACT_INFO_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "How can a get a hold of " + prof + "?",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "How can a get a hold of <X>?", "hold of", CONTACT_INFO_LABEL
+                        "How can a get a hold of " + prof + "?",
+                        "hold of",
+                        CONTACT_INFO_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "Can I have <X> contact info",
+        )
+        CONTACT_INFO_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "Can I have " + prof + " contact info",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "Can I have <X> contact info",
+                        "Can I have " + prof + " contact info",
                         "contact info",
                         CONTACT_INFO_LABEL,
                     )
                 ]
             },
-        ),
-        (
-            "I need to call <X>",
+        )
+        CONTACT_INFO_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
+            "I need to call " + prof + "",
             {
                 "entities": [
                     get_substring_label_truple(
-                        "I need to call <X>", "call", CONTACT_INFO_LABEL
+                        "I need to call " + prof + "", "call", CONTACT_INFO_LABEL
                     )
                 ]
             },
-        ),
-    ]
+        )
+        CONTACT_INFO_TRAIN_DATA.append(my_tuple)
 
-    PROFESSOR_ACTIONS_LABEL = "PROFESSOR_ACTIONS"
-    PROFESSOR_ACTIONS_TRAIN_DATA = [
-        (
+        PROFESSOR_ACTIONS_LABEL = "PROFESSOR_ACTIONS"
+        PROFESSOR_ACTIONS_TRAIN_DATA = []
+        my_tuple = (
             "Can I reserve a room?",
             {
                 "entities": [
@@ -233,8 +289,9 @@ def get_data():
                     )
                 ]
             },
-        ),
-        (
+        )
+        PROFESSOR_ACTIONS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
             "Can I reserve room X?",
             {
                 "entities": [
@@ -243,8 +300,9 @@ def get_data():
                     )
                 ]
             },
-        ),
-        (
+        )
+        PROFESSOR_ACTIONS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
             "Can you reserve room X for me?",
             {
                 "entities": [
@@ -255,8 +313,9 @@ def get_data():
                     )
                 ]
             },
-        ),
-        (
+        )
+        PROFESSOR_ACTIONS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
             "What do I do for a substitution?",
             {
                 "entities": [
@@ -267,8 +326,9 @@ def get_data():
                     )
                 ]
             },
-        ),
-        (
+        )
+        PROFESSOR_ACTIONS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
             "What do I do for a class substitution?",
             {
                 "entities": [
@@ -279,8 +339,9 @@ def get_data():
                     )
                 ]
             },
-        ),
-        (
+        )
+        PROFESSOR_ACTIONS_TRAIN_DATA.append(my_tuple)
+        my_tuple = (
             "What do I do for a course substitution?",
             {
                 "entities": [
@@ -291,8 +352,9 @@ def get_data():
                     )
                 ]
             },
-        ),
-    ]
+        )
+
+        PROFESSOR_ACTIONS_TRAIN_DATA.append(my_tuple)
 
     PROFESSOR_TRAIN_DATA = []
     PROFESSOR_TRAIN_DATA.extend(OFFICE_HOURS_TRAIN_DATA)
