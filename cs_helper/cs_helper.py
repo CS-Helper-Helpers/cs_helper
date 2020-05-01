@@ -14,6 +14,7 @@ from intent_classifier.intent_classifier import IntentClassifier
 
 text = ""
 
+
 def speechfunc():
 
     global text
@@ -58,7 +59,7 @@ if __name__ == "__main__":
 
     print(os.getcwd())
 
-    loaded = load_model("cs_helper/model.h5")
+    loaded = load_model("model.h5")
 
     speech_thread = threading.Thread(target=speechfunc)
     text_thread = threading.Thread(target=textfunc)
