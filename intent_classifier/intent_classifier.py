@@ -210,15 +210,19 @@ class IntentClassifier:
  
         return ""
 
-    def query_database(self, doc):
+    def query_database(self, intent_cat_class, doc):
         entity_list = []
         for ent in doc.ents:
             entity_list.append((ent.label_, ent.text))
 
     
         engine = db.getBotDBEngine()
-        
-        query = "select event_date, important_event from ImportantDates where important_event = '{}'".format(ent.label_)
+
+        # Fix cat_class names in model to match table names in DB
+        if intent_cat_class == "important_date":
+            intent_cat_class = "ImportantDates"
+
+        query = "select event_date, important_event from {0} where important_event = '{1}'".format(intent_cat_class, ent.label_)
         df = pd.read_sql_query(query, con = engine)
         #print(df)
 
@@ -233,20 +237,15 @@ class IntentClassifier:
 
     def chunk_utterance(self, intent, utterance):
         """ chunk_utterance finds variable slots """
-        print("In chunk utterance")
-        print("Utterance: ", utterance, "\tIntent: ", intent)
-        chunks = []
+        #print("In chunk utterance")
+        #print("Utterance: ", utterance, "\tIntent: ", intent)
+
         if intent == "important_date":
-            print("in important date chunk")
+            #print("in important date chunk")
             doc = chunk_important_date(utterance)
-            print("Entities in '%s'" % utterance)
-            for ent in doc.ents:
-                print(ent.label_, ent.text)
-
-            result = self.query_database(doc)
-            print("Found a result of: ", result)
-            return result
-
+            #print("Entities in '%s'" % utterance)
+            #for ent in doc.ents:
+            #    print(ent.label_, ent.text)
         elif intent == "course":
             pass
         elif intent == "professor":
@@ -255,7 +254,7 @@ class IntentClassifier:
             pass
         else:
             print("intent didn't match")
-        return chunks
+        return doc
 
     def answer(self, text):
         print("In answer")
@@ -281,10 +280,19 @@ class IntentClassifier:
         predictions = -np.sort(-predictions)
     
         for i in range(pred.shape[1]):
+            # Iterate through the classifications until a db query
+            # is found. If we find a result, we clean it and return it.
+            # Else, we look through the result with the next highest confidence.
+
             print("%s has confidence = %s" % (classes[i], (predictions[i])))
-            result = self.chunk_utterance(classes[i], text)
-            if result is not None:
-                break
-            # now we query database for an answer
-            # if an answer is found, we break out of this loop
-            # else we go to the next intent category ?? maybe break early given low confidence
+            doc = self.chunk_utterance(classes[i], text)
+
+            df_result = self.query_database(classes[i], doc)
+
+            if df_result is not None:
+                #print("Found a result: \n", df_result)
+                
+                # clean and return string response
+                answer = df_result['event_date'][0] # Will need to fix later
+                return answer
+            
