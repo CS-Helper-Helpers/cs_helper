@@ -14,7 +14,7 @@ setup(name='CS Helper',
       packages=[
           'cs_helper',
           'database',
-          'gui',
+          #'gui',
           'input',
           'intent_classifier',
           'phone',
