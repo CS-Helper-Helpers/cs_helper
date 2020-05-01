@@ -163,7 +163,7 @@ class IntentClassifier:
         )
         model.summary()
 
-        filename = "model.h5"
+        filename = "cs_helper/model.h5"
         checkpoint = ModelCheckpoint(
             filename, monitor="val_loss", verbose=0, save_best_only=True, mode="min"
         )
@@ -274,7 +274,7 @@ class IntentClassifier:
         print("In answer")
 
         # Load model
-        model = load_model("model.h5")  # GGRRRRRR
+        model = load_model("cs_helper/model.h5")  # GGRRRRRR
 
         # Get predicted intent category classification of uterrance
         pred = self.predictions(text, model)
