@@ -9,8 +9,8 @@ URL = "https://www.cs.nmsu.edu/wp/people/faculty/"
 
 page = requests.get(URL)
 soup = BeautifulSoup(page.content, "html.parser")
-results = soup.find(id="awsm-team-5096")
-# print(results.prettify())
+results = soup.find(class_="entry-content")
+print(results.prettify())
 
 # COURSES
 # job_elems = results.find_all("p", class_="courseblocktitle noindent")
@@ -24,7 +24,27 @@ results = soup.find(id="awsm-team-5096")
 #     print(course_title)
 
 # PROF NAMES
-job_elems = results.find_all("div", class_="awsm-personal-info")
+job_elems = results.find_all("div", class_="awsm-details")
 for job_elem in job_elems:
-    prof_names = job_elem.find("h3")
-    print(prof_names.text)
+    print("Start")
+    print(job_elem.text)
+    print("stop")
+
+
+# # PROF PHONE
+# job_elems = results.find_all("div", class_="awsm-personal-info")
+# for job_elem in job_elems:
+#     prof_names = job_elem.find("h3")
+#     print(prof_names.text)
+
+# # PROF EMAIL
+# job_elems = results.find_all("div", class_="awsm-personal-info")
+# for job_elem in job_elems:
+#     prof_names = job_elem.find("h3")
+#     print(prof_names.text)
+
+# # PROF OFFICE
+# job_elems = results.find_all("div", class_="awsm-personal-info")
+# for job_elem in job_elems:
+#     prof_names = job_elem.find("h3")
+#     print(prof_names.text)
