@@ -4,13 +4,12 @@ import speech_recognition as sr
 
 from flask import Flask, request
 from twilio.twiml.voice_response import VoiceResponse, Record, Gather
+from twilio.rest import Client
 from openpyxl.styles import Font
 from intent_classifier import IntentClassifier
 from tensorflow.keras.models import Sequential, load_model
 
 app = Flask(__name__)
-
-loaded = load_model("../app/model.h5")
 
 full_path = ''
 text = ''
@@ -51,6 +50,11 @@ def voice():
 def getrecording(): 
     global text
     global full_path
+    
+    account_sid = os.environ['TWILIO_ACCOUNT_SID']
+    auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    client = Client(account_sid, auth_token)
+    
     recSID = request.form.get('RecordingSid')
     recURL = request.form.get('RecordingUrl') + '.wav'
     
@@ -71,8 +75,10 @@ def getrecording():
     with sr.WavFile(full_path) as source:              # use "test.wav" as the audio source
         audio = r.record(source)                        # extract audio data from the file
 
-    text = r.recognize_google(audio)
+    text = r.recognize_google(audio, language="en-US")
+    resp.pause(length=10)
     resp.redirect('/passString')
+    client.recordings(recSID).delete()
     return str(resp)
 
 
@@ -80,11 +86,10 @@ def getrecording():
 def passString():
     global text
     global ic
+    
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action = '/validation')
     
-    resp.pause(length=20)
-      
     try:
         answer = ic.answer(text)
         resp.say(str(answer))
@@ -93,6 +98,7 @@ def passString():
     gather.say("Is this response satisfactory? Press 1 for yes, 2 for no.")
     resp.append(gather)
     resp.redirect('/voice')
+    os.remove(full_path)
     return str(resp)
 
 
@@ -118,7 +124,6 @@ def validation():
 
     resp.hangup()
     wrongQs_file.close()
-    os.remove(full_path)
     return str(resp)
 
 @app.route("/newQuestion", methods=['POST'])
