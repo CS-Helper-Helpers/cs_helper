@@ -229,16 +229,17 @@ class IntentClassifier:
         for ent in doc.ents:
             entity_list.append((ent.label_, ent.text))
 
-    
         engine = db.getBotDBEngine()
 
         # Fix cat_class names in model to match table names in DB
         if intent_cat_class == "important_date":
             intent_cat_class = "ImportantDates"
 
-        query = "select event_date, important_event from {0} where important_event = '{1}'".format(intent_cat_class, ent.label_)
-        df = pd.read_sql_query(query, con = engine)
-        #print(df)
+        query = "select event_date, important_event from {0} where important_event = '{1}'".format(
+            intent_cat_class, ent.label_
+        )
+        df = pd.read_sql_query(query, con=engine)
+        # print(df)
 
         if df.empty:
             # then we did not get a result
@@ -247,18 +248,16 @@ class IntentClassifier:
             # then return the result found
             return df
 
-    
-
     def chunk_utterance(self, intent, utterance):
         """ chunk_utterance finds variable slots """
-        #print("In chunk utterance")
-        #print("Utterance: ", utterance, "\tIntent: ", intent)
+        # print("In chunk utterance")
+        # print("Utterance: ", utterance, "\tIntent: ", intent)
 
         if intent == "important_date":
-            #print("in important date chunk")
+            # print("in important date chunk")
             doc = chunk_important_date(utterance)
-            #print("Entities in '%s'" % utterance)
-            #for ent in doc.ents:
+            # print("Entities in '%s'" % utterance)
+            # for ent in doc.ents:
             #    print(ent.label_, ent.text)
         elif intent == "course":
             pass
@@ -290,9 +289,10 @@ class IntentClassifier:
         predictions = pred[0]
         classes = np.array(unique_intent)
         ids = np.argsort(-predictions)
+        print(ids)
         classes = classes[ids]
         predictions = -np.sort(-predictions)
-    
+
         for i in range(pred.shape[1]):
             # Iterate through the classifications until a db query
             # is found. If we find a result, we clean it and return it.
@@ -304,9 +304,8 @@ class IntentClassifier:
             df_result = self.query_database(classes[i], doc)
 
             if df_result is not None:
-                #print("Found a result: \n", df_result)
-                
+                # print("Found a result: \n", df_result)
+
                 # clean and return string response
-                answer = df_result['event_date'][0] # Will need to fix later
+                answer = df_result["event_date"][0]  # Will need to fix later
                 return answer
-            
