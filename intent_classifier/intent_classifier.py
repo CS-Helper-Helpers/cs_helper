@@ -25,7 +25,12 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
-from slots.find_chunks import chunk_important_date
+from slots.find_chunks import (
+    chunk_important_date,
+    chunk_course,
+    chunk_professor,
+    chunk_professor_name,
+)
 
 
 class IntentClassifier:
@@ -163,7 +168,7 @@ class IntentClassifier:
         )
         model.summary()
 
-        filename = "cs_helper/model.h5"
+        filename = "model.h5"
         checkpoint = ModelCheckpoint(
             filename, monitor="val_loss", verbose=0, save_best_only=True, mode="min"
         )
