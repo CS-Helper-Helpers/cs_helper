@@ -25,12 +25,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
-from slots.find_chunks import (
-    chunk_important_date,
-    chunk_course,
-    chunk_professor,
-    chunk_professor_name,
-)
+from slots.find_chunks import chunk_important_date, chunk_course, chunk_professor
 
 
 class IntentClassifier:
@@ -168,7 +163,7 @@ class IntentClassifier:
         )
         model.summary()
 
-        filename = "model.h5"
+        filename = "cs_helper/model.h5"
         checkpoint = ModelCheckpoint(
             filename, monitor="val_loss", verbose=0, save_best_only=True, mode="min"
         )
@@ -240,9 +235,24 @@ class IntentClassifier:
         if intent_cat_class == "important_date":
             intent_cat_class = "ImportantDates"
 
-        query = "select event_date, important_event from {0} where important_event = '{1}'".format(
-            intent_cat_class, ent.label_
-        )
+            query = "select event_date, important_event from {0} where important_event = '{1}'".format(
+                intent_cat_class, ent.label_
+            )
+        elif intent_cat_class == "professor":
+            intent_cat_class = "Professors"
+
+            query = "select * from {0} where prof_name like '%{1}%'".format(
+                intent_cat_class, ent.label_
+            )
+        elif intent_cat_class == "course":
+            intent_cat_class = "Course"
+
+            query = "select * from {0} where subj like '%{1}%' or crse like '%{1}%'".format(
+                intent_cat_class, ent.label_
+            )
+        else:
+            query = ""
+
         df = pd.read_sql_query(query, con=engine)
         # print(df)
 
@@ -265,9 +275,9 @@ class IntentClassifier:
             # for ent in doc.ents:
             #    print(ent.label_, ent.text)
         elif intent == "course":
-            pass
+            doc = chunk_course(utterance)
         elif intent == "professor":
-            pass
+            doc = chunk_professor(utterance)
         elif intent == "location":
             pass
         else:

@@ -202,7 +202,7 @@ INSERT INTo Professors (prof_name, email, phone, office) VALUES
 ("Jonathan Cook", "joncook at nmsu dot edu", "(575) 646-6243", "SH 165"),
 ("Bill Hamilton", "not listed", "(575) 646-3234", "SH 150"),
 ("Tuan Le", "tuanle at nmsu dot edu", "(575) 646-3234", "SH 149"),
-("Satyajayant Misra", "misra at cs dot nmsu dot edu\t", "(575) 646-6256", "SH 148"),
+("Satyajayant Misra", "misra at cs dot nmsu dot edu", "(575) 646-6256", "SH 148"),
 ("Parth Nagarkar", "nagarkar at nmsu dot edu", "(575) 646-5666", "SH 173"),
 ("Inna Pivkina", "ipivkina at cs dot nmsu dot edu", "(575) 646-6237", "SH 172"),
 ("Joe Song", "joemsong at cs dot nmsu dot edu", "(575) 646-4299", "SH 141"),
