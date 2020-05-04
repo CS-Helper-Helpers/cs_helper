@@ -57,8 +57,6 @@ def corefunc():
 
 if __name__ == "__main__":
 
-    print(os.getcwd())
-
     loaded = load_model("cs_helper/model.h5")
 
     speech_thread = threading.Thread(target=speechfunc)
