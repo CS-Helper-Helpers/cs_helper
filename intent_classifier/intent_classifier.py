@@ -99,7 +99,7 @@ class IntentClassifier:
     def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
         model.add(Embedding(vocab_size, 128, input_length=max_length, trainable=False))
-        model.add(Bidirectional(LSTM(128)))
+        model.add(Bidirectional(LSTM(128, activation='sigmoid')))
         #   model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
