@@ -28,7 +28,7 @@ import random
 from pathlib import Path
 import spacy
 from spacy.util import minibatch, compounding
-from professor_name_data import get_data
+from slots.professor_name_data import get_data
 
 
 def test_model(nlp):

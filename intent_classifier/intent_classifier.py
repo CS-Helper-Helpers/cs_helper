@@ -221,40 +221,41 @@ class IntentClassifier:
     def query_database(self, intent_cat_class, doc):
         entity_list = []
         for ent in doc.ents:
+            print("ent: ", ent)
             entity_list.append((ent.label_, ent.text))
 
-        engine = db.getBotDBEngine()
+            engine = db.getBotDBEngine()
 
-        # Fix cat_class names in model to match table names in DB
-        if intent_cat_class == "important_date":
-            intent_cat_class = "ImportantDates"
+            # Fix cat_class names in model to match table names in DB
+            if intent_cat_class == "important_date":
+                intent_cat_class = "ImportantDates"
 
-            query = "select event_date, important_event from {0} where important_event = '{1}'".format(
-                intent_cat_class, ent.label_
-            )
-        elif intent_cat_class == "professor":
-            intent_cat_class = "Professors"
+                query = "select event_date, important_event from {0} where important_event = '{1}'".format(
+                    intent_cat_class, ent.label_
+                )
+            elif intent_cat_class == "professor":
+                intent_cat_class = "Professors"
 
-            query = "select * from {0} where prof_name like '%{1}%'".format(
-                intent_cat_class, ent.label_
-            )
-        elif intent_cat_class == "course":
-            intent_cat_class = "Course"
+                query = "select * from {0} where prof_name like '%{1}%'".format(
+                    intent_cat_class, ent.label_
+                )
+            elif intent_cat_class == "course":
+                intent_cat_class = "Course"
 
-            query = "select * from {0} where subj like '%{1}%' or crse like '%{1}%'".format(
-                intent_cat_class, ent.label_
-            )
-        else:
-            query = ""
+                query = "select * from {0} where subj like '%{1}%' or crse like '%{1}%'".format(
+                    intent_cat_class, ent.label_
+                )
+            else:
+                query = ""
 
-        df = pd.read_sql_query(query, con=engine)
+            df = pd.read_sql_query(query, con=engine)
 
-        if df.empty:
-            # then we did not get a result
-            return None
-        else:
-            # then return the result found
-            return df
+            if df.empty:
+                # then we did not get a result
+                return None
+            else:
+                # then return the result found
+                return df
 
     def chunk_utterance(self, intent, utterance):
         """ chunk_utterance finds variable slots """
@@ -264,7 +265,6 @@ class IntentClassifier:
         if intent == "important_date":
             print("in important date chunk")
             doc = chunk_important_date(utterance)
-            print
             # print("Entities in '%s'" % utterance)
             # for ent in doc.ents:
             #    print(ent.label_, ent.text)
@@ -275,8 +275,10 @@ class IntentClassifier:
             print("professor chunk")
             doc = chunk_professor(utterance)
         elif intent == "location":
+            doc = chunk_course(utterance)  # TODO replace with location chunk
             print("location chunk")
         else:
+            doc = chunk_course(utterance)  # TODO replace with location chunk
             print("intent didn't match")
         return doc
 
@@ -284,7 +286,7 @@ class IntentClassifier:
         print("In answer")
 
         # Load model
-        model = load_model("intent_classifier/model.h5")  # GGRRRRRR
+        model = load_model("intent_classifier/model.h5")
 
         # Get predicted intent category classification of uterrance
         pred = self.predictions(text, model)
