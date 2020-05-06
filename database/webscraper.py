@@ -115,7 +115,9 @@ def printCourseInfo():
             df_clean.iloc[i]["Cred"] = 0
             df_clean.iloc[i]["Title"] = df_clean.iloc[i - 1]["Title"] + "-LAB"
 
-    print(df_clean.values.tolist())
+    pprint.pprint(df_clean.values.tolist())
 
 
 printCourseInfo()
+# printProf()
+# printCourseTitles()

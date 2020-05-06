@@ -37,6 +37,7 @@ class IntentClassifier:
     def load_dataset(self, piece=False):
 
         if not piece:
+            print("not piece")
             engine = db.getBotDBEngine()
             query = "select question as Sentence, cat as Intent from TrainingQuestions"
             df = pd.read_sql_query(query, con=engine)
