@@ -12,8 +12,10 @@ app = Flask(__name__)
 
 full_path = ''
 text = ''
+answer = ''
 ic = IntentClassifier()
-loaded = load_model("model.h5")
+#ic.train_model()
+loaded = load_model("../cs_helper/model.h5")
 
 @app.route('/')
 def index():
@@ -34,6 +36,7 @@ def index():
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </html>'''
 
+
 @app.route("/voice", methods=['POST'])
 def voice():
     resp = VoiceResponse()
@@ -47,7 +50,6 @@ def voice():
 
 @app.route("/getrecording", methods=['POST'])
 def getrecording(): 
-    global text
     global full_path
     
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
@@ -68,15 +70,29 @@ def getrecording():
             if chunk:
                 wav.write(chunk)
     full_path = os.path.join(os.getcwd(),file) 
+    client.recordings(recSID).delete()
+    
+    resp.redirect('transcribeAudio')
+    return str(resp)
+
+@app.route("/transcribeAudio", methods=['POST'])
+def transcribeAudio():
+    global text
+    resp = VoiceResponse()
     
     r = sr.Recognizer()
     audio = ''
     with sr.WavFile(full_path) as source:              # use "test.wav" as the audio source
         audio = r.record(source)                        # extract audio data from the file
 
-    text = r.recognize_google(audio, language="en-US")
-    resp.redirect('/passString')
-    client.recordings(recSID).delete()
+    try:
+        text = r.recognize_google(audio, language="en-US")
+        resp.redirect('/passString')
+    except:
+        resp.say("Unable to transcribe your audio.")
+        resp.say("Can you repeat your question?")
+        resp.record(timeout=2, action = "https://cshelper.ngrok.io/getRecording")
+    
     return str(resp)
 
 
@@ -84,18 +100,19 @@ def getrecording():
 def passString():
     global text
     global ic
+    global answer
     
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action = '/validation')
     
-    resp.pause(length=30)
+    resp.pause(length=10)
     
     try:
         answer = ic.answer(text)
-        resp.say(str(answer))
+        resp.say(answer)
         print(answer)
     except:
-        resp.say("An error occured while processing your question")        
+        resp.say("We were unable to find an answer to your question.")        
     gather.say("Is this response satisfactory? Press 1 for yes, 2 for no.")
     resp.append(gather)
     resp.redirect('/voice')
@@ -107,7 +124,7 @@ def passString():
 def validation():
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action = '/newQuestion')
-    wrongQs_file = open(r"WrongQuestions.txt", "a")
+    wrongQs_file = open(r"WrongQandAs.txt", "a")
     
     if 'Digits' in request.values:
         choice = request.values['Digits']
@@ -116,7 +133,8 @@ def validation():
             resp.say("Thank you for your response.")
         elif choice == '2':
             resp.say("We will log this response. Thank you for your call.")
-            wrongQs_file.write(text)
+            line = text + ", " + answer
+            wrongQs_file.write(line)
             wrongQs_file.write("\n")
         
         gather.say("Do you have another question? If so, press 1. Otherwise, please hang up")
@@ -126,6 +144,7 @@ def validation():
     resp.hangup()
     wrongQs_file.close()
     return str(resp)
+
 
 @app.route("/newQuestion", methods=['POST'])
 def newQuestion():
@@ -139,7 +158,7 @@ def newQuestion():
             resp.record(timeout=2, action = "https://cshelper.ngrok.io/getrecording")
     
     return str(resp)
-    
+
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8080))
