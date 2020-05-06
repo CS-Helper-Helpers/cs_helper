@@ -1695,3 +1695,4 @@ insert into TrainingQuestions (question, cat, slot, label) values
 ("Who is teaching C S 457?","course","C S 457","COURSE"),
 ("Do I need to take C S 457?","course","C S 457","COURSE"),
 ("IS C S 457 required to graduate?","course","C S 457","COURSE")
+("Where is the bathroom?", "location", "bathroom", "BATHROOM")

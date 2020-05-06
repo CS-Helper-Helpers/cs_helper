@@ -25,7 +25,8 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
-from slots.find_chunks import chunk_important_date, chunk_course, chunk_professor
+#
+# from slots.find_chunks import chunk_important_date, chunk_course, chunk_professor
 
 
 class IntentClassifier:
@@ -41,14 +42,20 @@ class IntentClassifier:
             query = "select question as Sentence, cat as Intent from TrainingQuestions"
             df = pd.read_sql_query(query, con=engine)
 
-            print(df.head())
+            #print(df.head())
             intent = df["Intent"]
             unique_intent = list(set(intent))
+            #query = "select category from Categories"
+            #df_ui = pd.read_sql_query(query, con=engine)
+            #unique_intent = list(df_ui['category'])
+            #print("Unique intent: ", unique_intent)
             sentences = list(df["Sentence"])
 
-            query = "select count(*) from Categories"
-            df = pd.read_sql_query(query, con=engine)
-            catlength = df.loc[0].at["count(*)"]
+            #query = "select count(*) from Categories"
+            #df = pd.read_sql_query(query, con=engine)
+            catlength = len(unique_intent)
+
+            print("\n\n\nunique_intent: ", unique_intent)
 
             return (intent, unique_intent, sentences, catlength)
 
@@ -93,7 +100,7 @@ class IntentClassifier:
         return pad_sequences(encoded_doc, maxlen=max_length, padding="post")
 
     def one_hot(self, encode):
-        o = OneHotEncoder(sparse=False)
+        o = OneHotEncoder(sparse=False, categories='auto')
         return o.fit_transform(encode)
 
     def create_model(self, vocab_size, max_length, catlength):
@@ -110,6 +117,11 @@ class IntentClassifier:
     def train_model(self):
 
         intent, unique_intent, sentences, catlength = self.load_dataset()
+
+        print("Intent: ", intent)
+        print("Unique intent: ", unique_intent)
+        print("Sentences: ", sentences)
+        print("cat length: ", catlength)
 
         nltk.download("stopwords")
         nltk.download("punkt")
@@ -156,7 +168,9 @@ class IntentClassifier:
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
 
-        model = self.create_model(vocab_size, max_length, len(unique_intent))
+        print("\n\n\nVOCAB SIZE: ", vocab_size, "MAX LENG: ", max_length, "CATLENG: ", catlength)
+
+        model = self.create_model(vocab_size, max_length, catlength)
 
         model.compile(
             loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
@@ -165,7 +179,11 @@ class IntentClassifier:
 
         filename = "cs_helper/model.h5"
         checkpoint = ModelCheckpoint(
-            filename, monitor="val_loss", verbose=0, save_best_only=True, mode="min"
+            filename, 
+            monitor="val_loss", 
+            verbose=0, 
+            save_best_only=True, 
+            mode="min"
         )
 
         model.fit(
@@ -279,8 +297,9 @@ class IntentClassifier:
         elif intent == "professor":
             doc = chunk_professor(utterance)
         elif intent == "location":
-            pass
+            doc = None # Fix after we get a doc added
         else:
+            doc = None
             print("intent didn't match")
         return doc
 
@@ -316,11 +335,18 @@ class IntentClassifier:
             print("%s has confidence = %s" % (classes[i], (predictions[i])))
             doc = self.chunk_utterance(classes[i], text)
 
-            df_result = self.query_database(classes[i], doc)
+            if doc is None:
+                return "I am still learning some things and cannot help with that right now."
 
-            if df_result is not None:
-                # print("Found a result: \n", df_result)
+            else:
+                df_result = self.query_database(classes[i], doc)
 
-                # clean and return string response
-                answer = df_result["event_date"][0]  # Will need to fix later
-                return answer
+                if df_result is not None:
+                    # print("Found a result: \n", df_result)
+
+                    # clean and return string response
+                    answer = df_result["event_date"][0]  # Will need to fix later
+                    return answer
+
+                else:
+                    return "I could not find an answer in the database for that question."
