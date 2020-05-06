@@ -32,12 +32,9 @@ class IntentClassifier:
     def __init__(self):
         self.hello = "hello"
 
-    # def __init__(self, *args, **kwargs):
-    #     super(IntentClassifier, self).__init__(*args, **kwargs)
     def load_dataset(self, piece=False):
 
         if not piece:
-            print("not piece")
             engine = db.getBotDBEngine()
             query = "select question as Sentence, cat as Intent from TrainingQuestions"
             df = pd.read_sql_query(query, con=engine)
@@ -76,15 +73,11 @@ class IntentClassifier:
         return words
 
     def create_tokenizer(self, words, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'):
-        """Create tokenizer
-        """
         token = Tokenizer(filters=filters)
         token.fit_on_texts(words)
         return token
 
     def get_max_length(self, words):
-        """Gets max length of a word
-        """
         return len(max(words, key=len))
 
     def encoding_doc(self, token, words):
@@ -164,7 +157,7 @@ class IntentClassifier:
         )
         model.summary()
 
-        filename = "cs_helper/model.h5"
+        filename = "intent_classifier/model.h5"
         checkpoint = ModelCheckpoint(
             filename, monitor="val_loss", verbose=0, save_best_only=True, mode="min"
         )
@@ -255,7 +248,6 @@ class IntentClassifier:
             query = ""
 
         df = pd.read_sql_query(query, con=engine)
-        # print(df)
 
         if df.empty:
             # then we did not get a result
@@ -270,17 +262,20 @@ class IntentClassifier:
         # print("Utterance: ", utterance, "\tIntent: ", intent)
 
         if intent == "important_date":
-            # print("in important date chunk")
+            print("in important date chunk")
             doc = chunk_important_date(utterance)
+            print
             # print("Entities in '%s'" % utterance)
             # for ent in doc.ents:
             #    print(ent.label_, ent.text)
         elif intent == "course":
+            print("in course chunk")
             doc = chunk_course(utterance)
         elif intent == "professor":
+            print("professor chunk")
             doc = chunk_professor(utterance)
         elif intent == "location":
-            pass
+            print("location chunk")
         else:
             print("intent didn't match")
         return doc
@@ -289,7 +284,7 @@ class IntentClassifier:
         print("In answer")
 
         # Load model
-        model = load_model("cs_helper/model.h5")  # GGRRRRRR
+        model = load_model("intent_classifier/model.h5")  # GGRRRRRR
 
         # Get predicted intent category classification of uterrance
         pred = self.predictions(text, model)

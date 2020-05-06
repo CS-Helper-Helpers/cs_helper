@@ -57,7 +57,7 @@ def corefunc():
 
 if __name__ == "__main__":
 
-    loaded = load_model("cs_helper/model.h5")
+    loaded = load_model("intent_classifier/model.h5")
 
     speech_thread = threading.Thread(target=speechfunc)
     text_thread = threading.Thread(target=textfunc)

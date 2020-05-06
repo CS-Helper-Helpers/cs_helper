@@ -131,7 +131,6 @@ def chunk_professor_names(
         #     print(ent.label_, ent.text)
 
 
-print(os.getcwd())
-professor_name_dir = os.path.join(os.getcwd(), "professor_name")
+professor_name_dir = "slots/professor_name"
 
 chunk_professor_names(output_dir=professor_name_dir)
