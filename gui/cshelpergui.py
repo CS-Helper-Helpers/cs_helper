@@ -4,9 +4,12 @@ from kivy.vector import Vector
 from kivy.core.window import Window 
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
+from cs_helper import threader
 
 class MainGUI(Screen):
-    pass
+    def testCallback(self):
+        print("Question: ", self.ids.questionInput.text)
+    # pass
 
 class ResponseScreen(Screen):
     pass
@@ -21,19 +24,18 @@ class ModificationForm(Screen):
     pass
 
 class CSHelperGUIApp(App):
-    #pass
-    def build(self):
-        return MainGUI()
+    pass
+    # def build(self):
+    #     return MainGUI()
+
 
 #Builder.load_file('gui/cshelpergui.kv')
 
-def main():
-    pass
-
-def maingui():
+#def maingui():
     # print(__name__)
-    if __name__ == 'gui.cshelpergui' or __name__ == 'cshelpergui' or __name__ == 'main':
-        Window.size = (1920, 1080)
-        Window.fullscreen = True
-        CSHelperGUIApp().run()
-        main()
+if __name__ == '__main__':
+    Window.size = (1920, 1080)
+    Window.fullscreen = True
+    threader.startThreads()
+    CSHelperGUIApp().run()
+    #main()

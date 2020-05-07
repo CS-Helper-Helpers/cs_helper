@@ -17,7 +17,7 @@ from intent_classifier.intent_classifier import IntentClassifier
 # from kivy.vector import Vector
 # from kivy.core.window import Window 
 # from kivy.uix.screenmanager import ScreenManager, Screen
-import gui.cshelpergui as ui
+#import gui.cshelpergui as ui
 
 text = ""
 
@@ -51,7 +51,6 @@ def textfunc():
 
     global text
     ttt = TTT()
-    ui.maingui()
     #maingui()
     # while 1:
     #     text = ttt.get_input()
@@ -69,8 +68,8 @@ def corefunc():
     return ic.answer(text) 
 
 
-
-if __name__ == "__main__":
+def startThreads():
+#if __name__ == "__main__":
 
     loaded = load_model("model.h5")
     
