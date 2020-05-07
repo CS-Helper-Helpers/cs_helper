@@ -192,7 +192,15 @@ class IntentClassifier:
             verbose=0,
         )
 
-    #    hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
+        # Get model history
+        hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
+        print('\nhistory dict:', hist.history)
+
+
+        # Evaluate the model on the test data using `evaluate`
+        print('\n# Evaluate on test data')
+        results = model.evaluate(val_X, val_Y, batch_size=128)
+        print('test loss, test acc:', results)
 
     def predictions(self, utterance, model):
         clean_utter = re.sub(r"[^ a-z A-Z 0-9]", " ", utterance)
