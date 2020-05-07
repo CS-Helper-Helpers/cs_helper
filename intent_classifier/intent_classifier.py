@@ -281,7 +281,6 @@ class IntentClassifier:
         """ chunk_utterance finds variable slots """
         # print("In chunk utterance")
         # print("Utterance: ", utterance, "\tIntent: ", intent)
-
         if intent == "important_date":
             print("in important date chunk")
             doc = chunk_important_date(utterance)

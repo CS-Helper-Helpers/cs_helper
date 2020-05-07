@@ -40,6 +40,25 @@ def chunk_course(utterance):
     return doc
 
 
+def chunk_course_info(utterance):
+    """ find the chunks associated with an course utterance """
+    print("\n\nIn chunk course info")
+
+    # load model
+    course_dir = "slots/course_info/"
+    id_nlp = spacy.load(course_dir)
+    # print(id_nlp.meta)
+
+    doc = id_nlp(utterance)
+
+    # Take a look at doc like so...
+    # print("Entities in '%s'" % utterance)
+    # for ent in doc.ents:
+    #     print(ent.label_, ent.text)
+
+    return doc
+
+
 def chunk_professor(utterance):
     """ find the chunks associated with an professor utterance """
     print("\n\nIn chunk professor")
