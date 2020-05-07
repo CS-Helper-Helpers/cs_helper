@@ -2,12 +2,12 @@ import os
 import spacy
 
 
-def chunk_important_date(utterance):
+def chunk_important_date(utterance, important_date_dir="slots/important_date/"):
     """ find the chunks associated with an important date utterance """
     print("\n\nIn chunk important date")
 
     # load model
-    important_date_dir = "slots/important_date/"
+    #important_date_dir = "slots/important_date/"
     id_nlp = spacy.load(important_date_dir)
     # print(id_nlp.meta)
 
@@ -21,12 +21,11 @@ def chunk_important_date(utterance):
     return doc
 
 
-def chunk_course(utterance):
+def chunk_course(utterance, course_dir = "slots/course/"):
     """ find the chunks associated with an course utterance """
     print("\n\nIn chunk course")
 
     # load model
-    course_dir = "slots/course/"
     id_nlp = spacy.load(course_dir)
     # print(id_nlp.meta)
 
@@ -40,12 +39,11 @@ def chunk_course(utterance):
     return doc
 
 
-def chunk_professor(utterance):
+def chunk_professor(utterance, professor_dir = "slots/professor/"):
     """ find the chunks associated with an professor utterance """
     print("\n\nIn chunk professor")
 
     # load model
-    professor_dir = "slots/professor/"
     id_nlp = spacy.load(professor_dir)
     # print(id_nlp.meta)
 
@@ -59,12 +57,11 @@ def chunk_professor(utterance):
     return doc
 
 
-def chunk_professor_name(utterance):
+def chunk_professor_name(utterance, professor_name_dir = "slots/professor_name/"):
     """ find the chunks associated with an professor name utterance """
     print("\n\nIn chunk professor name")
 
     # load model
-    professor_name_dir = "slots/professor_name/"
     id_nlp = spacy.load(professor_name_dir)
     # print(id_nlp.meta)
 
