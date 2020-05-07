@@ -131,6 +131,7 @@ def chunk_professor_names(
         #     print(ent.label_, ent.text)
 
 
-professor_name_dir = "slots/professor_name"
+def train_professor_name():
+    professor_name_dir = "slots/professor_name"
 
-chunk_professor_names(output_dir=professor_name_dir)
+    chunk_professor_names(output_dir=professor_name_dir)

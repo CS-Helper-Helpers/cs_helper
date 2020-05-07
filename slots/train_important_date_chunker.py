@@ -139,6 +139,7 @@ def chunk_important_dates(
         #     print(ent.label_, ent.text)
 
 
-important_date_dir = "slots/important_date"
+def train_important_date():
+    important_date_dir = "slots/important_date"
 
-chunk_important_dates(output_dir=important_date_dir)
+    chunk_important_dates(output_dir=important_date_dir)

@@ -131,6 +131,7 @@ def chunk_professors(
         #     print(ent.label_, ent.text)
 
 
-professor_dir = "slots/professor"
+def train_professor():
+    professor_dir = "slots/professor"
 
-chunk_professors(output_dir=professor_dir)
+    chunk_professors(output_dir=professor_dir)

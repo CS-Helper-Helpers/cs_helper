@@ -295,10 +295,10 @@ class IntentClassifier:
             print("professor chunk")
             doc = chunk_professor(utterance)
         elif intent == "location":
-            doc = chunk_course(utterance)  # TODO replace with location chunk
+            doc = None
             print("location chunk")
         else:
-            doc = chunk_course(utterance)  # TODO replace with location chunk
+            doc = None
             print("intent didn't match")
         return doc
 
@@ -339,16 +339,15 @@ class IntentClassifier:
 
             else:
                 df_result = self.query_database(classes[i], doc)
-
+                print(df_result)
                 if df_result is not None:
                     # print("Found a result: \n", df_result)
 
                     # clean and return string response
-                    answer = df_result["event_date"][0]  # Will need to fix later
+                    answer = df_result.ix[:, 1][0]  # Will need to fix later
                     return answer
 
                 else:
                     return (
                         "I could not find an answer in the database for that question."
                     )
-

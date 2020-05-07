@@ -131,6 +131,7 @@ def chunk_courses(
         #     print(ent.label_, ent.text)
 
 
-course_dir = "slots/course"
+def train_course():
+    course_dir = "slots/course"
 
-chunk_courses(output_dir=course_dir)
+    chunk_courses(output_dir=course_dir)
