@@ -1,5 +1,5 @@
 import unittest
-from slots.find_chunks import chunk_important_date, chunk_course, chunk_professor
+from slots.find_chunks import chunk_important_date, chunk_course, chunk_professor, chunk_professor_name
 
 
 class TestSlots(unittest.TestCase):
@@ -100,16 +100,45 @@ class TestSlots(unittest.TestCase):
     def test_chunk_course_number(self):
         utterance = "Is C S 474 offered this fall?"
         expected_result = ("COURSE", "C S 474")
-        doc = chunk_course(utterance, course_dir="../course_dir/")
+        doc = chunk_course(utterance, course_dir="../course/")
         for ent in doc.ents:
             result = (ent.label_, ent.text)
         self.assertEqual(expected_result, result)
-        
-    def test_chunk_professor(self):
-        pass
+
+    def test_chunk_professor_office_hours(self):
+        utterance = "When are Son Tran office hours?"
+        expected_result = ("OFFICE_HOURS", "office hours")
+        doc = chunk_professor(utterance, professor_dir="../professor/")
+        for ent in doc.ents:
+            result = (ent.label_, ent.text)
+        self.assertEqual(expected_result, result)
+
+
+    def test_chunk_professor_office_location(self):
+        utterance = "Where can I find Son Tran?"
+        expected_result = ("OFFICE_LOCATION", "Where")
+        doc = chunk_professor(utterance, professor_dir="../professor/")
+        for ent in doc.ents:
+            result = (ent.label_, ent.text)
+        self.assertEqual(expected_result, result)
+
+
+    def test_chunk_professor_contact_info(self):
+        utterance = "I need to call Huiping Cao"
+        expected_result = ("CONTACT_INFO", "call")
+        doc = chunk_professor(utterance, professor_dir="../professor/")
+        for ent in doc.ents:
+            result = (ent.label_, ent.text)
+        self.assertEqual(expected_result, result)
 
     def test_chunk_professor_name(self):
-        pass
+        utterance = "I need to call Huiping Cao"
+        expected_result = ("PROFESSOR_NAME", "Huiping Cao")
+        doc = chunk_professor_name(utterance, professor_name_dir="../professor_name/")
+        for ent in doc.ents:
+            result = (ent.label_, ent.text)
+        self.assertEqual(expected_result, result)
+
 
 
 #if __name__ == '__main__':
