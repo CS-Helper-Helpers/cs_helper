@@ -32,6 +32,7 @@ def speechfunc():
             print(text, inputType)
             answer = corefunc()
             print(answer)
+            tts.assistant_speaks(answer)
 
 
 def textfunc():
@@ -57,13 +58,11 @@ def corefunc():
 
 if __name__ == "__main__":
 
-    print(os.getcwd())
-
-    loaded = load_model("cs_helper/model.h5")
+    loaded = load_model("intent_classifier/model.h5")
 
     speech_thread = threading.Thread(target=speechfunc)
     text_thread = threading.Thread(target=textfunc)
     text_thread.start()
     speech_thread.start()
 
-    print("Text: ", text)
+    # print("Text: ", text)

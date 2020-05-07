@@ -28,15 +28,15 @@ import random
 from pathlib import Path
 import spacy
 from spacy.util import minibatch, compounding
-from slots.professor_name_data import get_data
+from slots.course_info_data import get_data
 
 
 def test_model(nlp):
     utterances = [
-        "When are dr Tran office hours?",
-        "Is professor Cooper available to meet",
-        "Does dr. Pontelli have any available office hours this week?",
-        "What is Dr Cook's phone number",
+        "What time is algorithms?",
+        "Where is databases?",
+        "Who is teaching ethics next semester?",
+        "What days are CS 273?",
     ]
     # test the trained model: CURRICULUM STUDY
 
@@ -53,8 +53,8 @@ def test_model(nlp):
     output_dir=("Optional output directory", "option", "o", Path),
     n_iter=("Number of training iterations", "option", "n", int),
 )
-def chunk_professor_names(
-    model=None, new_model_name="chunk_professor_name_model", output_dir=None, n_iter=30
+def chunk_courses(
+    model=None, new_model_name="chunk_course_info_model", output_dir=None, n_iter=30
 ):
     """Set up the pipeline and entity recognizer, and train the new entity."""
     (
@@ -131,7 +131,7 @@ def chunk_professor_names(
         #     print(ent.label_, ent.text)
 
 
-def train_professor_name():
-    professor_name_dir = "slots/professor_name"
+def train_course_info():
+    course_dir = "slots/course_info"
 
-    chunk_professor_names(output_dir=professor_name_dir)
+    chunk_courses(output_dir=course_dir)

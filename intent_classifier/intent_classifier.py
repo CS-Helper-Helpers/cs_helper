@@ -25,15 +25,19 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
-from slots.find_chunks import chunk_important_date
+from slots.find_chunks import (
+    chunk_important_date,
+    chunk_course,
+    chunk_professor,
+    chunk_course_info,
+    chunk_professor_name,
+)
 
 
 class IntentClassifier:
     def __init__(self):
         self.hello = "hello"
 
-    # def __init__(self, *args, **kwargs):
-    #     super(IntentClassifier, self).__init__(*args, **kwargs)
     def load_dataset(self, piece=False):
 
         if not piece:
@@ -41,14 +45,20 @@ class IntentClassifier:
             query = "select question as Sentence, cat as Intent from TrainingQuestions"
             df = pd.read_sql_query(query, con=engine)
 
-            print(df.head())
+            # print(df.head())
             intent = df["Intent"]
             unique_intent = list(set(intent))
+            # query = "select category from Categories"
+            # df_ui = pd.read_sql_query(query, con=engine)
+            # unique_intent = list(df_ui['category'])
+            # print("Unique intent: ", unique_intent)
             sentences = list(df["Sentence"])
 
-            query = "select count(*) from Categories"
-            df = pd.read_sql_query(query, con=engine)
-            catlength = df.loc[0].at["count(*)"]
+            # query = "select count(*) from Categories"
+            # df = pd.read_sql_query(query, con=engine)
+            catlength = len(unique_intent)
+
+            print("\n\n\nunique_intent: ", unique_intent)
 
             return (intent, unique_intent, sentences, catlength)
 
@@ -75,15 +85,11 @@ class IntentClassifier:
         return words
 
     def create_tokenizer(self, words, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'):
-        """Create tokenizer
-        """
         token = Tokenizer(filters=filters)
         token.fit_on_texts(words)
         return token
 
     def get_max_length(self, words):
-        """Gets max length of a word
-        """
         return len(max(words, key=len))
 
     def encoding_doc(self, token, words):
@@ -93,13 +99,13 @@ class IntentClassifier:
         return pad_sequences(encoded_doc, maxlen=max_length, padding="post")
 
     def one_hot(self, encode):
-        o = OneHotEncoder(sparse=False)
+        o = OneHotEncoder(sparse=False, categories="auto")
         return o.fit_transform(encode)
 
     def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
         model.add(Embedding(vocab_size, 128, input_length=max_length, trainable=False))
-        model.add(Bidirectional(LSTM(128)))
+        model.add(Bidirectional(LSTM(128, activation="sigmoid")))
         #   model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
@@ -110,6 +116,11 @@ class IntentClassifier:
     def train_model(self):
 
         intent, unique_intent, sentences, catlength = self.load_dataset()
+
+        print("Intent: ", intent)
+        print("Unique intent: ", unique_intent)
+        print("Sentences: ", sentences)
+        print("cat length: ", catlength)
 
         nltk.download("stopwords")
         nltk.download("punkt")
@@ -156,14 +167,23 @@ class IntentClassifier:
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
 
-        model = self.create_model(vocab_size, max_length, len(unique_intent))
+        print(
+            "\n\n\nVOCAB SIZE: ",
+            vocab_size,
+            "MAX LENG: ",
+            max_length,
+            "CATLENG: ",
+            catlength,
+        )
+
+        model = self.create_model(vocab_size, max_length, catlength)
 
         model.compile(
             loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
         )
         model.summary()
 
-        filename = "cs_helper/model.h5"
+        filename = "intent_classifier/model.h5"
         checkpoint = ModelCheckpoint(
             filename, monitor="val_loss", verbose=0, save_best_only=True, mode="min"
         )
@@ -171,14 +191,27 @@ class IntentClassifier:
         model.fit(
             train_X,
             train_Y,
-            epochs=250,
+            epochs=100,
             batch_size=32,
             validation_data=(val_X, val_Y),
             callbacks=[checkpoint],
-            verbose=0,
+            verbose=2,
         )
 
-    #    hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
+        # hist = model.fit(
+        #     train_X,
+        #     train_Y,
+        #     epochs=100,
+        #     batch_size=32,
+        #     validation_data=(val_X, val_Y),
+        #     callbacks=[checkpoint],
+        #     verbose=2,
+        # )
+
+        # loss, accuracy = model.evaluate(train_X, train_Y, verbose=False)
+        # print("Training Accuracy: {:.4f}".format(accuracy))
+        # loss, accuracy = model.evaluate(val_X, val_Y, verbose=False)
+        # print("Testing Accuracy:  {:.4f}".format(accuracy))
 
     def predictions(self, utterance, model):
         clean_utter = re.sub(r"[^ a-z A-Z 0-9]", " ", utterance)
@@ -205,67 +238,86 @@ class IntentClassifier:
 
         return pred
 
-    def get_final_output(self, text, pred, classes):
-        print("In get final output")
-        predictions = pred[0]
+    # def get_final_output(self, text, pred, classes):
+    #     print("In get final output")
+    #     predictions = pred[0]
 
-        classes = np.array(classes)
-        ids = np.argsort(-predictions)
-        classes = classes[ids]
-        predictions = -np.sort(-predictions)
+    #     classes = np.array(classes)
+    #     ids = np.argsort(-predictions)
+    #     classes = classes[ids]
+    #     predictions = -np.sort(-predictions)
 
-        for i in range(pred.shape[1]):
-            print("%s has confidence = %s" % (classes[i], (predictions[i])))
+    #     for i in range(pred.shape[1]):
+    #         print("%s has confidence = %s" % (classes[i], (predictions[i])))
 
-            chunks = self.chunk_utterance(classes[i], text)
-            # now we query database for an answer
-            # if an answer is found, we break out of this loop
-            # else we go to the next intent category ?? maybe break early given low confidence
+    #         chunks = self.chunk_utterance(classes[i], text)
+    #         # now we query database for an answer
+    #         # if an answer is found, we break out of this loop
+    #         # else we go to the next intent category ?? maybe break early given low confidence
 
-        return ""
+    #     return ""
 
     def query_database(self, intent_cat_class, doc):
         entity_list = []
         for ent in doc.ents:
+            print("ent: ", ent)
             entity_list.append((ent.label_, ent.text))
 
-        engine = db.getBotDBEngine()
+            engine = db.getBotDBEngine()
 
-        # Fix cat_class names in model to match table names in DB
-        if intent_cat_class == "important_date":
-            intent_cat_class = "ImportantDates"
+            # Fix cat_class names in model to match table names in DB
+            if intent_cat_class == "important_date":
+                intent_cat_class = "ImportantDates"
 
-        query = "select event_date, important_event from {0} where important_event = '{1}'".format(
-            intent_cat_class, ent.label_
-        )
-        df = pd.read_sql_query(query, con=engine)
-        # print(df)
+                query = "select event_date, important_event from {0} where important_event = '{1}'".format(
+                    intent_cat_class, ent.label_
+                )
+            elif intent_cat_class == "professor":
+                intent_cat_class = "Professors"
 
-        if df.empty:
-            # then we did not get a result
-            return None
-        else:
-            # then return the result found
-            return df
+                query = "select * from {0} where prof_name like '%{1}%'".format(
+                    intent_cat_class, ent.label_
+                )
+            elif intent_cat_class == "course":
+                intent_cat_class = "Course"
+
+                query = "select * from {0} where subj like '%{1}%' or crse like '%{1}%'".format(
+                    intent_cat_class, ent.label_
+                )
+            else:
+                query = ""
+
+            try:
+                df = pd.read_sql_query(query, con=engine)
+
+            except:
+                # then we did not get a result
+                return None
+            else:
+                # then return the result found
+                return df
 
     def chunk_utterance(self, intent, utterance):
         """ chunk_utterance finds variable slots """
         # print("In chunk utterance")
         # print("Utterance: ", utterance, "\tIntent: ", intent)
-
         if intent == "important_date":
-            # print("in important date chunk")
+            print("in important date chunk")
             doc = chunk_important_date(utterance)
             # print("Entities in '%s'" % utterance)
             # for ent in doc.ents:
             #    print(ent.label_, ent.text)
         elif intent == "course":
-            pass
+            print("in course chunk")
+            doc = chunk_course(utterance)
         elif intent == "professor":
-            pass
+            print("professor chunk")
+            doc = chunk_professor(utterance)
         elif intent == "location":
-            pass
+            doc = None
+            print("location chunk")
         else:
+            doc = None
             print("intent didn't match")
         return doc
 
@@ -273,7 +325,7 @@ class IntentClassifier:
         print("In answer")
 
         # Load model
-        model = load_model("cs_helper/model.h5")  # GGRRRRRR
+        model = load_model("intent_classifier/model.h5")
 
         # Get predicted intent category classification of uterrance
         pred = self.predictions(text, model)
@@ -301,11 +353,21 @@ class IntentClassifier:
             print("%s has confidence = %s" % (classes[i], (predictions[i])))
             doc = self.chunk_utterance(classes[i], text)
 
-            df_result = self.query_database(classes[i], doc)
+            if doc is None:
+                return "I am still learning some things and cannot help with that right now."
 
-            if df_result is not None:
-                # print("Found a result: \n", df_result)
+            else:
+                df_result = self.query_database(classes[i], doc)
+                print(df_result)
+                if df_result is not None:
+                    # print("Found a result: \n", df_result)
 
-                # clean and return string response
-                answer = df_result["event_date"][0]  # Will need to fix later
-                return answer
+                    # clean and return string response
+                    # answer = df_result.ix[:, 1][0]  # Will need to fix later
+                    answer = "TEST ANSWER WE WILL MODIFY"
+                    return answer
+
+                else:
+                    return (
+                        "I could not find an answer in the database for that question."
+                    )

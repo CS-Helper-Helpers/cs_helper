@@ -10,6 +10,8 @@ drop table if exists ExternalDBImports;
 drop table if exists ExternalDBConnections;
 drop table if exists Categories;
 drop table if exists ImportantDates;
+drop table if exists Courses;
+drop table if exists Professors;
 create table Categories (
   category varchar(256),
   primary key (category)
@@ -35,7 +37,7 @@ create table TrainingQuestions (
   cat varchar(128) not null,
   slot varchar(128) not null,
   label varchar(128) not null,
-  unique key (question, cat),
+  unique key (question, cat, label),
   primary key (questionid),
   foreign key (cat) references Categories(category) on update cascade on delete cascade
 );
@@ -76,4 +78,28 @@ create table ImportantDates (
   important_event varchar(128) not null unique,
   event_date varchar(128) not null,
   primary key (important_event)
+);
+create table Courses (
+  courseid serial,
+  subj VARCHAR(128) NOT NULL,
+  crse VARCHAR(128) NOT NULL,
+  sec VARCHAR(128) NOT NULL,
+  cred VARCHAR(128) NOT NULL,
+  cmp VARCHAR(128) NOT NULL,
+  title VARCHAR(128) NOT NULL,
+  class_days VARCHAR(128) NOT NULL,
+  class_times VARCHAR(128) NOT NULL,
+  building VARCHAR(128) NOT NULL,
+  room VARCHAR(128) NOT NULL,
+  professor VARCHAR(128) NOT NULL,
+  dates VARCHAR(128) NOT NULL,
+  PRIMARY KEY (courseid)
+);
+create table Professors (
+  professorid serial,
+  prof_name VARCHAR(128) NOT NULL,
+  email VARCHAR(128) NOT NULL,
+  phone VARCHAR(128) NOT NULL,
+  office VARCHAR(128) NOT NULL,
+  PRIMARY KEY (professorid)
 );

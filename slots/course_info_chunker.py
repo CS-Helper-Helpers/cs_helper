@@ -22,21 +22,23 @@ Compatible with: spaCy v2.1.0+
 Last tested with: v2.1.0
 """
 from __future__ import unicode_literals, print_function
-import os
+
 import plac
 import random
 from pathlib import Path
 import spacy
 from spacy.util import minibatch, compounding
-from slots.professor_name_data import get_data
+from course_info_data import get_data
+
+TRAIN_DATA, LABELS = get_data()
 
 
 def test_model(nlp):
     utterances = [
-        "When are dr Tran office hours?",
-        "Is professor Cooper available to meet",
-        "Does dr. Pontelli have any available office hours this week?",
-        "What is Dr Cook's phone number",
+        "What time is algorithms?",
+        "Where is databases?",
+        "Who is teaching ethics next semester?",
+        "What days are CS 273?",
     ]
     # test the trained model: CURRICULUM STUDY
 
@@ -53,16 +55,9 @@ def test_model(nlp):
     output_dir=("Optional output directory", "option", "o", Path),
     n_iter=("Number of training iterations", "option", "n", int),
 )
-def chunk_professor_names(
-    model=None, new_model_name="chunk_professor_name_model", output_dir=None, n_iter=30
-):
+def chunk_courses(model=None, new_model_name="class", output_dir=None, n_iter=30):
     """Set up the pipeline and entity recognizer, and train the new entity."""
-    (
-        TRAIN_DATA,
-        LABELS,
-    ) = get_data()  # needs to not pull from file and pull from DB eventually
 
-    # Train a series of models
     random.seed(0)
     if model is not None:
         nlp = spacy.load(model)  # load existing spaCy model
@@ -109,7 +104,7 @@ def chunk_professor_names(
                 nlp.update(texts, annotations, sgd=optimizer, drop=0.35, losses=losses)
             print("Losses", losses)
 
-    test_model(nlp)  ## TEST <------
+    test_model(nlp)
 
     # save model to output directory
     if output_dir is not None:
@@ -120,18 +115,14 @@ def chunk_professor_names(
         nlp.to_disk(output_dir)
         print("Saved model to", output_dir)
 
-        # # test the saved model
-        # print("Loading from", output_dir)
-        # nlp2 = spacy.load(output_dir)
-        # # Check the classes have loaded back consistently
-        # assert nlp2.get_pipe("ner").move_names == move_names
-        # test_text = "We need to fix the testing part later"
-        # doc2 = nlp2(test_text)
-        # for ent in doc2.ents:
-        #     print(ent.label_, ent.text)
+        # test the saved model
+        print("Loading from", output_dir)
+        nlp2 = spacy.load(output_dir)
+        # Check the classes have loaded back consistently
+        assert nlp2.get_pipe("ner").move_names == move_names
+        doc2 = nlp2(test_text)
+        for ent in doc2.ents:
+            print(ent.label_, ent.text)
 
 
-def train_professor_name():
-    professor_name_dir = "slots/professor_name"
-
-    chunk_professor_names(output_dir=professor_name_dir)
+chunk_course_info()

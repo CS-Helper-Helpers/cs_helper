@@ -28,7 +28,7 @@ import random
 from pathlib import Path
 import spacy
 from spacy.util import minibatch, compounding
-from course_data import get_data
+from slots.course_data import get_data
 
 
 def test_model(nlp):
@@ -131,7 +131,7 @@ def chunk_courses(
         #     print(ent.label_, ent.text)
 
 
-print(os.getcwd())
-course_dir = os.path.join(os.getcwd(), "course")
+def train_course():
+    course_dir = "slots/course"
 
-chunk_courses(output_dir=course_dir)
+    chunk_courses(output_dir=course_dir)
