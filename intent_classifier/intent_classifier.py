@@ -25,7 +25,13 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
-from slots.find_chunks import chunk_important_date, chunk_course, chunk_professor
+from slots.find_chunks import (
+    chunk_important_date,
+    chunk_course,
+    chunk_professor,
+    chunk_course_info,
+    chunk_professor_name,
+)
 
 
 class IntentClassifier:
@@ -185,22 +191,27 @@ class IntentClassifier:
         model.fit(
             train_X,
             train_Y,
-            epochs=250,
+            epochs=100,
             batch_size=32,
             validation_data=(val_X, val_Y),
             callbacks=[checkpoint],
-            verbose=0,
+            verbose=2,
         )
 
-        # Get model history
-        hist = model.fit(train_X, train_Y, epochs = 100, batch_size = 32, validation_data = (val_X, val_Y), callbacks = [checkpoint], verbose = 0)
-        print('\nhistory dict:', hist.history)
+        # hist = model.fit(
+        #     train_X,
+        #     train_Y,
+        #     epochs=100,
+        #     batch_size=32,
+        #     validation_data=(val_X, val_Y),
+        #     callbacks=[checkpoint],
+        #     verbose=2,
+        # )
 
-
-        # Evaluate the model on the test data using `evaluate`
-        print('\n# Evaluate on test data')
-        results = model.evaluate(val_X, val_Y, batch_size=128)
-        print('test loss, test acc:', results)
+        # loss, accuracy = model.evaluate(train_X, train_Y, verbose=False)
+        # print("Training Accuracy: {:.4f}".format(accuracy))
+        # loss, accuracy = model.evaluate(val_X, val_Y, verbose=False)
+        # print("Testing Accuracy:  {:.4f}".format(accuracy))
 
     def predictions(self, utterance, model):
         clean_utter = re.sub(r"[^ a-z A-Z 0-9]", " ", utterance)
@@ -227,24 +238,24 @@ class IntentClassifier:
 
         return pred
 
-    def get_final_output(self, text, pred, classes):
-        print("In get final output")
-        predictions = pred[0]
+    # def get_final_output(self, text, pred, classes):
+    #     print("In get final output")
+    #     predictions = pred[0]
 
-        classes = np.array(classes)
-        ids = np.argsort(-predictions)
-        classes = classes[ids]
-        predictions = -np.sort(-predictions)
+    #     classes = np.array(classes)
+    #     ids = np.argsort(-predictions)
+    #     classes = classes[ids]
+    #     predictions = -np.sort(-predictions)
 
-        for i in range(pred.shape[1]):
-            print("%s has confidence = %s" % (classes[i], (predictions[i])))
+    #     for i in range(pred.shape[1]):
+    #         print("%s has confidence = %s" % (classes[i], (predictions[i])))
 
-            chunks = self.chunk_utterance(classes[i], text)
-            # now we query database for an answer
-            # if an answer is found, we break out of this loop
-            # else we go to the next intent category ?? maybe break early given low confidence
+    #         chunks = self.chunk_utterance(classes[i], text)
+    #         # now we query database for an answer
+    #         # if an answer is found, we break out of this loop
+    #         # else we go to the next intent category ?? maybe break early given low confidence
 
-        return ""
+    #     return ""
 
     def query_database(self, intent_cat_class, doc):
         entity_list = []
@@ -276,9 +287,10 @@ class IntentClassifier:
             else:
                 query = ""
 
-            df = pd.read_sql_query(query, con=engine)
+            try:
+                df = pd.read_sql_query(query, con=engine)
 
-            if df.empty:
+            except:
                 # then we did not get a result
                 return None
             else:
@@ -289,7 +301,6 @@ class IntentClassifier:
         """ chunk_utterance finds variable slots """
         # print("In chunk utterance")
         # print("Utterance: ", utterance, "\tIntent: ", intent)
-
         if intent == "important_date":
             print("in important date chunk")
             doc = chunk_important_date(utterance)
@@ -352,7 +363,8 @@ class IntentClassifier:
                     # print("Found a result: \n", df_result)
 
                     # clean and return string response
-                    answer = df_result.ix[:, 1][0]  # Will need to fix later
+                    # answer = df_result.ix[:, 1][0]  # Will need to fix later
+                    answer = "TEST ANSWER WE WILL MODIFY"
                     return answer
 
                 else:

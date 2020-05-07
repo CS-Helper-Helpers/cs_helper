@@ -23,13 +23,19 @@ class TestIntentClassifier(unittest.TestCase):
     #     print("Tearing down test case... ")
 
     def test_cleaning(self):
-        sentences = ["I am a sentence.", "you   are ?? a sentence", "WE ARE THE SENTENCES!!!"]
+        sentences = [
+            "I am a sentence.",
+            "you   are ?? a sentence",
+            "WE ARE THE SENTENCES!!!",
+        ]
         ic = IntentClassifier()
         cleaned_sentences = ic.cleaning(sentences)
-        expected_sentences = [['i', 'am', 'a', 'sentence'], ['you', 'are', 'a', 'sentence'], ['we', 'are', 'the', 'sentences']]
-        self.assertEqual(
-                cleaned_sentences, expected_sentences
-        )
+        expected_sentences = [
+            ["i", "am", "a", "sentence"],
+            ["you", "are", "a", "sentence"],
+            ["we", "are", "the", "sentences"],
+        ]
+        self.assertEqual(cleaned_sentences, expected_sentences)
 
     def test_cleaning_empty_set(self):
         sentences = []
@@ -48,7 +54,7 @@ class TestIntentClassifier(unittest.TestCase):
 
     def test_get_max_length(self):
         words = ["this", "is", "a", "list", "of", "words"]
-        expected_max = 5 # the word "words"
+        expected_max = 5  # the word "words"
         ic = IntentClassifier()
         given_max = ic.get_max_length(words)
         self.assertEqual(given_max, expected_max)
