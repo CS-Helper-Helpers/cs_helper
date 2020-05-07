@@ -10,20 +10,21 @@ Created on Thu Feb 27 18:20:24 2020
 
 from sqlalchemy import create_engine
 import database.engine as db
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem.lancaster import LancasterStemmer
 import nltk
+import random
 import re
 from sklearn.preprocessing import OneHotEncoder
-import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
+from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout, Flatten
 from tensorflow.keras.callbacks import ModelCheckpoint
 from slots.find_chunks import (
     chunk_important_date,
@@ -38,7 +39,7 @@ class IntentClassifier:
     def __init__(self):
         self.hello = "hello"
 
-    def load_dataset(self, piece=False):
+    def load_dataset(self, piece=False, cat=None):
 
         if not piece:
             engine = db.getBotDBEngine()
@@ -61,19 +62,64 @@ class IntentClassifier:
             print("\n\n\nunique_intent: ", unique_intent)
 
             return (intent, unique_intent, sentences, catlength)
+            #return (intent, unique_intent, catlength)
 
-        else:
-            if piece == "sentences":
-                engine = db.getBotDBEngine()
-                query = "select question as Sentence from TrainingQuestions"
-                df = pd.read_sql_query(query, con=engine)
-                return list(df["Sentence"])
+        elif piece == "sentences" and cat is None:
+            engine = db.getBotDBEngine()
+            query = "select question as Sentence from TrainingQuestions"
+            df = pd.read_sql_query(query, con=engine)
+            return list(df["Sentence"])
 
-            if piece == "uniqueintents":
-                engine = db.getBotDBEngine()
-                query = "select distinct cat as Intent from TrainingQuestions"
+        elif piece == "sentences" and cat is not None:
+            engine = db.getBotDBEngine()
+            query = "select question as Sentence from TrainingQuestions where cat = '{}'".format(cat)
+            df = pd.read_sql_query(query, con=engine)
+            return list(df['Sentence'])
+
+        elif piece == "random_sample":
+
+            engine = db.getBotDBEngine()
+            sentences = []
+            intent = []
+            
+            # get categories
+            query = "select category from Categories"
+            df = pd.read_sql_query(query, con=engine)
+            cat = list(df["category"])
+
+            for c in cat:
+                query = "select cat as Intent, question as Sentence from TrainingQuestions where cat = '{}'".format(c)
                 df = pd.read_sql_query(query, con=engine)
-                return list(df["Intent"])
+                df = df.sample(n=100)
+                sentences.extend(list(df["Sentence"]))
+                intent.extend(list(df["Intent"]))
+
+            unique_intent = list(set(intent))
+            catlength = len(unique_intent)
+            return intent, unique_intent, sentences, catlength
+
+            # if piece == "sentences_course":
+            #     engine = db.getBotDBEngine()
+            #     query = "select question as Sentence from TrainingQuestions where cat = 'course'"
+            #     df = pd.read_sql_query(query, con=engine)
+            #     return list(df['Sentence'])
+
+
+            # if piece == "sentences_professor":
+            #     engine = db.getBotDBEngine()
+            #     query = "select question as Sentence from TrainingQuestions where cat = 'professor'"
+            #     df = pd.read_sql_query(query, con=engine)
+            #     return list(df['Sentence'])
+
+            # if piece == "sentences_location":
+            #     engine = db.getBotDBEngine()
+            #     query = "select question as Sentence from TrainingQuestions where cat = 'location'"
+
+        elif piece == "uniqueintents":
+            engine = db.getBotDBEngine()
+            query = "select distinct cat as Intent from TrainingQuestions"
+            df = pd.read_sql_query(query, con=engine)
+            return list(df["Intent"])
 
     def cleaning(self, sentences):
         words = []
@@ -109,17 +155,30 @@ class IntentClassifier:
         #   model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
+        model.add(Flatten())
         model.add(Dense(catlength, activation="softmax"))
 
         return model
 
+    # def get_sentences_random_sample(self, count=100):
+        
+    #     sentences = []
+    #     domains = ['important_date', 'course', 'professor'] # make this smarter by grabbing categories from db
+
+    #     for d in domains:
+    #         s = self.load_dataset(piece="sentences", cat=d)
+    #         s = random.sample(s, count)
+    #         sentences.extend(s)
+
+    #     return sentences
+
     def train_model(self):
 
-        intent, unique_intent, sentences, catlength = self.load_dataset()
+        intent, unique_intent, sentences, catlength = self.load_dataset(piece="random_sample") # not the best way to do this
 
-        print("Intent: ", intent)
+        #print("Intent: ", intent)
         print("Unique intent: ", unique_intent)
-        print("Sentences: ", sentences)
+        print("Sentences: ", len(sentences))
         print("cat length: ", catlength)
 
         nltk.download("stopwords")
@@ -191,7 +250,7 @@ class IntentClassifier:
         model.fit(
             train_X,
             train_Y,
-            epochs=100,
+            epochs=80,
             batch_size=32,
             validation_data=(val_X, val_Y),
             callbacks=[checkpoint],
