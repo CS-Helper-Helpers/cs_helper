@@ -68,12 +68,14 @@ ScreenManager:
 
 <ResponseScreen>:
     Label:
+        id: response
         font_size: 24
         size_hint_y: None
         text_size: root.width * .9, None
         size_hint_x: .9
         pos_hint: {'center_x': .5, 'y': .6}
         height: self.texture_size[1]
+        # text: app.root.responseString
         text: "This is a test response. If you would like to contribute to this project, press the feedback button. Otherwise, press the home button."
     BoxLayout:
         orientation: "horizontal"
@@ -101,16 +103,26 @@ ScreenManager:
 <AdministratorLogin>:
     BoxLayout:
         orientation: "vertical"
-        size_hint_y: .2
+        size_hint_y: .4
         size_hint_x: .5
         pos_hint: {'center_x': .5, 'center_y': .5}
         spacing: 25
+        Label:
+            font_size: 24
+            size_hint_y: None
+            size_hint_x: 1
+            pos_hint: {'center_x': .5, 'y': .6}
+            height: self.texture_size[1]
+            text: ""
         TextInput:
+            id: usernameInput
             height: 50
             font_size: 24
             padding: (10, 10)
             hint_text: "Username"
         TextInput:
+            id: passwordInput
+            password: True
             height: 50
             font_size: 24
             padding: (10, 10)
@@ -120,8 +132,16 @@ ScreenManager:
             padding: (10, 10)
             text: "Login"
             on_release:
+                root.login()
+                # app.root.transition = NoTransition()
+                # app.root.current = "ModificationScreen"
+        Button:
+            font_size: 24
+            padding: (10, 10)
+            text: "Cancel"
+            on_release:
                 app.root.transition = NoTransition()
-                app.root.current = "ModificationScreen"
+                app.root.current = "QuestionScreen"
 
 <FeedbackForm>:
     Label:

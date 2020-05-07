@@ -5,17 +5,31 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
 from cs_helper import threader
+import time
+from kivy.uix.screenmanager import NoTransition
+from database import nmsuldap
+from intent_classifier.intent_classifier import IntentClassifier
 
 class MainGUI(Screen):
+    app = App.get_running_app()
     def testCallback(self):
-        print("Question: ", self.ids.questionInput.text)
-    # pass
+        ic = IntentClassifier()
+        answer = ic.answer(self.ids.questionInput.text)
+        print(answer)
+        # self.ids.response.text = "The question was: " + self.ids.questionInput.text
 
 class ResponseScreen(Screen):
     pass
 
 class AdministratorLogin(Screen):
-    pass
+    def login(self):
+        app = App.get_running_app()
+        if (nmsuldap.authenticate(self.ids.usernameInput.text, self.ids.passwordInput.text)):
+            app.root.transition = NoTransition()
+            app.root.current = "ModificationScreen"
+        else:
+            app.root.transition = NoTransition()
+            app.root.current = "LoginScreen"
 
 class FeedbackForm(Screen):
     pass

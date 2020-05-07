@@ -75,8 +75,8 @@ def startThreads():
     
     # Add a lock so this runs first
     speech_thread = threading.Thread(target=speechfunc)
-    text_thread = threading.Thread(target=textfunc)
-    text_thread.start()
+    #text_thread = threading.Thread(target=textfunc)
+    #text_thread.start()
     speech_thread.start()
 
     # Then this
