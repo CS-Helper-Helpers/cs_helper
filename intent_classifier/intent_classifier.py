@@ -268,9 +268,10 @@ class IntentClassifier:
             else:
                 query = ""
 
-            df = pd.read_sql_query(query, con=engine)
+            try:
+                df = pd.read_sql_query(query, con=engine)
 
-            if df.empty:
+            except:
                 # then we did not get a result
                 return None
             else:
@@ -343,7 +344,8 @@ class IntentClassifier:
                     # print("Found a result: \n", df_result)
 
                     # clean and return string response
-                    answer = df_result.ix[:, 1][0]  # Will need to fix later
+                    # answer = df_result.ix[:, 1][0]  # Will need to fix later
+                    answer = "TEST ANSWER WE WILL MODIFY"
                     return answer
 
                 else:

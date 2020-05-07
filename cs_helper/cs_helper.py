@@ -32,6 +32,7 @@ def speechfunc():
             print(text, inputType)
             answer = corefunc()
             print(answer)
+            tts.assistant_speaks(answer)
 
 
 def textfunc():

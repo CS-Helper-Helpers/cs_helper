@@ -292,6 +292,3 @@ def get_data():
     COURSE_INFO_LABELS.append(COURSE_TIME_LABEL)
 
     return COURSE_INFO_TRAIN_DATA, COURSE_INFO_LABELS
-
-
-get_data()
