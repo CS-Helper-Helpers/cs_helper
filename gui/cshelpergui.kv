@@ -38,6 +38,7 @@ ScreenManager:
         pos_hint: {'center_x': .5, 'y': .6}
         height: 45
         TextInput:
+            id: questionInput
             height: 45
             font_size: 25
             size_hint_x: .98
@@ -50,6 +51,7 @@ ScreenManager:
             size_hint_y: .05
             text: "Ask Question"
             on_release:
+                root.testCallback()
                 app.root.transition = NoTransition()
                 app.root.current = "ResponseScreen"
     Button:
