@@ -97,9 +97,14 @@ class TestSlots(unittest.TestCase):
             result = (ent.label_, ent.text)
         self.assertEqual(expected_result, result)
 
-    def test_chunk_course(self):
-        pass
-
+    def test_chunk_course_number(self):
+        utterance = "Is C S 474 offered this fall?"
+        expected_result = ("COURSE", "C S 474")
+        doc = chunk_course(utterance, course_dir="../course_dir/")
+        for ent in doc.ents:
+            result = (ent.label_, ent.text)
+        self.assertEqual(expected_result, result)
+        
     def test_chunk_professor(self):
         pass
 
