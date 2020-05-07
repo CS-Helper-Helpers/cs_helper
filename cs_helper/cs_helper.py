@@ -64,4 +64,4 @@ if __name__ == "__main__":
     text_thread.start()
     speech_thread.start()
 
-    print("Text: ", text)
+    # print("Text: ", text)
