@@ -304,15 +304,18 @@ class IntentClassifier:
         if intent == "important_date":
             print("in important date chunk")
             doc = chunk_important_date(utterance)
+            print("DOC TYPE: ", type(doc))
             # print("Entities in '%s'" % utterance)
             # for ent in doc.ents:
             #    print(ent.label_, ent.text)
         elif intent == "course":
             print("in course chunk")
             doc = chunk_course(utterance)
+            print("DOC TYPE: ", type(doc))
         elif intent == "professor":
             print("professor chunk")
-            doc = chunk_professor(utterance)
+            doc_prof = chunk_professor(utterance)
+            doc_prof_name = chunk_professor_name(utterance)
         elif intent == "location":
             doc = None
             print("location chunk")
