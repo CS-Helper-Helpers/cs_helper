@@ -40,12 +40,11 @@ def chunk_course(utterance, course_dir="slots/course/"):
     return doc
 
 
-def chunk_course_info(utterance):
+def chunk_course_info(utterance, course_dir = "slots/course_info/"):
     """ find the chunks associated with an course utterance """
     print("\n\nIn chunk course info")
 
     # load model
-    course_dir = "slots/course_info/"
     id_nlp = spacy.load(course_dir)
     # print(id_nlp.meta)
 
@@ -59,7 +58,7 @@ def chunk_course_info(utterance):
     return doc
 
 
-def chunk_professor(utterance):
+def chunk_professor(utterance, professor_dir="slots/professor"):
     """ find the chunks associated with an professor utterance """
     print("\n\nIn chunk professor")
 
