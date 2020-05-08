@@ -12,21 +12,21 @@ def bot_setup():
     ic.train_model()
     print("done training Intent Classifier")
 
-    # print("Training Course Chunker...")
-    # train_course()
-    # print("done training Course Chunker")
+    print("Training Course Chunker...")
+    train_course()
+    print("done training Course Chunker")
 
-    # print("Training Course Info Chunker...")
-    # train_course_info()
-    # print("done training Course Info Chunker")
+    print("Training Course Info Chunker...")
+    train_course_info()
+    print("done training Course Info Chunker")
 
-    # print("Training Important Date...")
-    # train_important_date()
-    # print("done training Important Date")
+    print("Training Important Date...")
+    train_important_date()
+    print("done training Important Date")
 
-    # print("Training Professor Chunker...")
-    # train_professor()
-    # print("done training Professor Chunker")
+    print("Training Professor Chunker...")
+    train_professor()
+    print("done training Professor Chunker")
 
     print("Training Professor Name Chunker...")
     train_professor_name()
