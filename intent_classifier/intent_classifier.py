@@ -109,6 +109,7 @@ class IntentClassifier:
         #   model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
+        model.add(Flatten())
         model.add(Dense(catlength, activation="softmax"))
 
         return model
