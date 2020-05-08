@@ -93,13 +93,12 @@ def transcribeAudio():
 
     try:
         text = r.recognize_google(audio, language="en-US")
-        # resp.pause(length=5)
+        resp.play('https://puce-chihuahua-4715.twil.io/assets/RoyaltyFree_CrazyParty_190374032322_1_8.mp3')
         resp.redirect('/passString')
     except:
         resp.say("Unable to transcribe your audio.")
         resp.say("Can you repeat your question?")
         resp.record(timeout=2, action = "https://cshelper.ngrok.io/getrecording")
-    
     
     return str(resp)
 
@@ -111,12 +110,9 @@ def passString():
     global answer
     
     resp = VoiceResponse()
-    # resp.play('https://puce-chihuahua-4715.twil.io/assets/RoyaltyFree_CrazyParty_190374032322_1_8.mp3')
     gather = Gather(num_digits=1, action = '/validation')
         
-    print("Starting pause")
-    resp.pause(length=20)
-    print("Done pausing")
+    resp.pause(length=5)
     answer = ic.answer(text)
     resp.say(answer)
     print(answer)   
@@ -168,4 +164,3 @@ def newQuestion():
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8080))
     app.run(debug=True, use_reloader=False, port=port)
-
