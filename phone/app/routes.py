@@ -52,8 +52,7 @@ def getrecording():
     global full_path
     
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
-    auth_token = 'f5233d27baa049c4b13b254a5c9ecc7e'
-    # auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = Client(account_sid, auth_token)
     
     recSID = request.form.get('RecordingSid')
