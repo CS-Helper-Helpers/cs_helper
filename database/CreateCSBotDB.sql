@@ -37,7 +37,7 @@ create table TrainingQuestions (
   cat varchar(128) not null,
   slot varchar(128) not null,
   label varchar(128) not null,
-  unique key (question, cat, label),
+  unique key (question, cat),
   primary key (questionid),
   foreign key (cat) references Categories(category) on update cascade on delete cascade
 );

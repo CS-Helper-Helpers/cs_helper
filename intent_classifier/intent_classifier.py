@@ -90,7 +90,11 @@ class IntentClassifier:
             for c in cat:
                 query = "select cat as Intent, question as Sentence from TrainingQuestions where cat = '{}'".format(c)
                 df = pd.read_sql_query(query, con=engine)
-                df = df.sample(n=100)
+                df = df.sample(
+                    n=100,
+                    replace=False,
+                    
+                )
                 sentences.extend(list(df["Sentence"]))
                 intent.extend(list(df["Intent"]))
 
@@ -151,8 +155,8 @@ class IntentClassifier:
     def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
         model.add(Embedding(vocab_size, 128, input_length=max_length, trainable=False))
-        model.add(Bidirectional(LSTM(128, activation="sigmoid")))
-        #   model.add(LSTM(128))
+        #model.add(Bidirectional(LSTM(128, activation="sigmoid")))
+        model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
         model.add(Flatten())
@@ -174,7 +178,7 @@ class IntentClassifier:
 
     def train_model(self):
 
-        intent, unique_intent, sentences, catlength = self.load_dataset(piece="random_sample") # not the best way to do this
+        intent, unique_intent, sentences, catlength = self.load_dataset() # not the best way to do this
 
         #print("Intent: ", intent)
         print("Unique intent: ", unique_intent)
@@ -240,6 +244,21 @@ class IntentClassifier:
         model.compile(
             loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
         )
+        #from tensorflow.keras.optimizers import adam
+
+        # # Set Optimizer
+        # opt = tf.keras.optimizers.Adam(lr=0.001, decay=1e-6)
+        # # Compile model
+        # model.compile(
+        #     loss='sparse_categorical_crossentropy',
+        #     optimizer=opt,
+        #     metrics=['accuracy']
+        # )
+        # from tensorflow.keras.losses import SparseCategoricalCrossentropy
+        # model.compile(optimizer='rmsprop',
+        #       loss=SparseCategoricalCrossentropy(from_logits=True),
+        #       metrics=['sparse_categorical_accuracy'])
+
         model.summary()
 
         filename = "intent_classifier/model.h5"
@@ -250,7 +269,7 @@ class IntentClassifier:
         model.fit(
             train_X,
             train_Y,
-            epochs=80,
+            epochs=10,
             batch_size=32,
             validation_data=(val_X, val_Y),
             callbacks=[checkpoint],
