@@ -349,9 +349,6 @@ class IntentClassifier:
             doc = None
             print("intent didn't match")
 
-        # # TODO REMOVE
-        # doc = chunk_course(utterance)
-        # # TO HERE
         return doc
 
     def answer(self, text):
