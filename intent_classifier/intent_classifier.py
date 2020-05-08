@@ -23,7 +23,14 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
+from tensorflow.keras.layers import (
+    Dense,
+    LSTM,
+    Bidirectional,
+    Embedding,
+    Dropout,
+    Flatten,
+)
 from tensorflow.keras.callbacks import ModelCheckpoint
 from slots.find_chunks import (
     chunk_important_date,
@@ -109,6 +116,7 @@ class IntentClassifier:
         #   model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
+        model.add(Flatten())
         model.add(Dense(catlength, activation="softmax"))
 
         return model
@@ -314,7 +322,7 @@ class IntentClassifier:
             doc = chunk_course(utterance)
         elif intent == "professor":
             print("professor chunk")
-            doc = chunk_professor(utterance)
+            doc = chunk_professor_name(utterance)
         elif intent == "location":
             doc = None
             print("location chunk")

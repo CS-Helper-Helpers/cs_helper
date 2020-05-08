@@ -6,109 +6,109 @@ def get_substring_label_truple(intent, label_indicator, label):
 
 def get_data():
     CS_COURSES = [
-        # "C S 110",
-        # "C S 111",
-        # "C S 117",
-        # "C S 150",
-        # "C S 151",
-        # "C S 152",
-        # "C S 153",
-        # "C S 154",
-        # "C S 155",
-        # "C S 156",
-        # "C S 157",
-        # "C S 158",
-        # "C S 159",
-        # "C S 171G",
-        # "C S 172",
-        # "C S 209",
-        # "C S 271",
-        # "C S 272",
-        # "C S 273",
-        # "C S 278",
-        # "C S 343",
-        # "C S 370",
-        # "C S 371",
-        # "C S 372",
-        # "C S 375",
-        # "C S 409",
-        # "C S 419",
-        # "C S 448",
-        # "C S 449",
-        # "C S 450",
-        # "C S 451",
-        # "C S 452",
-        # "C S 453",
-        # "C S 454",
-        # "C S 455",
-        # "C S 456",
-        # "C S 457",
-        # "C S 458",
-        # "C S 459",
-        # "C S 460",
-        # "C S 462",
-        # "C S 463",
-        # "C S 464",
-        # "C S 465",
-        # "C S 466",
-        # "C S 468",
-        # "C S 469",
-        # "C S 471",
-        # "C S 473",
-        # "C S 474",
-        # "C S 475",
-        # "C S 476",
-        # "C S 477",
-        # "C S 478",
-        # "C S 479",
-        # "C S 480",
-        # "C S 481",
-        # "C S 482",
-        # "C S 483",
-        # "C S 484",
-        # "C S 485",
-        # "C S 486",
-        # "C S 487",
-        # "C S 488",
-        # "C S 489",
-        # "C S 491",
-        # "C S 493",
-        # "C S 494",
-        # "C S 496",
-        # "C S 502",
-        # "C S 503",
-        # "C S 504",
-        # "C S 505",
-        # "C S 506",
-        # "C S 508",
-        # "C S 509",
-        # "C S 510",
-        # "C S 513",
-        # "C S 514",
-        # "C S 515",
-        # "C S 516",
-        # "C S 517",
-        # "C S 518",
-        # "C S 519",
-        # "C S 521",
-        # "C S 522",
-        # "C S 570",
-        # "C S 571",
-        # "C S 573",
-        # "C S 574",
-        # "C S 575",
-        # "C S 579",
-        # "C S 581",
-        # "C S 582",
-        # "C S 583",
-        # "C S 584",
-        # "C S 586",
-        # "C S 587",
-        # "C S 589",
-        # "C S 598",
-        # "C S 599",
-        # "C S 600",
-        # "C S 700",
+        "110",
+        "111",
+        "117",
+        "150",
+        "151",
+        "152",
+        "153",
+        "154",
+        "155",
+        "156",
+        "157",
+        "158",
+        "159",
+        "171G",
+        "172",
+        "209",
+        "271",
+        "272",
+        "273",
+        "278",
+        "343",
+        "370",
+        "371",
+        "372",
+        "375",
+        "409",
+        "419",
+        "448",
+        "449",
+        "450",
+        "451",
+        "452",
+        "453",
+        "454",
+        "455",
+        "456",
+        "457",
+        "458",
+        "459",
+        "460",
+        "462",
+        "463",
+        "464",
+        "465",
+        "466",
+        "468",
+        "469",
+        "471",
+        "473",
+        "474",
+        "475",
+        "476",
+        "477",
+        "478",
+        "479",
+        "480",
+        "481",
+        "482",
+        "483",
+        "484",
+        "485",
+        "486",
+        "487",
+        "488",
+        "489",
+        "491",
+        "493",
+        "494",
+        "496",
+        "502",
+        "503",
+        "504",
+        "505",
+        "506",
+        "508",
+        "509",
+        "510",
+        "513",
+        "514",
+        "515",
+        "516",
+        "517",
+        "518",
+        "519",
+        "521",
+        "522",
+        "570",
+        "571",
+        "573",
+        "574",
+        "575",
+        "579",
+        "581",
+        "582",
+        "583",
+        "584",
+        "586",
+        "587",
+        "589",
+        "598",
+        "599",
+        "600",
+        "700",
         "Computer Literacy",
         "Computer Science Principles",
         "Introduction to Computer Animation",
@@ -194,7 +194,7 @@ def get_data():
             },
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","meeting times","' + COURSE_TIME_LABEL + '"),')
+        # print('("' + text + '","course","meeting times","' + COURSE_TIME_LABEL + '"),')
 
         text = "What days are " + course + "?"
 
@@ -207,7 +207,7 @@ def get_data():
             },
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","What days","' + COURSE_TIME_LABEL + '"),')
+        # print('("' + text + '","course","What days","' + COURSE_TIME_LABEL + '"),')
 
         text = "When is " + course + " class?"
 
@@ -220,7 +220,7 @@ def get_data():
             },
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","When is","' + COURSE_TIME_LABEL + '"),')
+        # print('("' + text + '","course","When is","' + COURSE_TIME_LABEL + '"),')
 
         text = "How many credits is " + course + "?"
 
@@ -233,7 +233,7 @@ def get_data():
             },
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","credits","' + COURSE_CRED_LABEL + '"),')
+        # print('("' + text + '","course","credits","' + COURSE_CRED_LABEL + '"),')
 
         text = "Who is teaching " + course + "?"
 
@@ -246,7 +246,7 @@ def get_data():
             },
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","teaching","' + COURSE_PROFESSOR_LABEL + '"),')
+        # print('("' + text + '","course","teaching","' + COURSE_PROFESSOR_LABEL + '"),')
 
         text = "Who is the professor for " + course + "?"
 
@@ -261,7 +261,7 @@ def get_data():
             },
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","professor","' + COURSE_PROFESSOR_LABEL + '"),')
+        # print('("' + text + '","course","professor","' + COURSE_PROFESSOR_LABEL + '"),')
 
         text = "What room is " + course + " in?"
 
@@ -270,7 +270,7 @@ def get_data():
             {"entities": [get_substring_label_truple(text, "room", COURSE_ROOM_LABEL)]},
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","room","' + COURSE_ROOM_LABEL + '"),')
+        # print('("' + text + '","course","room","' + COURSE_ROOM_LABEL + '"),')
 
         text = "Where is " + course + "?"
 
@@ -283,7 +283,7 @@ def get_data():
             },
         )
         COURSE_INFO_TRAIN_DATA.append(my_tuple)
-        print('("' + text + '","course","Where","' + COURSE_ROOM_LABEL + '"),')
+        # print('("' + text + '","course","Where","' + COURSE_ROOM_LABEL + '"),')
 
     COURSE_INFO_LABELS = []
     COURSE_INFO_LABELS.append(COURSE_CRED_LABEL)
