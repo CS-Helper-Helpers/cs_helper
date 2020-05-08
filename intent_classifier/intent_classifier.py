@@ -125,10 +125,10 @@ class IntentClassifier:
 
         intent, unique_intent, sentences, catlength = self.load_dataset()
 
-        print("Intent: ", intent)
-        print("Unique intent: ", unique_intent)
-        print("Sentences: ", sentences)
-        print("cat length: ", catlength)
+        # print("Intent: ", intent)
+        # print("Unique intent: ", unique_intent)
+        # print("Sentences: ", sentences)
+        # print("cat length: ", catlength)
 
         nltk.download("stopwords")
         nltk.download("punkt")
@@ -170,7 +170,7 @@ class IntentClassifier:
         from sklearn.model_selection import train_test_split
 
         train_X, val_X, train_Y, val_Y = train_test_split(
-            padded_doc, output_one_hot, shuffle=True, test_size=0.2
+            padded_doc, output_one_hot, shuffle=True, test_size=0.65
         )
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
@@ -199,14 +199,15 @@ class IntentClassifier:
         model.fit(
             train_X,
             train_Y,
-            epochs=100,
+            epochs=50,
             batch_size=32,
             validation_data=(val_X, val_Y),
             callbacks=[checkpoint],
             verbose=2,
         )
 
-        # hist = model.fit(
+        # Original
+        # model.fit(
         #     train_X,
         #     train_Y,
         #     epochs=100,
@@ -218,8 +219,8 @@ class IntentClassifier:
 
         # loss, accuracy = model.evaluate(train_X, train_Y, verbose=False)
         # print("Training Accuracy: {:.4f}".format(accuracy))
-        # loss, accuracy = model.evaluate(val_X, val_Y, verbose=False)
-        # print("Testing Accuracy:  {:.4f}".format(accuracy))
+        loss, accuracy = model.evaluate(val_X, val_Y, verbose=False)
+        print("Testing Accuracy:  {:.4f}".format(accuracy))
 
     def predictions(self, utterance, model):
         clean_utter = re.sub(r"[^ a-z A-Z 0-9]", " ", utterance)
@@ -285,20 +286,20 @@ class IntentClassifier:
             elif intent_cat_class == "professor":
                 intent_cat_class = "Professors"
 
-                query = "select * from {0} where prof_name like '%{1}%'".format(
-                    intent_cat_class, ent.label_
+                query = "select * from {0} where prof_name like '%%{1}%%'".format(
+                    intent_cat_class, ent.text
                 )
             elif intent_cat_class == "course":
-                intent_cat_class = "Course"
+                intent_cat_class = "Courses"
 
-                query = "select * from {0} where subj like '%{1}%' or crse like '%{1}%'".format(
-                    intent_cat_class, ent.label_
+                query = "select * from {0} where subj like '%%{1}%%' or crse like '%%{1}%%'".format(
+                    intent_cat_class, ent.text
                 )
             else:
                 query = ""
 
             try:
-                df = pd.read_sql_query(query, con=engine)
+                df = pd.read_sql_query(query, con=engine, params=())
 
             except:
                 # then we did not get a result
@@ -309,8 +310,8 @@ class IntentClassifier:
 
     def chunk_utterance(self, intent, utterance):
         """ chunk_utterance finds variable slots """
-        # print("In chunk utterance")
-        # print("Utterance: ", utterance, "\tIntent: ", intent)
+        print("In chunk utterance")
+        print("Utterance: ", utterance, "\tIntent: ", intent)
         if intent == "important_date":
             print("in important date chunk")
             doc = chunk_important_date(utterance)
@@ -329,6 +330,10 @@ class IntentClassifier:
         else:
             doc = None
             print("intent didn't match")
+
+        # # TODO REMOVE
+        # doc = chunk_course(utterance)
+        # # TO HERE
         return doc
 
     def answer(self, text):
@@ -362,21 +367,31 @@ class IntentClassifier:
 
             print("%s has confidence = %s" % (classes[i], (predictions[i])))
             doc = self.chunk_utterance(classes[i], text)
+            # print("doc: ", doc)
 
             if doc is None:
                 return "I am still learning some things and cannot help with that right now."
 
             else:
-                df_result = self.query_database(classes[i], doc)
-                print(df_result)
+                df_result = self.query_database(classes[i], doc)  # THIS IS THE REAL ONE
+                # df_result = self.query_database("course", doc)
+                print("df ", df_result)
                 if df_result is not None:
                     # print("Found a result: \n", df_result)
+                    try:
+                        if classes[i] == "important_date":
+                            answer = df_result["event_date"][0]
+                            return answer
 
-                    # clean and return string response
-                    # answer = df_result.ix[:, 1][0]  # Will need to fix later
-                    answer = df_result["event_date"][0]
-                    # answer = "TEST ANSWER WE WILL MODIFY"
-                    return answer
+                        # clean and return string response
+                        answer = df_result.iloc[0, 1:]  # Will need to fix later
+                        # answer = "TEST ANSWER WE WILL MODIFY"
+                        test = ""
+                        for i, v in answer.items():
+                            test = test + ", " + v
+                        return test
+                    except:
+                        continue
 
                 else:
                     return (

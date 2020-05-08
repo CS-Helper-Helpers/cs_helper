@@ -40,7 +40,7 @@ def chunk_course(utterance, course_dir="slots/course/"):
     return doc
 
 
-def chunk_course_info(utterance, course_dir = "slots/course_info/"):
+def chunk_course_info(utterance, course_dir="slots/course_info/"):
     """ find the chunks associated with an course utterance """
     print("\n\nIn chunk course info")
 
