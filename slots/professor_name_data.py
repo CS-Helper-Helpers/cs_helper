@@ -6,26 +6,57 @@ def get_substring_label_truple(intent, label_indicator, label):
 
 def get_data():
     PROFESSOR_NAMES = [
-        "Son Tran",
-        "Enrico Pontelli",
-        "Huiping Cao",
-        "Jonathan Cook",
-        "Bill Hamilton",
-        "Tuan Le",
-        "Satyajayant Misra",
-        "Parth Nagarkar",
-        "Inna Pivkina",
-        "Joe Song",
-        "Z O. Toups",
-        "Roopa Vishwanathan",
-        "Tao Wang",
-        "Shah Muhammad Hamdi",
-        "Esther Steiner",
-        "Shaun H. Cooper",
-        "Roger Hartley",
-        "Hing Leung",
-        "Hue McCoy",
-        "Joseph Pfeiffer",
+        "Tran",
+        "Dr Tran",
+        "Doctor Tran",
+        "Pontelli",
+        "Dr Pontelli",
+        "Doctor Pontelli",
+        "Cao",
+        "Dr Cao",
+        "Doctor Cao",
+        "Cook",
+        "Dr Cook",
+        "Doctor Cook",
+        "Hamilton",
+        "Dr Hamilton",
+        "Doctor Hamilton",
+        "Le",
+        "Dr Le",
+        "Doctor Le",
+        "Misra",
+        "Dr Misra",
+        "Doctor Misra",
+        "Nagarkar",
+        "Dr Nagarkar",
+        "Doctor Nagarkar",
+        "Parth",
+        "Dr Parth",
+        "Doctor Parth",
+        "Pivkina",
+        "Dr Pivkina",
+        "Doctor Pivkina",
+        "Song",
+        "Dr Song",
+        "Doctor Song",
+        "Toups",
+        "Dr Toups",
+        "Doctor Toups",
+        "Vishwanathan",
+        "Dr Vishwanathan",
+        "Doctor Vishwanathan",
+        "Wang",
+        "Dr Wang",
+        "Doctor Wang",
+        "Muhammad Hamdi",
+        "Dr Muhammad Hamdi",
+        "Doctor Muhammad Hamdi",
+        "Cooper",
+        "Dr Cooper",
+        "Doctor Cooper",
+        "Steiner",
+        "Dr Steiner",
+        "Doctor Steiner",
     ]
     PROFESSOR_NAME_LABEL = "PROFESSOR_NAME"
     PROFESSOR_NAME_TRAIN_DATA = []
@@ -42,6 +73,15 @@ def get_data():
             },
         )
         PROFESSOR_NAME_TRAIN_DATA.append(my_tuple)
+        # print(
+        #     '("'
+        #     + text
+        #     + '","professor","'
+        #     + prof
+        #     + '","'
+        #     + PROFESSOR_NAME_LABEL
+        #     + '"),'
+        # )
 
         text = "What are " + prof + " office hours?"
 
@@ -54,7 +94,15 @@ def get_data():
             },
         )
         PROFESSOR_NAME_TRAIN_DATA.append(my_tuple)
-
+        # print(
+        #     '("'
+        #     + text
+        #     + '","professor","'
+        #     + prof
+        #     + '","'
+        #     + PROFESSOR_NAME_LABEL
+        #     + '"),'
+        # )
         text = "Is " + prof + " involved in any research?"
 
         my_tuple = (
@@ -66,7 +114,15 @@ def get_data():
             },
         )
         PROFESSOR_NAME_TRAIN_DATA.append(my_tuple)
-
+        # print(
+        #     '("'
+        #     + text
+        #     + '","professor","'
+        #     + prof
+        #     + '","'
+        #     + PROFESSOR_NAME_LABEL
+        #     + '"),'
+        # )
         text = "Does " + prof + " teach databases?"
 
         my_tuple = (
@@ -78,7 +134,15 @@ def get_data():
             },
         )
         PROFESSOR_NAME_TRAIN_DATA.append(my_tuple)
-
+        # print(
+        #     '("'
+        #     + text
+        #     + '","professor","'
+        #     + prof
+        #     + '","'
+        #     + PROFESSOR_NAME_LABEL
+        #     + '"),'
+        # )
         text = "How can I reach " + prof + "?"
 
         my_tuple = (
@@ -90,7 +154,15 @@ def get_data():
             },
         )
         PROFESSOR_NAME_TRAIN_DATA.append(my_tuple)
-
+        # print(
+        #     '("'
+        #     + text
+        #     + '","professor","'
+        #     + prof
+        #     + '","'
+        #     + PROFESSOR_NAME_LABEL
+        #     + '"),'
+        # )
         text = "Is " + prof + " goint to be teaching summer courses?"
 
         my_tuple = (
@@ -102,7 +174,15 @@ def get_data():
             },
         )
         PROFESSOR_NAME_TRAIN_DATA.append(my_tuple)
-
+        # print(
+        #     '("'
+        #     + text
+        #     + '","professor","'
+        #     + prof
+        #     + '","'
+        #     + PROFESSOR_NAME_LABEL
+        #     + '"),'
+        # )
         text = "What courses does " + prof + " teach?"
 
         my_tuple = (
@@ -114,5 +194,13 @@ def get_data():
             },
         )
         PROFESSOR_NAME_TRAIN_DATA.append(my_tuple)
-
+        # print(
+        #     '("'
+        #     + text
+        #     + '","professor","'
+        #     + prof
+        #     + '","'
+        #     + PROFESSOR_NAME_LABEL
+        #     + '"),'
+        # )
     return PROFESSOR_NAME_TRAIN_DATA, [PROFESSOR_NAME_LABEL]

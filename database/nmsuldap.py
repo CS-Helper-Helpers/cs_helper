@@ -11,10 +11,10 @@ def authenticate(u, p):
         return True
     return False
 
-username = input("Username: ")
-password = getpass.getpass()
+# username = input("Username: ")
+# password = getpass.getpass()
 
-if (authenticate(username, password)):
-    print("You successfully validated your NMSU credentials.")
-else:
-    print("Your input credentials are not NMSU credentials.")
+# if (authenticate(username, password)):
+#     print("You successfully validated your NMSU credentials.")
+# else:
+#     print("Your input credentials are not NMSU credentials.")
