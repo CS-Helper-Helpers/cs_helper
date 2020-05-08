@@ -107,8 +107,8 @@ create table Professors (
 create table Feedback (
   feedbackid serial,
   is_helpful VARCHAR(128) NOT NULL,
-  reason VARCHAR(128),
-  question_asked VARCHAR(128),  
-  category VARCHAR(128),
+  reason VARCHAR(512),
+  question_asked VARCHAR(512),  
+  category VARCHAR(512),
   primary key (feedbackid)
 );

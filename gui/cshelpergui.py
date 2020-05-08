@@ -11,6 +11,9 @@ from database import nmsuldap
 from intent_classifier.intent_classifier import IntentClassifier
 from kivy.properties import BooleanProperty
 from kivy.uix import boxlayout, checkbox, label, textinput
+from sqlalchemy import create_engine
+from sqlalchemy.sql import text
+import database.engine as db
 
 class MainGUI(Screen):
     def answerQuestion(self):
@@ -85,27 +88,23 @@ class FeedbackForm(Screen):
     def saveFeedback(self):
         app = App.get_running_app()
         root = app.root.ids.feedback_screen
-        # IF YES OR IDK SAVE STATE OF FIRST QUESTION
-        #     && YES TO STORING and YES QUESTION ASKED
-        #        STORE QUESTION 
-
-        # IF YES OR IDK SAVE STATE OF FIRST QUESTION
-        #     && YES TO STORING and NO QUESTION ASKED
-        #        STORE QUESTION in text field
-
-        # IF NO STORE REASON text field
-        
-        # 
+        engine = db.getBotDBEngine()
 
         if ((root.ids.goodAnswerYes.active or root.ids.goodAnswerIDK.active) and root.ids.saveQuestionNo.active):
+            if (root.ids.goodAnswerYes.active):
+                query = text("insert into Feedback (is_helpful) values ('Yes')")
+            else:
+                query = text("insert into Feedback (is_helpful) values ('Unknown')")
+            conn = engine.connect()
+            conn.execute(query)
             # save answer quality
+            self.showQuestion2 = BooleanProperty(False)
+            self.showQuestion4 = BooleanProperty(False)
+            self.showQuestion5 = BooleanProperty(False)
+            self.showQuestion6 = BooleanProperty(False)
             app.root.ids.question_screen.ids.questionInput.text = ""
             app.root.transition = NoTransition()
             app.root.current = "QuestionScreen"
-            showQuestion2 = BooleanProperty(False)
-            showQuestion3 = BooleanProperty(False)
-            showQuestion4 = BooleanProperty(False)
-            showQuestion5 = BooleanProperty(False)
             root.ids.goodAnswerYes.active = False
             root.ids.goodAnswerNo.active = False
             root.ids.goodAnswerIDK.active = False
@@ -118,14 +117,24 @@ class FeedbackForm(Screen):
             root.ids.feedbackCategories.clear_widgets()
 
         elif ((root.ids.goodAnswerYes.active or root.ids.goodAnswerIDK.active) and root.ids.saveQuestionYes.active and root.ids.actualQuestionYes.active):
+            if (root.ids.goodAnswerYes.active):
+                query = text("insert into Feedback (is_helpful, question_asked, category) values ('Yes', :q, :c)")
+            else:
+                query = text("insert into Feedback (is_helpful, question_asked, category) values ('Unknown', :q, :c)")
+            categoryliststring = ""
+            for child in root.ids.feedbackCategories.children[0].children:
+                if (child.children[len(child.children) - 1].active):
+                    categoryliststring += str(child.children[0].text) + ", "
+            conn = engine.connect()
+            conn.execute(query, q = str(app.root.ids.question_screen.ids.questionInput.text), c = categoryliststring[:-2])
             # save answer quality and question and any categories
+            self.showQuestion2 = BooleanProperty(False)
+            self.showQuestion4 = BooleanProperty(False)
+            self.showQuestion5 = BooleanProperty(False)
+            self.showQuestion6 = BooleanProperty(False)
             app.root.ids.question_screen.ids.questionInput.text = ""
             app.root.transition = NoTransition()
             app.root.current = "QuestionScreen"
-            showQuestion2 = BooleanProperty(False)
-            showQuestion3 = BooleanProperty(False)
-            showQuestion4 = BooleanProperty(False)
-            showQuestion5 = BooleanProperty(False)
             root.ids.goodAnswerYes.active = False
             root.ids.goodAnswerNo.active = False
             root.ids.goodAnswerIDK.active = False
@@ -137,15 +146,25 @@ class FeedbackForm(Screen):
             root.ids.notReason.text = ""
             root.ids.feedbackCategories.clear_widgets()
 
-        elif ((root.ids.goodAnswerYes.active or root.ids.goodAnswerIDK.active) and root.ids.saveQuestionNo.active and root.ids.actualQuestionNo.active and root.ids.realQuestion.text != None and root.ids.realQuestion.text != ""):
+        elif ((root.ids.goodAnswerYes.active or root.ids.goodAnswerIDK.active) and root.ids.saveQuestionYes.active and root.ids.actualQuestionNo.active and root.ids.realQuestion.text != None and root.ids.realQuestion.text != ""):
+            if (root.ids.goodAnswerYes.active):
+                query = text("insert into Feedback (is_helpful, question_asked, category) values ('Yes', :q, :c)")
+            else:
+                query = text("insert into Feedback (is_helpful, question_asked, category) values ('Unknown', :q, :c)")
+            categoryliststring = ""
+            for child in root.ids.feedbackCategories.children[0].children:
+                if (child.children[len(child.children) - 1].active):
+                    categoryliststring += str(child.children[0].text) + ", "
+            conn = engine.connect()
+            conn.execute(query, q = str(root.ids.realQuestion.text), c = categoryliststring[:-2])
             # save answer quality and revised question and any categories
+            self.showQuestion2 = BooleanProperty(False)
+            self.showQuestion4 = BooleanProperty(False)
+            self.showQuestion5 = BooleanProperty(False)
+            self.showQuestion6 = BooleanProperty(False)
             app.root.ids.question_screen.ids.questionInput.text = ""
             app.root.transition = NoTransition()
             app.root.current = "QuestionScreen"
-            showQuestion2 = BooleanProperty(False)
-            showQuestion3 = BooleanProperty(False)
-            showQuestion4 = BooleanProperty(False)
-            showQuestion5 = BooleanProperty(False)
             root.ids.goodAnswerYes.active = False
             root.ids.goodAnswerNo.active = False
             root.ids.goodAnswerIDK.active = False
@@ -158,14 +177,21 @@ class FeedbackForm(Screen):
             root.ids.feedbackCategories.clear_widgets()
         
         elif (root.ids.goodAnswerNo.active and root.ids.notReason.text != None and root.ids.notReason.text != "" and root.ids.saveQuestionYes.active and root.ids.actualQuestionYes.active):
+            query = text("insert into Feedback (is_helpful, question_asked, category, reason) values ('No', :q, :c, :r)")
+            categoryliststring = ""
+            for child in root.ids.feedbackCategories.children[0].children:
+                if (child.children[len(child.children) - 1].active):
+                    categoryliststring += str(child.children[0].text) + ", "
+            conn = engine.connect()
+            conn.execute(query, q = str(root.ids.realQuestion.text), c = categoryliststring[:-2], r = str(root.ids.notReason.text))
             # save answer quality and question and any categories
+            self.showQuestion2 = BooleanProperty(False)
+            self.showQuestion4 = BooleanProperty(False)
+            self.showQuestion5 = BooleanProperty(False)
+            self.showQuestion6 = BooleanProperty(False)
             app.root.ids.question_screen.ids.questionInput.text = ""
             app.root.transition = NoTransition()
             app.root.current = "QuestionScreen"
-            showQuestion2 = BooleanProperty(False)
-            showQuestion3 = BooleanProperty(False)
-            showQuestion4 = BooleanProperty(False)
-            showQuestion5 = BooleanProperty(False)
             root.ids.goodAnswerYes.active = False
             root.ids.goodAnswerNo.active = False
             root.ids.goodAnswerIDK.active = False
@@ -177,15 +203,22 @@ class FeedbackForm(Screen):
             root.ids.notReason.text = ""
             root.ids.feedbackCategories.clear_widgets()
 
-        elif (root.ids.goodAnswerNo.active and root.ids.notReason.text != None and root.ids.notReason.text != "" and root.ids.saveQuestionNo.active and root.ids.actualQuestionNo.active and root.ids.realQuestion.text != None and root.ids.realQuestion.text != ""):
+        elif (root.ids.goodAnswerNo.active and root.ids.notReason.text != None and root.ids.notReason.text != "" and root.ids.saveQuestionYes.active and root.ids.actualQuestionNo.active and root.ids.realQuestion.text != None and root.ids.realQuestion.text != ""):
+            query = text("insert into Feedback (is_helpful, question_asked, category, reason) values ('No', :q, :c, :r)")
+            categoryliststring = ""
+            for child in root.ids.feedbackCategories.children[0].children:
+                if (child.children[len(child.children) - 1].active):
+                    categoryliststring += str(child.children[0].text) + ", "
+            conn = engine.connect()
+            conn.execute(query, q = str(root.ids.realQuestion.text), c = categoryliststring[:-2], r = str(root.ids.notReason.text))
             # save answer quality and revised question and any categories
+            self.showQuestion2 = BooleanProperty(False)
+            self.showQuestion4 = BooleanProperty(False)
+            self.showQuestion5 = BooleanProperty(False)
+            self.showQuestion6 = BooleanProperty(False)
             app.root.ids.question_screen.ids.questionInput.text = ""
             app.root.transition = NoTransition()
             app.root.current = "QuestionScreen"
-            showQuestion2 = BooleanProperty(False)
-            showQuestion3 = BooleanProperty(False)
-            showQuestion4 = BooleanProperty(False)
-            showQuestion5 = BooleanProperty(False)
             root.ids.goodAnswerYes.active = False
             root.ids.goodAnswerNo.active = False
             root.ids.goodAnswerIDK.active = False
