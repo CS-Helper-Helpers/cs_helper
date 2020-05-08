@@ -12,6 +12,7 @@ drop table if exists Categories;
 drop table if exists ImportantDates;
 drop table if exists Courses;
 drop table if exists Professors;
+drop table if exists Feedback;
 create table Categories (
   category varchar(256),
   primary key (category)
@@ -102,4 +103,12 @@ create table Professors (
   phone VARCHAR(128) NOT NULL,
   office VARCHAR(128) NOT NULL,
   PRIMARY KEY (professorid)
+);
+create table Feedback (
+  feedbackid serial,
+  is_helpful VARCHAR(128) NOT NULL,
+  reason VARCHAR(512),
+  question_asked VARCHAR(512),  
+  category VARCHAR(512),
+  primary key (feedbackid)
 );

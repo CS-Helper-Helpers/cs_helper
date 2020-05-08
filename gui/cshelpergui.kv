@@ -39,11 +39,14 @@ ScreenManager:
         height: 45
         TextInput:
             id: questionInput
+            multiline: False
             height: 45
             font_size: 25
             size_hint_x: .98
             size_hint_y: .05
             hint_text: "Question"
+            on_text_validate:
+                root.answerQuestion()
         Button:
             height: 45
             font_size: 25
@@ -51,7 +54,7 @@ ScreenManager:
             size_hint_y: .05
             text: "Ask Question"
             on_release:
-                root.testCallback()
+                root.answerQuestion()
                 app.root.transition = NoTransition()
                 app.root.current = "ResponseScreen"
     Button:
@@ -88,6 +91,8 @@ ScreenManager:
             text: "Provide Feedback"
             padding: (10, 10)
             on_release:
+                root.setupCategories()
+                app.root.ids.feedback_screen.ids.feedbackAskedQuestion.text = "\nIs this the question you asked?\n\"" + app.root.ids.question_screen.ids.questionInput.text + "\""
                 app.root.transition = NoTransition()
                 app.root.current = "FeedbackScreen"
         Button:
@@ -96,6 +101,7 @@ ScreenManager:
             text: "Home"
             padding: (10, 10)
             on_release:
+                app.root.ids.question_screen.ids.questionInput.text = ""
                 app.root.transition = NoTransition()
                 app.root.current = "QuestionScreen"
 
@@ -103,30 +109,36 @@ ScreenManager:
 <AdministratorLogin>:
     BoxLayout:
         orientation: "vertical"
-        size_hint_y: .4
+        size_hint_y: .3
         size_hint_x: .5
         pos_hint: {'center_x': .5, 'center_y': .5}
         spacing: 25
         Label:
+            id: failedLogin
             font_size: 24
-            size_hint_y: None
-            size_hint_x: 1
-            pos_hint: {'center_x': .5, 'y': .6}
             height: self.texture_size[1]
             text: ""
         TextInput:
             id: usernameInput
+            write_tab: False
+            multiline: False
             height: 50
             font_size: 24
             padding: (10, 10)
             hint_text: "Username"
+            on_text_validate:
+                root.login()
         TextInput:
             id: passwordInput
+            write_tab: False
+            multiline: False
             password: True
             height: 50
             font_size: 24
             padding: (10, 10)
             hint_text: "Password"
+            on_text_validate:
+                root.login()
         Button:
             font_size: 24
             padding: (10, 10)
@@ -140,6 +152,10 @@ ScreenManager:
             padding: (10, 10)
             text: "Cancel"
             on_release:
+                root.ids.usernameInput.text = ""
+                root.ids.passwordInput.text = ""
+                root.ids.failedLogin.text = ""
+                app.root.ids.question_screen.ids.questionInput.text = ""
                 app.root.transition = NoTransition()
                 app.root.current = "QuestionScreen"
 
@@ -151,27 +167,146 @@ ScreenManager:
         size_hint_x: .9
         pos_hint: {'center_x': .5, 'y': .9}
         height: self.texture_size[1]
-        text: "Please provide the feedback below."
+        text: "Please provide your feedback below."
     GridLayout:
         size_hint_x: .9
         size_hint_y: .6
         pos_hint: {'center_x': .5, 'y': .25}
         spacing: 15
         cols: 2
-        Label:
-            text: "Question 1"
-        Label:
-            text: "Question 2"
-        Label:
-            text: "Question 3"
-        Label:
-            text: "Question 4"
-        Label:
-            text: "Question 5"
-        Label:
-            text: "Question 6"
-        Label:
-            text: "Question 7"
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 5
+            Label:
+                font_size: 24
+                text: "Was the answer to the question satisfactory?"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 5
+                CheckBox:
+                    id: goodAnswerYes
+                    group: "goodAnswer"
+                    on_release:
+                        root.showQuestion2 = False
+                Label:
+                    font_size: 24
+                    text: "Yes"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 5
+                CheckBox:
+                    id: goodAnswerNo
+                    group: "goodAnswer"
+                    on_release:
+                        root.showQuestion2 = True
+                Label:
+                    font_size: 24
+                    text: "No"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 5
+                CheckBox:
+                    id: goodAnswerIDK
+                    group: "goodAnswer"
+                    on_release:
+                        root.showQuestion2 = False
+                Label:
+                    font_size: 24
+                    text: "I don't know"
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 5
+            opacity: 1 if root.showQuestion2 else 0
+            Label:
+                font_size: 24
+                text: "Why not?"
+            TextInput:
+                id: notReason
+                font_size: 24
+                hint_text: "Reason"
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 5
+            Label:
+                font_size: 24
+                text: "Would you like to store the text of your question for future review?"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 5
+                CheckBox:
+                    id: saveQuestionYes
+                    group: "saveQuestion"
+                    on_release:
+                        root.showQuestion4 = True
+                        root.showQuestion5 = True
+                Label:
+                    font_size: 24
+                    text: "Yes"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 5
+                CheckBox:
+                    id: saveQuestionNo
+                    group: "saveQuestion"
+                    on_release:
+                        root.showQuestion4 = False
+                        root.showQuestion5 = False
+                Label:
+                    font_size: 24
+                    text: "No"
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 5
+            opacity: 1 if root.showQuestion4 else 0
+            Label:
+                size_hint_y: .2
+                font_size: 24
+                text: "Please select which category or categories you believe your question involves."
+            ScrollView:
+                id: feedbackCategories
+                do_scroll_x: False
+                size_hint_y: .8
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 5
+            opacity: 1 if root.showQuestion5 else 0
+            Label:
+                id: feedbackAskedQuestion
+                font_size: 24
+                text: "Is this the question you asked?"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 5
+                CheckBox:
+                    id: actualQuestionYes
+                    group: "actualQuestion"
+                    on_release:
+                        root.showQuestion6 = False
+                Label:
+                    font_size: 24
+                    text: "Yes"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 5
+                CheckBox:
+                    id: actualQuestionNo
+                    group: "actualQuestion"
+                    on_release:
+                        root.showQuestion6 = True
+                Label:
+                    font_size: 24
+                    text: "No"
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 5
+            opacity: 1 if root.showQuestion5 and root.showQuestion6 else 0
+            Label:
+                font_size: 24
+                text: "Please enter the question you actually asked."
+            TextInput:
+                id: realQuestion
+                font_size: 24
+                hint_text: "Question"
     Button:
         size_hint_y: .05
         size_hint_x: .15
@@ -180,8 +315,9 @@ ScreenManager:
         padding: (10, 10)
         text: "Submit"
         on_release:
-            app.root.transition = NoTransition()
-            app.root.current = "QuestionScreen"
+            root.saveFeedback()
+            # app.root.transition = NoTransition()
+            # app.root.current = "QuestionScreen"
 
 <ModificationForm>:
     Label:
@@ -191,27 +327,66 @@ ScreenManager:
         size_hint_x: .9
         pos_hint: {'center_x': .5, 'y': .9}
         height: self.texture_size[1]
-        text: "Use the forms below to modify the questions and answers CSHelper uses."
-    GridLayout:
+        text: "Use the forms below to modify CSHelper."
+    TabbedPanel:
         size_hint_x: .9
         size_hint_y: .6
         pos_hint: {'center_x': .5, 'y': .25}
-        spacing: 15
-        cols: 2
-        Label:
-            text: "Form 1"
-        Label:
-            text: "Form 2"
-        Label:
-            text: "Form 3"
-        Label:
-            text: "Form 4"
-        Label:
-            text: "Form 5"
-        Label:
-            text: "Form 6"
-        Label:
-            text: "Form 7"
+        do_default_tab: False
+        TabbedPanelItem:
+            font_size: 24
+            text: "Add Users"
+            BoxLayout:
+                orientation: "vertical"
+                spacing: 5
+                TextInput:
+                    font_size: 24
+                    hint_text: "NMSU Username"
+                Label:
+                    font_size: 24
+                    text: "User Type"
+                BoxLayout:
+                    orientation: "horizontal"
+                    spacing: 5
+                    CheckBox:
+                        group: "userType"
+                    Label:
+                        font_size: 24
+                        text: "Administrator"
+                BoxLayout:
+                    orientation: "horizontal"
+                    spacing: 5
+                    CheckBox:
+                        group: "userType"
+                    Label:
+                        font_size: 24
+                        text: "Developer"
+        TabbedPanelItem:
+            font_size: 24
+            text: "Add/Modify Categories"
+        TabbedPanelItem:
+            font_size: 24
+            text: "Add/Modify Training Questions"
+    # GridLayout:
+    #     size_hint_x: .9
+    #     size_hint_y: .6
+    #     pos_hint: {'center_x': .5, 'y': .25}
+    #     spacing: 15
+    #     cols: 2
+    #     Label:
+    #         text: "Form 1"
+    #     Label:
+    #         text: "Form 2"
+    #     Label:
+    #         text: "Form 3"
+    #     Label:
+    #         text: "Form 4"
+    #     Label:
+    #         text: "Form 5"
+    #     Label:
+    #         text: "Form 6"
+    #     Label:
+    #         text: "Form 7"
     Button:
         size_hint_y: .05
         size_hint_x: .15
@@ -220,5 +395,6 @@ ScreenManager:
         padding: (10, 10)
         text: "Submit and Retrain"
         on_release:
+            app.root.ids.question_screen.ids.questionInput.text = ""
             app.root.transition = NoTransition()
             app.root.current = "QuestionScreen"
