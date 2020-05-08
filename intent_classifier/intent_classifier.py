@@ -374,7 +374,8 @@ class IntentClassifier:
 
                     # clean and return string response
                     # answer = df_result.ix[:, 1][0]  # Will need to fix later
-                    answer = "TEST ANSWER WE WILL MODIFY"
+                    answer = df_result["event_date"][0]
+                    # answer = "TEST ANSWER WE WILL MODIFY"
                     return answer
 
                 else:
