@@ -36,6 +36,7 @@ setup(
         "spacy",
         "kivy",
         "ldap3",
+        "twilio",
     ],
     zip_safe=False,
     test_suite="nose.collector",
