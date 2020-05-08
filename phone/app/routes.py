@@ -15,7 +15,7 @@ text = ''
 answer = ''
 ic = IntentClassifier()
 #ic.train_model()
-loaded = load_model("../cs_helper/model.h5")
+loaded = load_model("../intent_classifier/model.h5")
 
 @app.route('/')
 def index():
@@ -36,7 +36,6 @@ def index():
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </html>'''
 
-
 @app.route("/voice", methods=['POST'])
 def voice():
     resp = VoiceResponse()
@@ -53,7 +52,8 @@ def getrecording():
     global full_path
     
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
-    auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    auth_token = 'f5233d27baa049c4b13b254a5c9ecc7e'
+    # auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = Client(account_sid, auth_token)
     
     recSID = request.form.get('RecordingSid')
@@ -70,28 +70,35 @@ def getrecording():
             if chunk:
                 wav.write(chunk)
     full_path = os.path.join(os.getcwd(),file) 
+    
     client.recordings(recSID).delete()
     
-    resp.redirect('transcribeAudio')
+    resp.redirect('/transcribeAudio')
+    
     return str(resp)
 
 @app.route("/transcribeAudio", methods=['POST'])
 def transcribeAudio():
     global text
+    global full_path
     resp = VoiceResponse()
     
     r = sr.Recognizer()
     audio = ''
     with sr.WavFile(full_path) as source:              # use "test.wav" as the audio source
         audio = r.record(source)                        # extract audio data from the file
+        
+    os.remove(full_path)
+    full_path=''
 
     try:
         text = r.recognize_google(audio, language="en-US")
+        resp.play('https://puce-chihuahua-4715.twil.io/assets/RoyaltyFree_CrazyParty_190374032322_1_8.mp3')
         resp.redirect('/passString')
     except:
         resp.say("Unable to transcribe your audio.")
         resp.say("Can you repeat your question?")
-        resp.record(timeout=2, action = "https://cshelper.ngrok.io/getRecording")
+        resp.record(timeout=2, action = "https://cshelper.ngrok.io/getrecording")
     
     return str(resp)
 
@@ -104,19 +111,14 @@ def passString():
     
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action = '/validation')
-    
-    resp.pause(length=10)
-    
-    try:
-        answer = ic.answer(text)
-        resp.say(answer)
-        print(answer)
-    except:
-        resp.say("We were unable to find an answer to your question.")        
+        
+    resp.pause(length=5)
+    answer = ic.answer(text)
+    resp.say(answer)
+    print(answer)   
     gather.say("Is this response satisfactory? Press 1 for yes, 2 for no.")
     resp.append(gather)
     resp.redirect('/voice')
-    os.remove(full_path)
     return str(resp)
 
 
@@ -144,7 +146,6 @@ def validation():
     resp.hangup()
     wrongQs_file.close()
     return str(resp)
-
 
 @app.route("/newQuestion", methods=['POST'])
 def newQuestion():

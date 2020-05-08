@@ -23,7 +23,14 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Dropout
+from tensorflow.keras.layers import (
+    Dense,
+    LSTM,
+    Bidirectional,
+    Embedding,
+    Dropout,
+    Flatten,
+)
 from tensorflow.keras.callbacks import ModelCheckpoint
 from slots.find_chunks import (
     chunk_important_date,
@@ -62,18 +69,37 @@ class IntentClassifier:
 
             return (intent, unique_intent, sentences, catlength)
 
-        else:
-            if piece == "sentences":
-                engine = db.getBotDBEngine()
-                query = "select question as Sentence from TrainingQuestions"
-                df = pd.read_sql_query(query, con=engine)
-                return list(df["Sentence"])
+        elif piece == "sentences":
+            engine = db.getBotDBEngine()
+            query = "select question as Sentence from TrainingQuestions"
+            df = pd.read_sql_query(query, con=engine)
+            return list(df["Sentence"])
 
-            if piece == "uniqueintents":
-                engine = db.getBotDBEngine()
-                query = "select distinct cat as Intent from TrainingQuestions"
+        elif piece == "uniqueintents":
+            engine = db.getBotDBEngine()
+            query = "select distinct cat as Intent from TrainingQuestions"
+            df = pd.read_sql_query(query, con=engine)
+            return list(df["Intent"])
+        elif piece == "random_sample":
+            engine = db.getBotDBEngine()
+            sentences = []
+            intent = []
+
+            # get categories
+            query = "select category from Categories"
+            df = pd.read_sql_query(query, con=engine)
+            cat = list(df["category"])
+            for c in cat:
+                query = "select cat as Intent, question as Sentence from TrainingQuestions where cat = '{}'".format(
+                    c
+                )
                 df = pd.read_sql_query(query, con=engine)
-                return list(df["Intent"])
+                df = df.sample(n=100, replace=False,)
+                sentences.extend(list(df["Sentence"]))
+                intent.extend(list(df["Intent"]))
+            unique_intent = list(set(intent))
+            catlength = len(unique_intent)
+            return intent, unique_intent, sentences, catlength
 
     def cleaning(self, sentences):
         words = []
@@ -105,23 +131,22 @@ class IntentClassifier:
     def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
         model.add(Embedding(vocab_size, 128, input_length=max_length, trainable=False))
-        model.add(Bidirectional(LSTM(128, activation="sigmoid")))
-        #   model.add(LSTM(128))
+        # model.add(Bidirectional(LSTM(128, activation=“sigmoid”)))
+        model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
         model.add(Flatten())
         model.add(Dense(catlength, activation="softmax"))
-
         return model
 
     def train_model(self):
 
         intent, unique_intent, sentences, catlength = self.load_dataset()
 
-        print("Intent: ", intent)
-        print("Unique intent: ", unique_intent)
-        print("Sentences: ", sentences)
-        print("cat length: ", catlength)
+        # print("Intent: ", intent)
+        # print("Unique intent: ", unique_intent)
+        # print("Sentences: ", sentences)
+        # print("cat length: ", catlength)
 
         nltk.download("stopwords")
         nltk.download("punkt")
@@ -163,7 +188,7 @@ class IntentClassifier:
         from sklearn.model_selection import train_test_split
 
         train_X, val_X, train_Y, val_Y = train_test_split(
-            padded_doc, output_one_hot, shuffle=True, test_size=0.2
+            padded_doc, output_one_hot, shuffle=True, test_size=0.65
         )
         print("Shape of train_X = %s and train_Y = %s" % (train_X.shape, train_Y.shape))
         print("Shape of val_X = %s and val_Y = %s" % (val_X.shape, val_Y.shape))
@@ -199,7 +224,8 @@ class IntentClassifier:
             verbose=2,
         )
 
-        # hist = model.fit(
+        # Original
+        # model.fit(
         #     train_X,
         #     train_Y,
         #     epochs=100,
@@ -211,8 +237,8 @@ class IntentClassifier:
 
         # loss, accuracy = model.evaluate(train_X, train_Y, verbose=False)
         # print("Training Accuracy: {:.4f}".format(accuracy))
-        # loss, accuracy = model.evaluate(val_X, val_Y, verbose=False)
-        # print("Testing Accuracy:  {:.4f}".format(accuracy))
+        loss, accuracy = model.evaluate(val_X, val_Y, verbose=False)
+        print("Testing Accuracy:  {:.4f}".format(accuracy))
 
     def predictions(self, utterance, model):
         clean_utter = re.sub(r"[^ a-z A-Z 0-9]", " ", utterance)
@@ -236,6 +262,8 @@ class IntentClassifier:
         x = self.padding_doc(test_ls, max_length)
 
         pred = model.predict_proba(x)
+
+        print(pred)
 
         return pred
 
@@ -276,20 +304,20 @@ class IntentClassifier:
             elif intent_cat_class == "professor":
                 intent_cat_class = "Professors"
 
-                query = "select * from {0} where prof_name like '%{1}%'".format(
-                    intent_cat_class, ent.label_
+                query = "select * from {0} where prof_name like '%%{1}%%'".format(
+                    intent_cat_class, ent.text
                 )
             elif intent_cat_class == "course":
-                intent_cat_class = "Course"
+                intent_cat_class = "Courses"
 
-                query = "select * from {0} where subj like '%{1}%' or crse like '%{1}%'".format(
-                    intent_cat_class, ent.label_
+                query = "select * from {0} where subj like '%%{1}%%' or crse like '%%{1}%%'".format(
+                    intent_cat_class, ent.text
                 )
             else:
                 query = ""
 
             try:
-                df = pd.read_sql_query(query, con=engine)
+                df = pd.read_sql_query(query, con=engine, params=())
 
             except:
                 # then we did not get a result
@@ -300,8 +328,8 @@ class IntentClassifier:
 
     def chunk_utterance(self, intent, utterance):
         """ chunk_utterance finds variable slots """
-        # print("In chunk utterance")
-        # print("Utterance: ", utterance, "\tIntent: ", intent)
+        print("In chunk utterance")
+        print("Utterance: ", utterance, "\tIntent: ", intent)
         if intent == "important_date":
             print("in important date chunk")
             doc = chunk_important_date(utterance)
@@ -313,13 +341,17 @@ class IntentClassifier:
             doc = chunk_course(utterance)
         elif intent == "professor":
             print("professor chunk")
-            doc = chunk_professor(utterance)
+            doc = chunk_professor_name(utterance)
         elif intent == "location":
             doc = None
             print("location chunk")
         else:
             doc = None
             print("intent didn't match")
+
+        # # TODO REMOVE
+        # doc = chunk_course(utterance)
+        # # TO HERE
         return doc
 
     def answer(self, text):
@@ -353,20 +385,31 @@ class IntentClassifier:
 
             print("%s has confidence = %s" % (classes[i], (predictions[i])))
             doc = self.chunk_utterance(classes[i], text)
+            # print("doc: ", doc)
 
             if doc is None:
                 return "I am still learning some things and cannot help with that right now."
 
             else:
-                df_result = self.query_database(classes[i], doc)
-                print(df_result)
+                df_result = self.query_database(classes[i], doc)  # THIS IS THE REAL ONE
+                # df_result = self.query_database("course", doc)
+                print("df ", df_result)
                 if df_result is not None:
                     # print("Found a result: \n", df_result)
+                    try:
+                        if classes[i] == "important_date":
+                            answer = df_result["event_date"][0]
+                            return answer
 
-                    # clean and return string response
-                    # answer = df_result.ix[:, 1][0]  # Will need to fix later
-                    answer = "TEST ANSWER WE WILL MODIFY"
-                    return answer
+                        # clean and return string response
+                        answer = df_result.iloc[0, 1:]  # Will need to fix later
+                        # answer = "TEST ANSWER WE WILL MODIFY"
+                        test = ""
+                        for i, v in answer.items():
+                            test = test + ", " + v
+                        return test
+                    except:
+                        return "I could not find an answer in the database for that question."
 
                 else:
                     return (
