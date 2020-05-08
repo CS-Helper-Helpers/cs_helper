@@ -236,6 +236,8 @@ class IntentClassifier:
 
         pred = model.predict_proba(x)
 
+        print(pred)
+
         return pred
 
     # def get_final_output(self, text, pred, classes):

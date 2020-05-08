@@ -35,6 +35,7 @@ setup(
         "plac",
         "spacy",
         "kivy",
+        "ldap3",
     ],
     zip_safe=False,
     test_suite="nose.collector",
