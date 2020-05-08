@@ -69,18 +69,37 @@ class IntentClassifier:
 
             return (intent, unique_intent, sentences, catlength)
 
-        else:
-            if piece == "sentences":
-                engine = db.getBotDBEngine()
-                query = "select question as Sentence from TrainingQuestions"
-                df = pd.read_sql_query(query, con=engine)
-                return list(df["Sentence"])
+        elif piece == "sentences":
+            engine = db.getBotDBEngine()
+            query = "select question as Sentence from TrainingQuestions"
+            df = pd.read_sql_query(query, con=engine)
+            return list(df["Sentence"])
 
-            if piece == "uniqueintents":
-                engine = db.getBotDBEngine()
-                query = "select distinct cat as Intent from TrainingQuestions"
+        elif piece == "uniqueintents":
+            engine = db.getBotDBEngine()
+            query = "select distinct cat as Intent from TrainingQuestions"
+            df = pd.read_sql_query(query, con=engine)
+            return list(df["Intent"])
+        elif piece == "random_sample":
+            engine = db.getBotDBEngine()
+            sentences = []
+            intent = []
+
+            # get categories
+            query = "select category from Categories"
+            df = pd.read_sql_query(query, con=engine)
+            cat = list(df["category"])
+            for c in cat:
+                query = "select cat as Intent, question as Sentence from TrainingQuestions where cat = '{}'".format(
+                    c
+                )
                 df = pd.read_sql_query(query, con=engine)
-                return list(df["Intent"])
+                df = df.sample(n=100, replace=False,)
+                sentences.extend(list(df["Sentence"]))
+                intent.extend(list(df["Intent"]))
+            unique_intent = list(set(intent))
+            catlength = len(unique_intent)
+            return intent, unique_intent, sentences, catlength
 
     def cleaning(self, sentences):
         words = []
@@ -112,13 +131,12 @@ class IntentClassifier:
     def create_model(self, vocab_size, max_length, catlength):
         model = Sequential()
         model.add(Embedding(vocab_size, 128, input_length=max_length, trainable=False))
-        model.add(Bidirectional(LSTM(128, activation="sigmoid")))
-        #   model.add(LSTM(128))
+        # model.add(Bidirectional(LSTM(128, activation=“sigmoid”)))
+        model.add(LSTM(128))
         model.add(Dense(32, activation="relu"))
         model.add(Dropout(0.5))
         model.add(Flatten())
         model.add(Dense(catlength, activation="softmax"))
-
         return model
 
     def train_model(self):
@@ -199,7 +217,7 @@ class IntentClassifier:
         model.fit(
             train_X,
             train_Y,
-            epochs=50,
+            epochs=100,
             batch_size=32,
             validation_data=(val_X, val_Y),
             callbacks=[checkpoint],
@@ -391,7 +409,7 @@ class IntentClassifier:
                             test = test + ", " + v
                         return test
                     except:
-                        continue
+                        return "I could not find an answer in the database for that question."
 
                 else:
                     return (

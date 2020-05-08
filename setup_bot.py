@@ -28,9 +28,9 @@ def bot_setup():
     # train_professor()
     # print("done training Professor Chunker")
 
-    # print("Training Professor Name Chunker...")
-    # train_professor_name()
-    # print("done training Professor Name Chunker")
+    print("Training Professor Name Chunker...")
+    train_professor_name()
+    print("done training Professor Name Chunker")
 
     # print("Training Location Chunker...")
     # train_location()
