@@ -1,4 +1,6 @@
 import os
+import sys
+#sys.path.insert(0, '/home/groups3/cshelper/public_html/cgi-bin/cs_helper/phone/venv/lib/python3.6/site-packages')
 import requests
 import speech_recognition as sr
 
@@ -15,11 +17,13 @@ text = ''
 answer = ''
 ic = IntentClassifier()
 #ic.train_model()
-loaded = load_model("../cs_helper/model.h5")
+loaded = load_model("/home/groups3/cshelper/public_html/cgi-bin/cs_helper/intent_classifier/model.h5")
 
 @app.route('/')
 def index():
     return '''
+Content-type: text/html\n\n
+
 <html>
     <head>
         <title>Home Page - CS Helper</title>
@@ -78,12 +82,16 @@ def getrecording():
 @app.route("/transcribeAudio", methods=['POST'])
 def transcribeAudio():
     global text
+    global full_path
     resp = VoiceResponse()
     
     r = sr.Recognizer()
     audio = ''
     with sr.WavFile(full_path) as source:              # use "test.wav" as the audio source
         audio = r.record(source)                        # extract audio data from the file
+    
+    os.remove(full_path)
+    full_path=''
 
     try:
         text = r.recognize_google(audio, language="en-US")
@@ -116,7 +124,6 @@ def passString():
     gather.say("Is this response satisfactory? Press 1 for yes, 2 for no.")
     resp.append(gather)
     resp.redirect('/voice')
-    os.remove(full_path)
     return str(resp)
 
 
@@ -161,5 +168,5 @@ def newQuestion():
 
 
 if __name__ == "__main__":
-    port = int(os.getenv('PORT', 8080))
-    app.run(debug=True, use_reloader=False, port=port)
+    #port = int(os.getenv('PORT', 8080))
+    app.run(debug=True, use_reloader=False, host='0.0.0.0')
