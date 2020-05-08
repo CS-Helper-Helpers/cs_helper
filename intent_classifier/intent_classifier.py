@@ -130,6 +130,10 @@ class IntentClassifier:
         for s in sentences:
             clean = re.sub(r"[^ a-z A-Z 0-9]", " ", s)
             w = word_tokenize(clean)
+            for x in w:
+                if x.lower() == "when":
+                    w.remove(x)
+            # print("tokenized word: ", w)
             # lemmatizing
             words.append([i.lower() for i in w])
         return words
@@ -178,7 +182,7 @@ class IntentClassifier:
 
     def train_model(self):
 
-        intent, unique_intent, sentences, catlength = self.load_dataset() # not the best way to do this
+        intent, unique_intent, sentences, catlength = self.load_dataset(piece="random_sample") # not the best way to do this
 
         #print("Intent: ", intent)
         print("Unique intent: ", unique_intent)
@@ -435,8 +439,8 @@ class IntentClassifier:
             doc = self.chunk_utterance(classes[i], text)
 
             if doc is None:
-                return "I am still learning some things and cannot help with that right now."
-
+                #return "I am still learning some things and cannot help with that right now."
+                pass
             else:
                 df_result = self.query_database(classes[i], doc)
                 print(df_result)
