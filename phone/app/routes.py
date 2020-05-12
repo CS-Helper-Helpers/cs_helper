@@ -17,6 +17,7 @@ answer = ''
 ic = IntentClassifier()
 loaded = load_model("../intent_classifier/model.h5")
 
+# HTML code for web page
 @app.route('/')
 def index():
     return '''
@@ -43,9 +44,9 @@ def voice():
     resp.say("You have reached the Computer Science Department Office.")
     resp.say("This is CS Helper. Your call is being temporarily recorded. How may I help you?")
     
-    resp.record(timeout=2, action = "https://cshelper.ngrok.io/getrecording")
+    # Records audio and goes to /getrecording after 2 seconds of silence
+    resp.record(timeout=2, action = "/getrecording")
     return str(resp)
-
 
 @app.route("/getrecording", methods=['POST'])
 def getrecording(): 
@@ -61,15 +62,18 @@ def getrecording():
     resp = VoiceResponse()
     resp.say("Just a moment")
 
+    # Retrieves the URL for the current recording
     wav_link = requests.get(recURL, stream = True)
     file = recSID + ".wav"
        
+    # Saves the wav file locally
     with open(file, "wb") as wav:
         for chunk in wav_link.iter_content(chunk_size=1024):
             if chunk:
                 wav.write(chunk)
     full_path = os.path.join(os.getcwd(),file) 
     
+    # Deletes the recording from the Twilio Recording
     client.recordings(recSID).delete()
     
     resp.redirect('/transcribeAudio')
@@ -160,8 +164,3 @@ def newQuestion():
             resp.record(timeout=2, action = "https://cshelper.ngrok.io/getrecording")
     
     return str(resp)
-
-
-#if __name__ == "__main__":
-    #port = int(os.getenv('PORT', 8080))
-    #app.run(debug=True, use_reloader=False, port=port)
