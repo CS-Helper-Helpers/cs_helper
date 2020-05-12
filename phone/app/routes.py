@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append("/home/groups3/cshelper/public_html/cgi-bin/cs_helper/")
 import requests
 import speech_recognition as sr
 
@@ -7,14 +9,12 @@ from twilio.twiml.voice_response import VoiceResponse, Record, Gather
 from twilio.rest import Client
 from intent_classifier import IntentClassifier
 from tensorflow.keras.models import load_model
-
-app = Flask(__name__)
+from app import app
 
 full_path = ''
 text = ''
 answer = ''
 ic = IntentClassifier()
-#ic.train_model()
 loaded = load_model("../intent_classifier/model.h5")
 
 @app.route('/')
@@ -125,25 +125,27 @@ def passString():
 def validation():
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action = '/newQuestion')
-    wrongQs_file = open(r"WrongQandAs.txt", "a")
+    qfile = open(r"QandAs.txt", "a")
+    line = text + ", " + answer + ", " 
     
     if 'Digits' in request.values:
         choice = request.values['Digits']
 
         if choice == '1':
             resp.say("Thank you for your response.")
+            line += "Correct Response\n"
         elif choice == '2':
             resp.say("We will log this response. Thank you for your call.")
-            line = text + ", " + answer
-            wrongQs_file.write(line)
-            wrongQs_file.write("\n")
+            line += "Incorrect Response\n"
+        
+        qfile.write(line)
         
         gather.say("Do you have another question? If so, press 1. Otherwise, please hang up")
         resp.append(gather)
         resp.redirect('/voice')
 
     resp.hangup()
-    wrongQs_file.close()
+    qfile.close()
     return str(resp)
 
 @app.route("/newQuestion", methods=['POST'])
@@ -160,6 +162,6 @@ def newQuestion():
     return str(resp)
 
 
-if __name__ == "__main__":
-    port = int(os.getenv('PORT', 8080))
-    app.run(debug=True, use_reloader=False, port=port)
+#if __name__ == "__main__":
+    #port = int(os.getenv('PORT', 8080))
+    #app.run(debug=True, use_reloader=False, port=port)
